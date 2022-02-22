@@ -1,5 +1,5 @@
 {
-  "name": "ethereum-kickstarter",
+  "name": "crypto-accountability",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ReeceKidd/ethereum-kickstarter.git"
+    "url": "git+https://github.com/ReeceKidd/crypto-accountability.git"
   },
   "dependencies": {
     "@babel/preset-typescript": "^7.16.7",
@@ -18,7 +18,6 @@
     "@types/web3": "^1.2.2",
     "fs-extra": "^10.0.0",
     "jest": "^27.4.7",
-    "mocha": "^4.0.1",
     "solc": "^0.4.25",
     "ts-jest": "^27.1.3",
     "web3": "^1.6.1"
@@ -32,7 +31,7 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ReeceKidd/ethereum-kickstarter/issues"
+    "url": "https://github.com/ReeceKidd/crypto-accountability/issues"
   },
-  "homepage": "https://github.com/ReeceKidd/ethereum-kickstarter#readme"
+  "homepage": "https://github.com/ReeceKidd/crypto-accountability#readme"
 }
