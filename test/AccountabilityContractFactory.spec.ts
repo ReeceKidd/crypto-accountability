@@ -37,7 +37,7 @@ beforeEach(async () => {
   );
 });
 
-describe("AccountabilityContract factory contract", () => {
+describe("Accountability contract factory", () => {
   describe("success", () => {
     it("can get a list of deployed accountabilityContracts", async () => {
       const numberOfAccountabilityContracts =
