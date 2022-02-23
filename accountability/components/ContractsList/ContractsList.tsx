@@ -19,6 +19,7 @@ const ContractsList = ({ contracts }: ContractsProps) => {
         description,
         extra: `Creator: ${creator}`,
         fluid: true,
+        href: `/contracts/${id}`,
       }))}
     />
   );
