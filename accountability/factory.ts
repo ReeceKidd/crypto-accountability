@@ -1,16 +1,18 @@
 import web3 from "./web3";
-import * as CrowdfundFactory from "../build/CrowdfundFactory.json";
-import * as Crowdfund from "../build/Crowdfund.json";
-import * as CrowdfundFactoryAddress from "../address.json";
-import Web3 from "web3";
+import * as AccountabilityContractFactory from "../build/AccountabilityContractFactory.json";
+import * as AccountabilityContract from "../build/AccountabilityContract.json";
+import * as AccountabilityContractFactoryAddress from "../address.json";
 
 const crowdfundFactoryInstance = new web3.eth.Contract(
-  JSON.parse(CrowdfundFactory.interface),
-  CrowdfundFactoryAddress.address
+  JSON.parse(AccountabilityContractFactory.interface),
+  AccountabilityContractFactoryAddress.address
 );
 
-export const getCrowdfundContract = (address: string) => {
-  return new web3.eth.Contract(JSON.parse(Crowdfund.interface), address);
+export const getAccountabilityContract = (address: string) => {
+  return new web3.eth.Contract(
+    JSON.parse(AccountabilityContract.interface),
+    address
+  );
 };
 
 export default crowdfundFactoryInstance;
