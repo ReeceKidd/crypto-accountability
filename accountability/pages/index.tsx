@@ -11,7 +11,9 @@ const Home: NextPage = () => {
       />
       <Layout>
         <h1>Crypto accountability</h1>
-        <h2>Stay accountable by betting crypto</h2>
+        <h2>
+          Stay accountable by betting crypto on the things you need to do.
+        </h2>
       </Layout>
     </div>
   );
