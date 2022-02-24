@@ -22,7 +22,7 @@ beforeEach(async () => {
   const description = "I must drink three litres of water everyday";
   const failureRecipient = accounts[1];
   await accountabilityContractFactory.methods
-    .createAccountabilityContract(name, description, failureRecipient)
+    .createAccountabilityContract(manager, name, description, failureRecipient)
     .send({
       from: manager,
       gas: 1000000,
