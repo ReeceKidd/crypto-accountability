@@ -11,6 +11,9 @@ const Header: FC<HeaderProps> = () => {
         <Menu.Item>Crypto accountability</Menu.Item>
       </Link>
       <Menu.Menu position="right">
+        <Link href={"/contracts"} passHref={true}>
+          <Menu.Item>Contracts</Menu.Item>
+        </Link>
         <Link href="/contracts/new" passHref={true}>
           <Menu.Item link={true}>
             <Button primary icon="plus" />

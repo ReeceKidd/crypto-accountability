@@ -14,6 +14,7 @@ const NewContract: NextPage = () => {
   useEffect(() => {
     getAccounts(setAccounts);
   }, []);
+  const [referee, setReferee] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [failureRecipient, setFailureRecipient] = useState("");
@@ -26,6 +27,8 @@ const NewContract: NextPage = () => {
       <h1>Create contract</h1>
       <CreateContractForm
         web3Account={accounts[0]}
+        referee={referee}
+        setReferee={setReferee}
         name={name}
         setName={setName}
         description={description}

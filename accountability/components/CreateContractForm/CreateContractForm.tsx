@@ -5,6 +5,8 @@ import factory from "../../factory";
 
 interface CreateContractFormProps {
   web3Account: string;
+  referee: string;
+  setReferee: (input: string) => void;
   name: string;
   setName: (input: string) => void;
   description: string;
@@ -15,6 +17,8 @@ interface CreateContractFormProps {
 
 const CreateContractForm: FC<CreateContractFormProps> = ({
   web3Account,
+  referee,
+  setReferee,
   name,
   setName,
   description,
@@ -33,7 +37,12 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
     try {
       setNetworkRequestMessage("Waiting on transaction success...");
       await factory.methods
-        .createAccountabilityContract(name, description, failureRecipient)
+        .createAccountabilityContract(
+          referee,
+          name,
+          description,
+          failureRecipient
+        )
         .send({
           from: web3Account,
           gas: 1000000,
@@ -49,6 +58,16 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
   return (
     <>
       <Form onSubmit={(event) => onSubmit(event)}>
+        <Form.Field>
+          <label>
+            Referee:
+            <input
+              type="text"
+              name={referee}
+              onChange={(event) => setReferee(event.target.value)}
+            />
+          </label>
+        </Form.Field>
         <Form.Field>
           <label>
             Contract name:
