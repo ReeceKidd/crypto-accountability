@@ -9,10 +9,14 @@ let accountabilityContractFactory: any;
 let accountabilityContract: any;
 let accounts: string[];
 let manager: string;
+let referee: string;
+let amount: string;
 
 beforeEach(async () => {
   accounts = await web3.eth.getAccounts();
   manager = accounts[0];
+  referee = accounts[0];
+  amount = web3.utils.toWei("0.0001", "ether");
   accountabilityContractFactory = await new web3.eth.Contract(
     JSON.parse(AccountabilityContractFactory.interface)
   )
@@ -22,10 +26,11 @@ beforeEach(async () => {
   const description = "I must drink three litres of water everyday";
   const failureRecipient = accounts[1];
   await accountabilityContractFactory.methods
-    .createAccountabilityContract(manager, name, description, failureRecipient)
+    .createAccountabilityContract(referee, name, description, failureRecipient)
     .send({
       from: manager,
       gas: 1000000,
+      value: amount,
     });
   const accountabilityContractAddress =
     await accountabilityContractFactory.methods

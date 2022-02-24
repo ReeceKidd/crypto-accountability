@@ -4,8 +4,8 @@ contract AccountabilityContractFactory {
     mapping(uint => AccountabilityContract) public accountabilityContracts;
     uint public numberOfAccountabilityContracts;
 
-    function createAccountabilityContract(address _referee, string memory _name, string memory _description, address _failureRecipient) public {
-        accountabilityContracts[numberOfAccountabilityContracts++] = new AccountabilityContract(msg.sender, _referee, _name, _description, _failureRecipient);
+    function createAccountabilityContract(address _referee, string memory _name, string memory _description, address _failureRecipient) public payable {
+        accountabilityContracts[numberOfAccountabilityContracts++] = (new AccountabilityContract).value(msg.value)(msg.sender, _referee, _name, _description, _failureRecipient);
     }
 }
 
@@ -18,7 +18,7 @@ contract AccountabilityContract {
     address  public failureRecipient;
     Status public status;
 
-    constructor(address _creator, address _referee, string memory _name, string memory _description, address _failureRecipient) {
+    constructor(address _creator, address _referee, string memory _name, string memory _description, address _failureRecipient) payable {
         creator = _creator;
         referee = _referee;
         name = _name;

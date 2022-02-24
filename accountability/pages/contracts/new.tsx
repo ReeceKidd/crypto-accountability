@@ -15,6 +15,7 @@ const NewContract: NextPage = () => {
     getAccounts(setAccounts);
   }, []);
   const [referee, setReferee] = useState("");
+  const [amount, setAmount] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [failureRecipient, setFailureRecipient] = useState("");
@@ -29,6 +30,8 @@ const NewContract: NextPage = () => {
         web3Account={accounts[0]}
         referee={referee}
         setReferee={setReferee}
+        amount={amount}
+        setAmount={setAmount}
         name={name}
         setName={setName}
         description={description}

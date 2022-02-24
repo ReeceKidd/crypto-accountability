@@ -10,6 +10,8 @@ let accountabilityContractAddress: any;
 let accountabilityContract: any;
 let accounts: string[];
 let creator: string;
+let referee: string;
+let amount: string;
 let name: string;
 let description: string;
 let failureRecipient: string;
@@ -17,6 +19,8 @@ let failureRecipient: string;
 beforeEach(async () => {
   accounts = await web3.eth.getAccounts();
   creator = accounts[0];
+  referee = accounts[0];
+  amount = web3.utils.toWei("0.001", "ether");
   accountabilityContractFactory = await new web3.eth.Contract(
     JSON.parse(AccountabilityContractFactory.interface)
   )
@@ -26,10 +30,11 @@ beforeEach(async () => {
   description = "I must drink three litres of water everyday";
   failureRecipient = accounts[1];
   await accountabilityContractFactory.methods
-    .createAccountabilityContract(creator, name, description, failureRecipient)
+    .createAccountabilityContract(referee, name, description, failureRecipient)
     .send({
       from: creator,
       gas: 1000000,
+      value: amount,
     });
   accountabilityContractAddress = await accountabilityContractFactory.methods
     .accountabilityContracts(0)
@@ -69,6 +74,12 @@ describe("Accountability Contract", () => {
       it("has a status of OPEN", async () => {
         const status = await accountabilityContract.methods.status().call();
         expect(status).toEqual("0");
+      });
+      it("has initial balance of value sent", async () => {
+        const initialBalance = await web3.eth.getBalance(
+          accountabilityContractAddress
+        );
+        expect(initialBalance).toEqual(amount);
       });
     });
 

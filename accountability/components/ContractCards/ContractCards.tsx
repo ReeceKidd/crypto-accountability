@@ -1,4 +1,5 @@
 import { Card } from "semantic-ui-react";
+import web3 from "../../web3";
 
 interface ContractCardsProps {
   creator: string;
@@ -15,6 +16,7 @@ const ContractCards = ({
   failureRecipient,
   balance,
 }: ContractCardsProps) => {
+  console.log("Balance", balance);
   const cards = [
     {
       header: "Creator",
@@ -33,7 +35,7 @@ const ContractCards = ({
     },
     {
       header: "Balance",
-      description: balance,
+      description: web3.utils.fromWei(balance, "ether"),
     },
     {
       header: "Failure recipient",
