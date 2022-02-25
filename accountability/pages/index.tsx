@@ -10,7 +10,7 @@ const Home: NextPage = () => {
         content="Stay accountability by betting crypto"
       />
       <Layout>
-        <h1>Crypto accountability</h1>
+        <h1 className="text-3xl font-bold underline">Crypto accountability</h1>
         <h2>
           Stay accountable by betting crypto on the things you need to do.
         </h2>
