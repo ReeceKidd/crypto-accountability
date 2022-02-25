@@ -124,4 +124,26 @@ describe("Accountability Contract", () => {
       expect(updatedCreatorBalance).toBeGreaterThan(initialCreatorBalance);
     });
   });
+
+  describe("errors", () => {
+    it("if someone other than the referre tries to complete contract", async () => {
+      try {
+        await accountabilityContract.methods.completeContract().send({
+          from: accounts[1],
+        });
+      } catch (err) {
+        expect(err);
+      }
+    });
+
+    it("if someone other than the referre tries to fail contract", async () => {
+      try {
+        await accountabilityContract.methods.failContract().send({
+          from: accounts[1],
+        });
+      } catch (err) {
+        expect(err);
+      }
+    });
+  });
 });
