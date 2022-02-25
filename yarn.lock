@@ -764,6 +764,11 @@
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
   integrity sha512-/kSXhY692qiV1MXu6EeOZvg5nECLclxNXcKCxJ3cXQgYuRymRHpdx/t7JXfsK+JLjwA1e1c1/SBrlQYpusC29Q==
 
+"@sanity/cli@^2.27.0":
+  version "2.27.0"
+  resolved "https://registry.yarnpkg.com/@sanity/cli/-/cli-2.27.0.tgz#76b0ffcdd32f22272e3812d5a18c6298b4a49e86"
+  integrity sha512-hx2/z1oBnAo+aA+h3Zz3dQgLEJi693/CJJSq3Pt9CdDN5zXz8g5C923nXJ3gNnTh+npwu5gIr7I68n9VKkj59Q==
+
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
