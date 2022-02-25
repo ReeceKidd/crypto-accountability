@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "launch-webapp": "cd accountability && yarn build && yarn start"
+    "build-webapp": "cd accountability && yarn build",
+    "run-webapp": "cd accountability && yarn start"
   },
   "repository": {
     "type": "git",
