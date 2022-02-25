@@ -9,6 +9,7 @@ import web3 from "../../web3";
 
 interface SpecificContractProps {
   creator: string;
+  referee: string;
   name: string;
   description: string;
   failureRecipient: string;
@@ -17,6 +18,7 @@ interface SpecificContractProps {
 
 const SpecificContract: NextPage<SpecificContractProps> = ({
   creator,
+  referee,
   name,
   description,
   failureRecipient,
@@ -31,14 +33,14 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
           {id}-{name}
         </title>
       </Head>
-      <h1>{id}</h1>
-      <h2>{name}</h2>
+      <h1>{name}</h1>
+      <h2>{description}</h2>
+      <br />
       <Grid>
         <Grid.Column width={12}>
           <ContractsCards
             creator={creator}
-            name={name}
-            description={description}
+            referee={referee}
             failureRecipient={failureRecipient}
             balance={balance}
           />
@@ -51,9 +53,10 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
 SpecificContract.getInitialProps = async (ctx) => {
   const { id } = ctx.query;
   const accountabilityContract = getAccountabilityContract(id! as string);
-  const [creator, name, description, failureRecipient, balance] =
+  const [creator, referee, name, description, failureRecipient, balance] =
     await Promise.all([
       accountabilityContract.methods.creator().call(),
+      accountabilityContract.methods.referee().call(),
       accountabilityContract.methods.name().call(),
       accountabilityContract.methods.description().call(),
       accountabilityContract.methods.failureRecipient().call(),
@@ -61,6 +64,7 @@ SpecificContract.getInitialProps = async (ctx) => {
     ]);
   return {
     creator,
+    referee,
     name,
     description,
     failureRecipient,

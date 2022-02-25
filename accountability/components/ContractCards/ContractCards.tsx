@@ -3,20 +3,17 @@ import web3 from "../../web3";
 
 interface ContractCardsProps {
   creator: string;
-  name: string;
-  description: string;
+  referee: string;
   failureRecipient: string;
   balance: string;
 }
 
 const ContractCards = ({
   creator,
-  name,
-  description,
+  referee,
   failureRecipient,
   balance,
 }: ContractCardsProps) => {
-  console.log("Balance", balance);
   const cards = [
     {
       header: "Creator",
@@ -26,12 +23,11 @@ const ContractCards = ({
       style: { overflowWrap: "break-word" },
     },
     {
-      header: "Name",
-      description: name,
-    },
-    {
-      header: "Description",
-      description,
+      header: "Referee",
+      description: referee,
+      meta: "Referee of the contract.",
+      raised: true,
+      style: { overflowWrap: "break-word" },
     },
     {
       header: "Balance",
