@@ -36,9 +36,7 @@ Contracts.getInitialProps = async () => {
     Array(numberOfAccountabilityContracts)
       .fill({})
       .map(async (_item, index) => {
-        console.log("index", index);
         const id = await factory.methods.accountabilityContracts(index).call();
-        console.log("Id", id);
         const accountabilityContract = getAccountabilityContract(id! as string);
         const creator = await accountabilityContract.methods.creator().call();
         const name = await accountabilityContract.methods.name().call();
