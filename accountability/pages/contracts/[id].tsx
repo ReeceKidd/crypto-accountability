@@ -8,6 +8,7 @@ import Layout from "../../components/Layout/Layout";
 import { getAccountabilityContract } from "../../factory";
 import web3 from "../../web3";
 import { Contract } from "web3-eth-contract";
+import { useWeb3React } from "@web3-react/core";
 
 interface SpecificContractProps {
   accountabilityContract: Contract;
@@ -30,25 +31,18 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
 }) => {
   const [completeContractLoading, setCompleteContractLoading] = useState(false);
   const [failContractLoading, setFailContractLoading] = useState(false);
-  const getAccounts = async (setAccounts: (accounts: string[]) => void) => {
-    const accounts = await web3.eth.getAccounts();
-    setAccounts(accounts);
-  };
-  const [accounts, setAccounts] = useState<string[]>([]);
-  useEffect(() => {
-    getAccounts(setAccounts);
-  }, []);
+  const { account } = useWeb3React();
   const completeContract = async () => {
     setCompleteContractLoading(true);
     await accountabilityContract.methods.completeContract().send({
-      from: accounts[0],
+      from: account,
     });
     setCompleteContractLoading(false);
   };
   const failContract = async () => {
     setFailContractLoading(true);
     await accountabilityContract.methods.completeContract().send({
-      from: accounts[0],
+      from: account,
     });
     setFailContractLoading(false);
   };
@@ -73,7 +67,7 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
             balance={balance}
           />
         </Grid.Column>
-        {accounts[0] === referee && (
+        {account === referee && (
           <Grid.Column width={6}>
             <Button
               positive

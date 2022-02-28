@@ -1,19 +1,12 @@
+import { useWeb3React } from "@web3-react/core";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CreateContractForm from "../../components/CreateContractForm/CreateContractForm";
 import Layout from "../../components/Layout/Layout";
-import web3 from "../../web3";
 
 const NewContract: NextPage = () => {
-  const getAccounts = async (setAccounts: (accounts: string[]) => void) => {
-    const accounts = await web3.eth.getAccounts();
-    setAccounts(accounts);
-  };
-  const [accounts, setAccounts] = useState<string[]>([]);
-  useEffect(() => {
-    getAccounts(setAccounts);
-  }, []);
+  const { account } = useWeb3React();
   const [referee, setReferee] = useState("");
   const [amount, setAmount] = useState("");
   const [name, setName] = useState("");
@@ -26,19 +19,21 @@ const NewContract: NextPage = () => {
         <title>Create contract</title>
       </Head>
       <h1>Create contract</h1>
-      <CreateContractForm
-        web3Account={accounts[0]}
-        referee={referee}
-        setReferee={setReferee}
-        amount={amount}
-        setAmount={setAmount}
-        name={name}
-        setName={setName}
-        description={description}
-        setDescription={setDescription}
-        failureRecipient={failureRecipient}
-        setFailureRecipient={setFailureRecipient}
-      />
+      {account && (
+        <CreateContractForm
+          web3Account={account}
+          referee={referee}
+          setReferee={setReferee}
+          amount={amount}
+          setAmount={setAmount}
+          name={name}
+          setName={setName}
+          description={description}
+          setDescription={setDescription}
+          failureRecipient={failureRecipient}
+          setFailureRecipient={setFailureRecipient}
+        />
+      )}
     </Layout>
   );
 };
