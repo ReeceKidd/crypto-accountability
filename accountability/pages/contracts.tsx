@@ -1,14 +1,16 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import ContractsList, {
-  ContractsListItem,
-} from "../components/ContractsList/ContractsList";
+import ContractsTable, {
+  AccountabilityContract,
+} from "../components/ContractsTable/ContractsTable";
 import Layout from "../components/Layout/Layout";
 import factory, { getAccountabilityContract } from "../factory";
+import { getContractStatus } from "../helpers/getContractStatus";
+import web3 from "../web3";
 
 interface ContractsProps {
   numberOfAccountabilityContracts: number;
-  accountabilityContracts: ContractsListItem[];
+  accountabilityContracts: AccountabilityContract[];
 }
 
 const Contracts: NextPage<ContractsProps> = ({
@@ -22,7 +24,7 @@ const Contracts: NextPage<ContractsProps> = ({
       </Head>
       <Layout>
         <h1>Open contracts: {numberOfAccountabilityContracts}</h1>
-        <ContractsList contracts={accountabilityContracts} />
+        <ContractsTable contracts={accountabilityContracts} />
       </Layout>
     </div>
   );
@@ -38,12 +40,10 @@ Contracts.getInitialProps = async () => {
       .map(async (_item, index) => {
         const id = await factory.methods.accountabilityContracts(index).call();
         const accountabilityContract = getAccountabilityContract(id! as string);
-        const creator = await accountabilityContract.methods.creator().call();
         const name = await accountabilityContract.methods.name().call();
-        const description = await accountabilityContract.methods
-          .description()
-          .call();
-        return { id, creator, name, description };
+        const status = await accountabilityContract.methods.status().call();
+        const amount = await web3.eth.getBalance(id! as string);
+        return { id, name, status: getContractStatus(status), amount };
       })
   );
 
