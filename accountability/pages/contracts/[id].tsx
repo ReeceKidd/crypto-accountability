@@ -7,28 +7,34 @@ import ContractsCards from "../../components/ContractCards/ContractCards";
 import Layout from "../../components/Layout/Layout";
 import { getAccountabilityContract } from "../../factory";
 import web3 from "../../web3";
-import { Contract } from "web3-eth-contract";
 import { useWeb3React } from "@web3-react/core";
+import {
+  ContractStatus,
+  getContractStatus,
+} from "../../helpers/getContractStatus";
 
 interface SpecificContractProps {
-  accountabilityContract: Contract;
   creator: string;
   referee: string;
   name: string;
   description: string;
   failureRecipient: string;
   balance: string;
+  status: string;
 }
 
 const SpecificContract: NextPage<SpecificContractProps> = ({
-  accountabilityContract,
   creator,
   referee,
   name,
   description,
   failureRecipient,
+  status,
   balance,
 }) => {
+  const router = useRouter();
+  const { id } = router.query;
+  const accountabilityContract = getAccountabilityContract(id! as string);
   const [completeContractLoading, setCompleteContractLoading] = useState(false);
   const [failContractLoading, setFailContractLoading] = useState(false);
   const { account } = useWeb3React();
@@ -38,6 +44,7 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
       from: account,
     });
     setCompleteContractLoading(false);
+    router.reload();
   };
   const failContract = async () => {
     setFailContractLoading(true);
@@ -45,9 +52,8 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
       from: account,
     });
     setFailContractLoading(false);
+    router.reload();
   };
-  const router = useRouter();
-  const { id } = router.query;
   return (
     <Layout>
       <Head>
@@ -65,9 +71,10 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
             referee={referee}
             failureRecipient={failureRecipient}
             balance={balance}
+            status={status}
           />
         </Grid.Column>
-        {account === referee && (
+        {account === referee && status === ContractStatus.OPEN && (
           <Grid.Column width={6}>
             <Button
               positive
@@ -93,22 +100,31 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
 SpecificContract.getInitialProps = async (ctx) => {
   const { id } = ctx.query;
   const accountabilityContract = getAccountabilityContract(id! as string);
-  const [creator, referee, name, description, failureRecipient, balance] =
-    await Promise.all([
-      accountabilityContract.methods.creator().call(),
-      accountabilityContract.methods.referee().call(),
-      accountabilityContract.methods.name().call(),
-      accountabilityContract.methods.description().call(),
-      accountabilityContract.methods.failureRecipient().call(),
-      web3.eth.getBalance(id! as string),
-    ]);
-  return {
-    accountabilityContract,
+  const [
     creator,
     referee,
     name,
     description,
     failureRecipient,
+    status,
+    balance,
+  ] = await Promise.all([
+    accountabilityContract.methods.creator().call(),
+    accountabilityContract.methods.referee().call(),
+    accountabilityContract.methods.name().call(),
+    accountabilityContract.methods.description().call(),
+    accountabilityContract.methods.failureRecipient().call(),
+    accountabilityContract.methods.status().call(),
+    web3.eth.getBalance(id! as string),
+  ]);
+
+  return {
+    creator,
+    referee,
+    name,
+    description,
+    failureRecipient,
+    status: getContractStatus(status),
     balance,
   };
 };

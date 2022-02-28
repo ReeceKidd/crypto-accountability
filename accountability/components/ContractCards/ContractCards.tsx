@@ -6,15 +6,22 @@ interface ContractCardsProps {
   referee: string;
   failureRecipient: string;
   balance: string;
+  status: string;
 }
 
 const ContractCards = ({
   creator,
   referee,
   failureRecipient,
+  status,
   balance,
 }: ContractCardsProps) => {
   const cards = [
+    {
+      header: "Status",
+      description: status,
+      meta: "Status",
+    },
     {
       header: "Creator",
       description: creator,
