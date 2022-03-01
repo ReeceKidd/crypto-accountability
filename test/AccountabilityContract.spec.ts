@@ -71,6 +71,12 @@ describe("Accountability Contract", () => {
           .call();
         expect(contractFaulureRecipient).toEqual(failureRecipient);
       });
+      it("has an amount of value sent", async () => {
+        const contractAmount = await accountabilityContract.methods
+          .amount()
+          .call();
+        expect(contractAmount).toEqual(amount);
+      });
       it("has a status of OPEN", async () => {
         const status = await accountabilityContract.methods.status().call();
         expect(status).toEqual("0");
