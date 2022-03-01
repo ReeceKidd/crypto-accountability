@@ -40,9 +40,12 @@ Contracts.getInitialProps = async () => {
       .map(async (_item, index) => {
         const id = await factory.methods.accountabilityContracts(index).call();
         const accountabilityContract = getAccountabilityContract(id! as string);
-        const name = await accountabilityContract.methods.name().call();
-        const status = await accountabilityContract.methods.status().call();
-        const amount = await web3.eth.getBalance(id! as string);
+        const [name, status, amount] = await Promise.all([
+          accountabilityContract.methods.name().call(),
+          accountabilityContract.methods.status().call(),
+          accountabilityContract.methods.amount().call(),
+        ]);
+ 
         return { id, name, status: getContractStatus(status), amount };
       })
   );

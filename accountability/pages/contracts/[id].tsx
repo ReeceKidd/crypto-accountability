@@ -19,7 +19,7 @@ interface SpecificContractProps {
   name: string;
   description: string;
   failureRecipient: string;
-  balance: string;
+  amount: string;
   status: string;
 }
 
@@ -29,8 +29,8 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
   name,
   description,
   failureRecipient,
+  amount,
   status,
-  balance,
 }) => {
   const router = useRouter();
   const { id } = router.query;
@@ -70,7 +70,7 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
             creator={creator}
             referee={referee}
             failureRecipient={failureRecipient}
-            balance={balance}
+            amount={amount}
             status={status}
           />
         </Grid.Column>
@@ -107,7 +107,7 @@ SpecificContract.getInitialProps = async (ctx) => {
     description,
     failureRecipient,
     status,
-    balance,
+    amount,
   ] = await Promise.all([
     accountabilityContract.methods.creator().call(),
     accountabilityContract.methods.referee().call(),
@@ -115,7 +115,7 @@ SpecificContract.getInitialProps = async (ctx) => {
     accountabilityContract.methods.description().call(),
     accountabilityContract.methods.failureRecipient().call(),
     accountabilityContract.methods.status().call(),
-    web3.eth.getBalance(id! as string),
+    accountabilityContract.methods.amount().call(),
   ]);
 
   return {
@@ -125,7 +125,7 @@ SpecificContract.getInitialProps = async (ctx) => {
     description,
     failureRecipient,
     status: getContractStatus(status),
-    balance,
+    amount,
   };
 };
 

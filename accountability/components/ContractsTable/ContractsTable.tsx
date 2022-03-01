@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button, Table } from "semantic-ui-react";
 import web3 from "../../web3";
 
@@ -13,9 +14,11 @@ interface RequestsTableProps {
 }
 
 const ContractsTable = ({ contracts }: RequestsTableProps) => {
-  const tableCells = contracts.map(({ name, status, amount }, index) => (
+  const tableCells = contracts.map(({ id, name, status, amount }, index) => (
     <Table.Row key={index}>
-      <Table.Cell>{name}</Table.Cell>
+      <Table.Cell>
+        <Link href={`/contracts/${id}`}>{name}</Link>
+      </Table.Cell>
       <Table.Cell>{web3.utils.fromWei(amount)}</Table.Cell>
       <Table.Cell>{status}</Table.Cell>
     </Table.Row>

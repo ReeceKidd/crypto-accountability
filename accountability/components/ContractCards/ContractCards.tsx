@@ -5,7 +5,7 @@ interface ContractCardsProps {
   creator: string;
   referee: string;
   failureRecipient: string;
-  balance: string;
+  amount: string;
   status: string;
 }
 
@@ -14,7 +14,7 @@ const ContractCards = ({
   referee,
   failureRecipient,
   status,
-  balance,
+  amount,
 }: ContractCardsProps) => {
   const cards = [
     {
@@ -37,8 +37,8 @@ const ContractCards = ({
       style: { overflowWrap: "break-word" },
     },
     {
-      header: "Balance",
-      description: web3.utils.fromWei(balance, "ether"),
+      header: "Amount",
+      description: web3.utils.fromWei(amount, "ether"),
     },
     {
       header: "Failure recipient",
