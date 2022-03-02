@@ -21,6 +21,7 @@ const ContractsTable = ({ contracts }: RequestsTableProps) => {
       </Table.Cell>
       <Table.Cell>{web3.utils.fromWei(amount)}</Table.Cell>
       <Table.Cell>{status}</Table.Cell>
+      <Table.Cell></Table.Cell>
     </Table.Row>
   ));
 

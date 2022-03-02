@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card } from "semantic-ui-react";
 import web3 from "../../web3";
 
@@ -24,14 +25,22 @@ const ContractCards = ({
     },
     {
       header: "Creator",
-      description: creator,
+      description: (
+        <Link href={`https://rinkeby.etherscan.io/address/${creator}`}>
+          {creator}
+        </Link>
+      ),
       meta: "Creator of the contract.",
       raised: true,
       style: { overflowWrap: "break-word" },
     },
     {
       header: "Referee",
-      description: referee,
+      description: (
+        <Link href={`https://rinkeby.etherscan.io/address/${referee}`}>
+          {referee}
+        </Link>
+      ),
       meta: "Referee of the contract.",
       raised: true,
       style: { overflowWrap: "break-word" },
@@ -42,7 +51,11 @@ const ContractCards = ({
     },
     {
       header: "Failure recipient",
-      description: failureRecipient,
+      description: (
+        <Link href={`https://rinkeby.etherscan.io/address/${failureRecipient}`}>
+          {failureRecipient}
+        </Link>
+      ),
       meta: "Where the money is sent if contract is failed.",
       raised: true,
       style: { overflowWrap: "break-word" },
