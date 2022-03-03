@@ -34,8 +34,8 @@ beforeEach(async () => {
     });
   const accountabilityContractAddress =
     await accountabilityContractFactory.methods
-      .accountabilityContracts(0)
-      .call({ from: manager });
+      .getAccountabilityContract(manager, 0)
+      .call();
   accountabilityContract = await new web3.eth.Contract(
     JSON.parse(AccountabilityContract.interface),
     accountabilityContractAddress
@@ -44,12 +44,67 @@ beforeEach(async () => {
 
 describe("Accountability contract factory", () => {
   describe("success", () => {
-    it("can get a list of deployed accountabilityContracts", async () => {
-      const numberOfAccountabilityContracts =
+    it("deploys a contract", () => {
+      expect(accountabilityContractFactory.options.address).toBeDefined();
+    });
+    it("can get number of accountability contracts for user", async () => {
+      const userNumberOfAccountabilityContracts =
         await accountabilityContractFactory.methods
-          .numberOfAccountabilityContracts()
-          .call({ from: manager });
-      expect(numberOfAccountabilityContracts).toBeDefined();
+          .getNumberOfAccountabilityContracts(manager)
+          .call();
+      expect(userNumberOfAccountabilityContracts).toBeDefined();
+    });
+    it("can get accountability contract address of user", async () => {
+      const contractAddress = await accountabilityContractFactory.methods
+        .getAccountabilityContract(manager, 0)
+        .call();
+      expect(contractAddress).toBeDefined();
+    });
+    it("can create additional accountability contracts for user", async () => {
+      await accountabilityContractFactory.methods
+        .createAccountabilityContract(
+          referee,
+          "Drink water",
+          "Everyday I must drink water",
+          manager
+        )
+        .send({
+          from: manager,
+          gas: 1000000,
+          value: amount,
+        });
+      const userNumberOfAccountabilityContracts =
+        await accountabilityContractFactory.methods
+          .getNumberOfAccountabilityContracts(manager)
+          .call();
+      const contractAddress = await accountabilityContractFactory.methods
+        .getAccountabilityContract(manager, 1)
+        .call();
+      expect(userNumberOfAccountabilityContracts).toEqual("2");
+      expect(contractAddress).toBeDefined();
+    });
+    it("returns 0 if user has no contracts", async () => {
+      const userNumberOfAccountabilityContracts =
+        await accountabilityContractFactory.methods
+          .getNumberOfAccountabilityContracts(accounts[3])
+          .call({ from: accounts[3] });
+      expect(userNumberOfAccountabilityContracts).toEqual("0");
+    });
+    it("returns null address if contract index doesn't exist", async () => {
+      const contractAddress = await accountabilityContractFactory.methods
+        .getAccountabilityContract(manager, 5)
+        .call();
+      expect(contractAddress).toEqual(
+        "0x0000000000000000000000000000000000000000"
+      );
+    });
+    it("returns null address if user address has no contracts", async () => {
+      const contractAddress = await accountabilityContractFactory.methods
+        .getAccountabilityContract(accounts[3], 0)
+        .call();
+      expect(contractAddress).toEqual(
+        "0x0000000000000000000000000000000000000000"
+      );
     });
   });
 });

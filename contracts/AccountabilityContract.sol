@@ -1,11 +1,23 @@
 // SPDX-License-Identifier: MIT
 
 contract AccountabilityContractFactory {
-    mapping(uint => AccountabilityContract) public accountabilityContracts;
-    uint public numberOfAccountabilityContracts;
+  mapping(address => User) public users;
+
+    struct User {
+    mapping(uint => AccountabilityContract) accountabilityContracts;
+    uint numberOfAccountabilityContracts;
+    }
 
     function createAccountabilityContract(address _referee, string memory _name, string memory _description, address _failureRecipient) public payable {
-        accountabilityContracts[numberOfAccountabilityContracts++] = (new AccountabilityContract).value(msg.value)(msg.sender, _referee, _name, _description, _failureRecipient, msg.value);
+        users[msg.sender].accountabilityContracts[users[msg.sender].numberOfAccountabilityContracts++] = (new AccountabilityContract).value(msg.value)(msg.sender, _referee, _name, _description, _failureRecipient, msg.value);
+    }
+
+    function getNumberOfAccountabilityContracts(address user) public view returns (uint){
+        return users[user].numberOfAccountabilityContracts;
+    }
+
+    function getAccountabilityContract(address user, uint index) public view returns (AccountabilityContract){
+        return users[user].accountabilityContracts[index];
     }
 }
 

@@ -37,8 +37,8 @@ beforeEach(async () => {
       value: amount,
     });
   accountabilityContractAddress = await accountabilityContractFactory.methods
-    .accountabilityContracts(0)
-    .call({ from: creator });
+    .getAccountabilityContract(creator, 0)
+    .call();
   accountabilityContract = await new web3.eth.Contract(
     JSON.parse(AccountabilityContract.interface),
     accountabilityContractAddress
