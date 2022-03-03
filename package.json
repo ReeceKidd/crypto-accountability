@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@babel/preset-typescript": "^7.16.7",
-    "@sanity/cli": "^2.27.0",
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "^27.4.0",
     "@types/web3": "^1.2.2",
