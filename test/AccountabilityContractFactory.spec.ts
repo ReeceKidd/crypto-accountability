@@ -47,6 +47,12 @@ describe("Accountability contract factory", () => {
     it("deploys a contract", () => {
       expect(accountabilityContractFactory.options.address).toBeDefined();
     });
+    it("can get number of total users", async () => {
+      const numberOfUsers = await accountabilityContractFactory.methods
+        .numberOfUsers()
+        .call();
+      expect(numberOfUsers).toEqual("1");
+    });
     it("can get number of accountability contracts for user", async () => {
       const userNumberOfAccountabilityContracts =
         await accountabilityContractFactory.methods
@@ -82,6 +88,24 @@ describe("Accountability contract factory", () => {
         .call();
       expect(userNumberOfAccountabilityContracts).toEqual("2");
       expect(contractAddress).toBeDefined();
+    });
+    it("increases number of users by one when a new user creates a contract", async () => {
+      await accountabilityContractFactory.methods
+        .createAccountabilityContract(
+          manager,
+          "Drink water",
+          "Everyday I must drink water",
+          manager
+        )
+        .send({
+          from: accounts[2],
+          gas: 1000000,
+          value: amount,
+        });
+      const numberOfUsers = await accountabilityContractFactory.methods
+        .numberOfUsers()
+        .call();
+      expect(numberOfUsers).toEqual("2");
     });
     it("returns 0 if user has no contracts", async () => {
       const userNumberOfAccountabilityContracts =

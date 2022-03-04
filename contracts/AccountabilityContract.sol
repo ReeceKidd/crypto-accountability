@@ -2,6 +2,7 @@
 
 contract AccountabilityContractFactory {
   mapping(address => User) public users;
+  uint public numberOfUsers;
 
     struct User {
     mapping(uint => AccountabilityContract) accountabilityContracts;
@@ -9,6 +10,9 @@ contract AccountabilityContractFactory {
     }
 
     function createAccountabilityContract(address _referee, string memory _name, string memory _description, address _failureRecipient) public payable {
+        if(users[msg.sender].numberOfAccountabilityContracts == 0){
+            numberOfUsers++;
+        }
         users[msg.sender].accountabilityContracts[users[msg.sender].numberOfAccountabilityContracts++] = (new AccountabilityContract).value(msg.value)(msg.sender, _referee, _name, _description, _failureRecipient, msg.value);
     }
 
