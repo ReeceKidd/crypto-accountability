@@ -37,7 +37,7 @@ beforeEach(async () => {
       value: amount,
     });
   accountabilityContractAddress = await accountabilityContractFactory.methods
-    .getAccountabilityContract(creator, 0)
+    .getOpenAccountabilityContract(creator, 0)
     .call();
   accountabilityContract = await new web3.eth.Contract(
     JSON.parse(AccountabilityContract.interface),
@@ -87,47 +87,6 @@ describe("Accountability Contract", () => {
         );
         expect(initialBalance).toEqual(amount);
       });
-    });
-
-    it("when contract is failed balance is transfered to the failure recipient and status is set to failure", async () => {
-      const initialContractBalance = Number(
-        await web3.eth.getBalance(accountabilityContractAddress)
-      );
-      const initialFailureRecipientBalance = Number(
-        await web3.eth.getBalance(failureRecipient)
-      );
-      await accountabilityContract.methods.failContract().send({
-        from: creator,
-      });
-      const emptiedContractBalance = Number(
-        await web3.eth.getBalance(accountabilityContractAddress)
-      );
-      const updatedFailureRecipientBalance = Number(
-        await web3.eth.getBalance(failureRecipient)
-      );
-      const status = await accountabilityContract.methods.status().call();
-      expect(status).toEqual("2");
-      expect(emptiedContractBalance).toEqual(0);
-      expect(updatedFailureRecipientBalance).toEqual(
-        initialContractBalance + initialFailureRecipientBalance
-      );
-    });
-
-    it("when contract is completed balance is transfered to original owner and status is set to success", async () => {
-      const initialCreatorBalance = Number(await web3.eth.getBalance(creator));
-      await accountabilityContract.methods.completeContract().send({
-        from: creator,
-      });
-      const emptiedContractBalance = Number(
-        await web3.eth.getBalance(accountabilityContractAddress)
-      );
-      const updatedCreatorBalance = Number(
-        await web3.eth.getBalance(failureRecipient)
-      );
-      const status = await accountabilityContract.methods.status().call();
-      expect(status).toEqual("1");
-      expect(emptiedContractBalance).toEqual(0);
-      expect(updatedCreatorBalance).toBeGreaterThan(initialCreatorBalance);
     });
   });
 
