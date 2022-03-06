@@ -5,45 +5,62 @@ contract AccountabilityContractFactory {
   uint public numberOfUsers;
 
     struct User {
-    mapping(uint => AccountabilityContract) openAccountabilityContracts;
-    uint numberOfOpenAccountabilityContracts;
+    uint createdContracts;
+    mapping(address => AccountabilityContract) openAccountabilityContracts;
+    address[] openAccounabilityContractAddresses;
+    uint numberOfOpenAccounabilityContractAddresses;
     mapping(uint => AccountabilityContract) closedAccountabilityContracts;
-    uint numberOfClosedAccountabilityContracts;
+    address[] closedAccountabilityContractAddresses;
+    uint numberOfClosedAccountabilityContractAddresses;
     }
 
     function createAccountabilityContract(address _referee, string memory _name, string memory _description, address _failureRecipient) public payable {
-        if(users[msg.sender].numberOfOpenAccountabilityContracts == 0){
+        if(users[msg.sender].createdContracts == 0){
             numberOfUsers++;
         }
-        users[msg.sender].openAccountabilityContracts[users[msg.sender].numberOfOpenAccountabilityContracts++] = (new AccountabilityContract).value(msg.value)(msg.sender, _referee, _name, _description, _failureRecipient, msg.value);
+        AccountabilityContract newContract = (new AccountabilityContract).value(msg.value)(msg.sender, _referee, _name, _description, _failureRecipient, msg.value);
+        users[msg.sender].openAccountabilityContracts[address(newContract)] = newContract;
+        users[msg.sender].openAccounabilityContractAddresses[users[msg.sender].numberOfOpenAccounabilityContractAddresses++] = address(newContract);
+        users[msg.sender].createdContracts++;
     }
 
     function getNumberOfOpenAccountabilityContracts(address user) public view returns (uint){
-        return users[user].numberOfOpenAccountabilityContracts;
+        return users[user].openAccounabilityContractAddresses.length;
     }
 
-    function getOpenAccountabilityContract(address user, uint index) public view returns (AccountabilityContract){
-        return users[user].openAccountabilityContracts[index];
+    function getOpenAccountabilityContract(address user, address contractAddress) public view returns (AccountabilityContract){
+        return users[user].openAccountabilityContracts[contractAddress];
     }
 
-      function getNumberOfClosedAccountabilityContracts(address user) public view returns (uint){
-        return users[user].numberOfClosedAccountabilityContracts;
+    function getNumberOfClosedAccountabilityContracts(address user) public view returns (uint){
+        return users[user].closedAccountabilityContractAddresses.length;
     }
 
     function getClosedAccountabilityContract(address user, uint index) public view returns (AccountabilityContract){
         return users[user].closedAccountabilityContracts[index];
     }
 
-    function failOpenAccountabilityContract(address user, uint index) public {
-      users[user].numberOfOpenAccountabilityContracts--;
-      users[user].closedAccountabilityContracts[users[user].numberOfClosedAccountabilityContracts++] = users[user].openAccountabilityContracts[index].failContract();
-      delete users[user].openAccountabilityContracts[index];
+    function failOpenAccountabilityContract(address user, uint openAccountabilityContractAddressIndex) public {
+      address openAccountabilityContract = users[user].openAccounabilityContractAddresses[openAccountabilityContractAddressIndex];
+      users[user].closedAccountabilityContracts[users[user].numberOfClosedAccountabilityContractAddresses++] = users[user].openAccountabilityContracts[openAccountabilityContract].failContract();
+      moveOpenContractToClosedContracts(user, openAccountabilityContractAddressIndex);
+      delete users[user].openAccountabilityContracts[openAccountabilityContract];
     }
 
-    function completeOpenAccountabilityContract(address user, uint index) public {
-      users[user].numberOfOpenAccountabilityContracts--;
-      users[user].closedAccountabilityContracts[users[user].numberOfClosedAccountabilityContracts++] = users[user].openAccountabilityContracts[index].completeContract(user);
-      delete users[user].openAccountabilityContracts[index];
+    function completeOpenAccountabilityContract(address user, uint openAccountabilityContractAddressIndex) public {
+      address openAccountabilityContract = users[user].openAccounabilityContractAddresses[openAccountabilityContractAddressIndex];
+      users[user].closedAccountabilityContracts[users[user].numberOfClosedAccountabilityContractAddresses++] = users[user].openAccountabilityContracts[openAccountabilityContract].completeContract();
+      moveOpenContractToClosedContracts(user, openAccountabilityContractAddressIndex);
+      delete users[user].openAccountabilityContracts[openAccountabilityContract];
+    }
+
+    function moveOpenContractToClosedContracts(address user, uint openContractIndex) private {
+        require(openContractIndex < users[user].openAccounabilityContractAddresses.length, "Open contract index out of bounds");
+        for (uint i = openContractIndex; i<users[user].openAccounabilityContractAddresses.length-1; i++){
+            users[user].openAccounabilityContractAddresses[i] = users[user].openAccounabilityContractAddresses[i+1];
+        }
+        users[user].openAccounabilityContractAddresses[users[user].closedAccounabilityContractAddresses[users[user].numberOfClosedAccountabilityContractAddresses++] = users[user].openAccounabilityContractAddresses[users[user].openAccounabilityContractAddresses[users[user].openAccounabilityContractAddresses.length-1];
+        delete users[user].openAccounabilityContractAddresses[users[user].openAccounabilityContractAddresses.length-1];
     }
 }
 
@@ -67,17 +84,17 @@ contract AccountabilityContract {
         status = Status.OPEN;
     }
 
-    // Fix this so only the accountability contract factory can call it
-
     function failContract() public payable returns (AccountabilityContract) {
-        require(msg.sender == referee);
+        require(tx.origin == referee);
+        require(status == Status.OPEN);
         failureRecipient.transfer(address(this).balance);
         status = Status.FAILURE;
         return this;
     } 
 
-    function completeContract(address sender) public payable returns (AccountabilityContract) {
-        require(sender == referee);
+    function completeContract() public payable returns (AccountabilityContract) {
+        require(tx.origin == referee);
+        require(status == Status.OPEN);
         creator.transfer(address(this).balance);
         status = Status.SUCCESS;
         return this;
