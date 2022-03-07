@@ -10,7 +10,7 @@ contract AccountabilityContractFactory {
     address[] openAccounabilityContractAddresses;
     uint numberOfOpenAccounabilityContractAddresses;
     mapping(uint => AccountabilityContract) closedAccountabilityContracts;
-    address[] closedAccountabilityContractAddresses;
+    address[] closedAccounabilityContractAddresses;
     uint numberOfClosedAccountabilityContractAddresses;
     }
 
@@ -20,12 +20,16 @@ contract AccountabilityContractFactory {
         }
         AccountabilityContract newContract = (new AccountabilityContract).value(msg.value)(msg.sender, _referee, _name, _description, _failureRecipient, msg.value);
         users[msg.sender].openAccountabilityContracts[address(newContract)] = newContract;
-        users[msg.sender].openAccounabilityContractAddresses[users[msg.sender].numberOfOpenAccounabilityContractAddresses++] = address(newContract);
         users[msg.sender].createdContracts++;
+        users[msg.sender].openAccounabilityContractAddresses.push(address(newContract));
     }
 
     function getNumberOfOpenAccountabilityContracts(address user) public view returns (uint){
         return users[user].openAccounabilityContractAddresses.length;
+    }
+
+    function getOpenAccountabilityContractAddresses(address user) public view returns (address[] memory){
+        return users[user].openAccounabilityContractAddresses;
     }
 
     function getOpenAccountabilityContract(address user, address contractAddress) public view returns (AccountabilityContract){
@@ -33,7 +37,11 @@ contract AccountabilityContractFactory {
     }
 
     function getNumberOfClosedAccountabilityContracts(address user) public view returns (uint){
-        return users[user].closedAccountabilityContractAddresses.length;
+        return users[user].closedAccounabilityContractAddresses.length;
+    }
+
+    function getClosedAccountabilityContractAddresses(address user) public view returns (address[] memory){
+        return users[user].closedAccounabilityContractAddresses;
     }
 
     function getClosedAccountabilityContract(address user, uint index) public view returns (AccountabilityContract){
@@ -55,11 +63,12 @@ contract AccountabilityContractFactory {
     }
 
     function moveOpenContractToClosedContracts(address user, uint openContractIndex) private {
-        require(openContractIndex < users[user].openAccounabilityContractAddresses.length, "Open contract index out of bounds");
-        for (uint i = openContractIndex; i<users[user].openAccounabilityContractAddresses.length-1; i++){
+        uint openContractAddressesLength = users[user].openAccounabilityContractAddresses.length;
+        require(openContractIndex < openContractAddressesLength, "Open contract index out of bounds");
+        for (uint i = openContractIndex; i<openContractAddressesLength-1; i++){
             users[user].openAccounabilityContractAddresses[i] = users[user].openAccounabilityContractAddresses[i+1];
         }
-        users[user].openAccounabilityContractAddresses[users[user].closedAccounabilityContractAddresses[users[user].numberOfClosedAccountabilityContractAddresses++] = users[user].openAccounabilityContractAddresses[users[user].openAccounabilityContractAddresses[users[user].openAccounabilityContractAddresses.length-1];
+        [users[user].closedAccounabilityContractAddresses[users[user].numberOfClosedAccountabilityContractAddresses++] = users[user].openAccounabilityContractAddresses[users[user].openAccounabilityContractAddresses.length-1]];
         delete users[user].openAccounabilityContractAddresses[users[user].openAccounabilityContractAddresses.length-1];
     }
 }

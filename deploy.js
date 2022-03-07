@@ -28,7 +28,7 @@ const deploy = async () => {
     .deploy({
       data: accountabilityContractFactory.bytecode,
     })
-    .send({ gas: 1000000, from: accounts[0] });
+    .send({ gas: 2000000, from: accounts[0] });
   console.log(accountabilityContractFactory.interface);
   fs.writeFileSync(
     "address.json",

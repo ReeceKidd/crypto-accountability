@@ -6,6 +6,7 @@ import * as AccountabilityContract from "../build/AccountabilityContract.json";
 const web3 = new Web3(ganache.provider());
 
 let accountabilityContractFactory: any;
+let openAccountabilityContractAddresses: any;
 let openAccountabilityContractAddress: any;
 let accounts: string[];
 let manager: string;
@@ -13,6 +14,7 @@ let referee: string;
 let amount: string;
 
 beforeEach(async () => {
+  console.log("Entered");
   accounts = await web3.eth.getAccounts();
   manager = accounts[0];
   referee = accounts[0];
@@ -21,26 +23,45 @@ beforeEach(async () => {
     JSON.parse(AccountabilityContractFactory.interface)
   )
     .deploy({ data: AccountabilityContractFactory.bytecode })
-    .send({ from: manager, gas: 1000000 });
+    .send({ from: manager, gas: 2000000 });
   const name = "Drink water everyday";
   const description = "I must drink three litres of water everyday";
   const failureRecipient = accounts[1];
-  await accountabilityContractFactory.methods
-    .createAccountabilityContract(referee, name, description, failureRecipient)
-    .send({
-      from: manager,
-      gas: 1000000,
-      value: amount,
-    });
-  openAccountabilityContractAddress =
+  try {
     await accountabilityContractFactory.methods
-      .getOpenAccountabilityContract(manager, 0)
-      .call();
+      .createAccountabilityContract(
+        referee,
+        name,
+        description,
+        failureRecipient
+      )
+      .send({
+        from: manager,
+        gas: 3000000,
+        value: amount,
+      });
+    console.log("Contract created");
+    openAccountabilityContractAddresses =
+      await accountabilityContractFactory.methods
+        .getOpenAccountabilityContractAddresses(manager)
+        .call();
+    console.log(openAccountabilityContractAddresses);
+    openAccountabilityContractAddress =
+      await accountabilityContractFactory.methods
+        .getOpenAccountabilityContract(
+          manager,
+          openAccountabilityContractAddresses[0]
+        )
+        .call();
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 describe("Accountability contract factory", () => {
   describe("success", () => {
-    it("deploys a contract", () => {
+    it.only("deploys a contract", () => {
+      console.log("Start");
       expect(accountabilityContractFactory.options.address).toBeDefined();
     });
     it("can get number of total users", async () => {
