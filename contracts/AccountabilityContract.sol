@@ -8,10 +8,8 @@ contract AccountabilityContractFactory {
     uint createdContracts;
     mapping(address => AccountabilityContract) openAccountabilityContracts;
     address[] openAccounabilityContractAddresses;
-    uint numberOfOpenAccounabilityContractAddresses;
     mapping(uint => AccountabilityContract) closedAccountabilityContracts;
     address[] closedAccounabilityContractAddresses;
-    uint numberOfClosedAccountabilityContractAddresses;
     }
 
     function createAccountabilityContract(address _referee, string memory _name, string memory _description, address _failureRecipient) public payable {
@@ -24,20 +22,12 @@ contract AccountabilityContractFactory {
         users[msg.sender].openAccounabilityContractAddresses.push(address(newContract));
     }
 
-    function getNumberOfOpenAccountabilityContracts(address user) public view returns (uint){
-        return users[user].openAccounabilityContractAddresses.length;
-    }
-
     function getOpenAccountabilityContractAddresses(address user) public view returns (address[] memory){
         return users[user].openAccounabilityContractAddresses;
     }
 
     function getOpenAccountabilityContract(address user, address contractAddress) public view returns (AccountabilityContract){
         return users[user].openAccountabilityContracts[contractAddress];
-    }
-
-    function getNumberOfClosedAccountabilityContracts(address user) public view returns (uint){
-        return users[user].closedAccounabilityContractAddresses.length;
     }
 
     function getClosedAccountabilityContractAddresses(address user) public view returns (address[] memory){
@@ -48,16 +38,16 @@ contract AccountabilityContractFactory {
         return users[user].closedAccountabilityContracts[index];
     }
 
-    function failOpenAccountabilityContract(address user, uint openAccountabilityContractAddressIndex) public {
-      address openAccountabilityContract = users[user].openAccounabilityContractAddresses[openAccountabilityContractAddressIndex];
-      users[user].closedAccountabilityContracts[users[user].numberOfClosedAccountabilityContractAddresses++] = users[user].openAccountabilityContracts[openAccountabilityContract].failContract();
-      moveOpenContractToClosedContracts(user, openAccountabilityContractAddressIndex);
+    function failOpenAccountabilityContract(address user, uint index) public {
+      address openAccountabilityContract = users[user].openAccounabilityContractAddresses[index];
+      users[user].closedAccountabilityContracts[users[user].closedAccounabilityContractAddresses.length-1] = users[user].openAccountabilityContracts[openAccountabilityContract].failContract();
+      moveOpenContractToClosedContracts(user, index);
       delete users[user].openAccountabilityContracts[openAccountabilityContract];
     }
 
     function completeOpenAccountabilityContract(address user, uint openAccountabilityContractAddressIndex) public {
       address openAccountabilityContract = users[user].openAccounabilityContractAddresses[openAccountabilityContractAddressIndex];
-      users[user].closedAccountabilityContracts[users[user].numberOfClosedAccountabilityContractAddresses++] = users[user].openAccountabilityContracts[openAccountabilityContract].completeContract();
+      users[user].closedAccountabilityContracts[users[user].closedAccounabilityContractAddresses.length-1] = users[user].openAccountabilityContracts[openAccountabilityContract].completeContract();
       moveOpenContractToClosedContracts(user, openAccountabilityContractAddressIndex);
       delete users[user].openAccountabilityContracts[openAccountabilityContract];
     }
@@ -68,8 +58,9 @@ contract AccountabilityContractFactory {
         for (uint i = openContractIndex; i<openContractAddressesLength-1; i++){
             users[user].openAccounabilityContractAddresses[i] = users[user].openAccounabilityContractAddresses[i+1];
         }
-        [users[user].closedAccounabilityContractAddresses[users[user].numberOfClosedAccountabilityContractAddresses++] = users[user].openAccounabilityContractAddresses[users[user].openAccounabilityContractAddresses.length-1]];
-        delete users[user].openAccounabilityContractAddresses[users[user].openAccounabilityContractAddresses.length-1];
+        users[user].closedAccounabilityContractAddresses.push(users[user].openAccounabilityContractAddresses[users[user].openAccounabilityContractAddresses.length-1]);
+        users[user].openAccounabilityContractAddresses.pop();
+  
     }
 }
 

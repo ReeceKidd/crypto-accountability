@@ -20,7 +20,6 @@ const Contracts: NextPage<ContractsProps> = () => {
       const numberOfAccountabilityContracts = await factory.methods
         .getNumberOfAccountabilityContracts(account)
         .call({ from: account });
-      console.log("numberofAccountabilityContracts");
       setNumberOfAccountabilityContracts(numberOfAccountabilityContracts);
     } catch (err) {
       console.log("Error", err);

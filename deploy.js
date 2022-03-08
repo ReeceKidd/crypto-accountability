@@ -22,13 +22,23 @@ const web3 = new Web3(provider);
 const deploy = async () => {
   console.log("Started deploy...");
   const accounts = await web3.eth.getAccounts();
-  const contract = await new web3.eth.Contract(
+  const balance = await web3.eth.getBalance(accounts[0]);
+  console.log("Balance", balance);
+  const estimatedGas = await new web3.eth.Contract(
     JSON.parse(accountabilityContractFactory.interface)
   )
     .deploy({
       data: accountabilityContractFactory.bytecode,
     })
-    .send({ gas: 2000000, from: accounts[0] });
+    .estimateGas();
+  console.log("Estimated gas", estimatedGas);
+  const gasPrice = await web3.eth.getGasPrice();
+  console.log("Gas price", gasPrice);
+  const contract = await new web3.eth.Contract(
+    JSON.parse(accountabilityContractFactory.interface)
+  )
+    .deploy({ data: accountabilityContractFactory.bytecode })
+    .send({ from: accounts[0], gas: 2000000 });
   console.log(accountabilityContractFactory.interface);
   fs.writeFileSync(
     "address.json",
