@@ -4,15 +4,12 @@ import * as AccountabilityContract from "../build/AccountabilityContract.json";
 import * as AccountabilityContractFactoryAddress from "../address.json";
 
 const crowdfundFactoryInstance = new web3.eth.Contract(
-  JSON.parse(AccountabilityContractFactory.interface),
+  AccountabilityContractFactory.abi as any,
   AccountabilityContractFactoryAddress.address
 );
 
 export const getAccountabilityContract = (address: string) => {
-  return new web3.eth.Contract(
-    JSON.parse(AccountabilityContract.interface),
-    address
-  );
+  return new web3.eth.Contract(AccountabilityContract.abi as any, address);
 };
 
 export default crowdfundFactoryInstance;

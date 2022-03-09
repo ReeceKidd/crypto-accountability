@@ -18,38 +18,50 @@ beforeEach(async () => {
   manager = accounts[0];
   referee = accounts[0];
   amount = web3.utils.toWei("0.0001", "ether");
-  accountabilityContractFactory = await new web3.eth.Contract(
-    JSON.parse(AccountabilityContractFactory.interface)
-  )
-    .deploy({ data: AccountabilityContractFactory.bytecode })
-    .send({ from: manager, gas: 2000000 });
-  const name = "Drink water everyday";
-  const description = "I must drink three litres of water everyday";
-  const failureRecipient = accounts[1];
+  try {
+    accountabilityContractFactory = await new web3.eth.Contract(
+      AccountabilityContractFactory.abi as any
+    )
+      .deploy({
+        data: AccountabilityContractFactory.evm.bytecode as any,
+      })
+      .send({ from: manager, gas: 2000000 });
+    console.log("Deployed");
+    const name = "Drink water everyday";
+    const description = "I must drink three litres of water everyday";
+    const failureRecipient = accounts[1];
 
-  await accountabilityContractFactory.methods
-    .createAccountabilityContract(referee, name, description, failureRecipient)
-    .send({
-      from: manager,
-      gas: 3000000,
-      value: amount,
-    });
-  openAccountabilityContractAddresses =
     await accountabilityContractFactory.methods
-      .getOpenAccountabilityContractAddresses(manager)
-      .call();
-  openAccountabilityContractAddress =
-    await accountabilityContractFactory.methods
-      .getOpenAccountabilityContract(
-        manager,
-        openAccountabilityContractAddresses[0]
+      .createAccountabilityContract(
+        referee,
+        name,
+        description,
+        failureRecipient
       )
-      .call();
+      .send({
+        from: manager,
+        gas: 3000000,
+        value: amount,
+      });
+    openAccountabilityContractAddresses =
+      await accountabilityContractFactory.methods
+        .getOpenAccountabilityContractAddresses(manager)
+        .call();
+    openAccountabilityContractAddress =
+      await accountabilityContractFactory.methods
+        .getOpenAccountabilityContract(
+          manager,
+          openAccountabilityContractAddresses[0]
+        )
+        .call();
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 describe("Accountability contract factory", () => {
   describe("success", () => {
-    it("deploys a contract", () => {
+    it.only("deploys a contract", () => {
       expect(accountabilityContractFactory.options.address).toBeDefined();
     });
     it("can get number of total users", async () => {
@@ -89,7 +101,7 @@ describe("Accountability contract factory", () => {
           .call();
       expect(closedAccountabilityContractAddress).toBeDefined();
     });
-    it.only("referee can fail an open accountability contract", async () => {
+    it("referee can fail an open accountability contract", async () => {
       await accountabilityContractFactory.methods
         .failOpenAccountabilityContract(manager, 0)
         .send({ from: manager, gas: 1000000 });
@@ -110,7 +122,7 @@ describe("Accountability contract factory", () => {
           .getClosedAccountabilityContract(manager, 0)
           .call();
       const closedAccountabilityContract = await new web3.eth.Contract(
-        JSON.parse(AccountabilityContract.interface),
+        AccountabilityContract.abi as any,
         closedAccountabilityContractAddress
       );
       const closedAccountabilityContractStatus =
@@ -155,7 +167,7 @@ describe("Accountability contract factory", () => {
           .getClosedAccountabilityContract(manager, 0)
           .call();
       const closedAccountabilityContract = await new web3.eth.Contract(
-        JSON.parse(AccountabilityContract.interface),
+        AccountabilityContract.abi as any,
         closedAccountabilityContractAddress
       );
       const closedAccountabilityContractStatus =

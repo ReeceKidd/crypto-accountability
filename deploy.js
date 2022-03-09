@@ -19,27 +19,19 @@ const provider = new HDWalletProvider(
 
 const web3 = new Web3(provider);
 
+const abi = accountabilityContractFactory.abi;
+const bytecode = accountabilityContractFactory.evm.bytecode.object;
+
 const deploy = async () => {
   console.log("Started deploy...");
   const accounts = await web3.eth.getAccounts();
-  const balance = await web3.eth.getBalance(accounts[0]);
-  console.log("Balance", balance);
-  const estimatedGas = await new web3.eth.Contract(
-    JSON.parse(accountabilityContractFactory.interface)
-  )
-    .deploy({
-      data: accountabilityContractFactory.bytecode,
-    })
+  const gasPrice = await new web3.eth.Contract(abi)
+    .deploy({ data: bytecode })
     .estimateGas();
-  console.log("Estimated gas", estimatedGas);
-  const gasPrice = await web3.eth.getGasPrice();
-  console.log("Gas price", gasPrice);
-  const contract = await new web3.eth.Contract(
-    JSON.parse(accountabilityContractFactory.interface)
-  )
-    .deploy({ data: accountabilityContractFactory.bytecode })
-    .send({ from: accounts[0], gas: 2000000 });
-  console.log(accountabilityContractFactory.interface);
+  const contract = await new web3.eth.Contract(abi)
+    .deploy({ data: bytecode })
+    .send({ from: accounts[0], gas: "10000000", gasPrice });
+  console.log(accountabilityContractFactory.abi);
   fs.writeFileSync(
     "address.json",
     JSON.stringify({ address: contract.options.address })

@@ -11,13 +11,28 @@ const accountabilityContractPath = path.resolve(
   "AccountabilityContract.sol"
 );
 const source = fs.readFileSync(accountabilityContractPath, "utf8");
-const output = solc.compile(source, 1).contracts;
+const input = {
+  language: "Solidity",
+  sources: {
+    Contracts: {
+      content: source,
+    },
+  },
+  settings: {
+    outputSelection: {
+      "*": {
+        "*": ["*"],
+      },
+    },
+  },
+};
+const output = JSON.parse(solc.compile(JSON.stringify(input))).contracts;
 
 fs.ensureDirSync(buildPath);
 
-for (let contract in output) {
+for (let contract of Object.keys(output.Contracts)) {
   fs.outputJsonSync(
-    path.resolve(buildPath, `${contract.slice(1, contract.length)}.json`),
-    output[contract]
+    path.resolve(buildPath, `${contract}.json`),
+    output.Contracts[contract]
   );
 }

@@ -22,9 +22,9 @@ beforeEach(async () => {
   referee = accounts[0];
   amount = web3.utils.toWei("0.001", "ether");
   accountabilityContractFactory = await new web3.eth.Contract(
-    JSON.parse(AccountabilityContractFactory.interface)
+    AccountabilityContractFactory.abi as any
   )
-    .deploy({ data: AccountabilityContractFactory.bytecode })
+    .deploy({ data: AccountabilityContractFactory.evm.bytecode as any })
     .send({ from: creator, gas: 1000000 });
   name = "Drink water everyday";
   description = "I must drink three litres of water everyday";
@@ -40,7 +40,7 @@ beforeEach(async () => {
     .getOpenAccountabilityContract(creator, 0)
     .call();
   accountabilityContract = await new web3.eth.Contract(
-    JSON.parse(AccountabilityContract.interface),
+    AccountabilityContract.abi as any,
     accountabilityContractAddress
   );
 });

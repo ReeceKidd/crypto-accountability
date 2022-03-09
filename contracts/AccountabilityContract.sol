@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
 contract AccountabilityContractFactory {
   mapping(address => User) public users;
@@ -12,11 +13,11 @@ contract AccountabilityContractFactory {
     address[] closedAccounabilityContractAddresses;
     }
 
-    function createAccountabilityContract(address _referee, string memory _name, string memory _description, address _failureRecipient) public payable {
+    function createAccountabilityContract(address _referee, string memory _name, string memory _description, address payable _failureRecipient) public payable {
         if(users[msg.sender].createdContracts == 0){
             numberOfUsers++;
         }
-        AccountabilityContract newContract = (new AccountabilityContract).value(msg.value)(msg.sender, _referee, _name, _description, _failureRecipient, msg.value);
+        AccountabilityContract newContract = (new AccountabilityContract){value: msg.value}(msg.sender, _referee, _name, _description, _failureRecipient, msg.value);
         users[msg.sender].openAccountabilityContracts[address(newContract)] = newContract;
         users[msg.sender].createdContracts++;
         users[msg.sender].openAccounabilityContractAddresses.push(address(newContract));
@@ -70,7 +71,7 @@ contract AccountabilityContract {
     address public referee;
     string public name;
     string public description;
-    address  public failureRecipient;
+    address public failureRecipient;
     uint public amount;
     Status public status;
 
@@ -87,7 +88,7 @@ contract AccountabilityContract {
     function failContract() public payable returns (AccountabilityContract) {
         require(tx.origin == referee);
         require(status == Status.OPEN);
-        failureRecipient.transfer(address(this).balance);
+        payable(failureRecipient).transfer(address(this).balance);
         status = Status.FAILURE;
         return this;
     } 
@@ -95,7 +96,7 @@ contract AccountabilityContract {
     function completeContract() public payable returns (AccountabilityContract) {
         require(tx.origin == referee);
         require(status == Status.OPEN);
-        creator.transfer(address(this).balance);
+        payable(creator).transfer(address(this).balance);
         status = Status.SUCCESS;
         return this;
     }
