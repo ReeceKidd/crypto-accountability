@@ -41,14 +41,14 @@ contract AccountabilityContractFactory {
 
     function failOpenAccountabilityContract(address user, uint index) public {
       address openAccountabilityContract = users[user].openAccounabilityContractAddresses[index];
-      users[user].closedAccountabilityContracts[users[user].closedAccounabilityContractAddresses.length-1] = users[user].openAccountabilityContracts[openAccountabilityContract].failContract();
+      users[user].closedAccountabilityContracts[users[user].closedAccounabilityContractAddresses.length] = users[user].openAccountabilityContracts[openAccountabilityContract].failContract();
       moveOpenContractToClosedContracts(user, index);
       delete users[user].openAccountabilityContracts[openAccountabilityContract];
     }
 
     function completeOpenAccountabilityContract(address user, uint openAccountabilityContractAddressIndex) public {
       address openAccountabilityContract = users[user].openAccounabilityContractAddresses[openAccountabilityContractAddressIndex];
-      users[user].closedAccountabilityContracts[users[user].closedAccounabilityContractAddresses.length-1] = users[user].openAccountabilityContracts[openAccountabilityContract].completeContract();
+      users[user].closedAccountabilityContracts[users[user].closedAccounabilityContractAddresses.length] = users[user].openAccountabilityContracts[openAccountabilityContract].completeContract();
       moveOpenContractToClosedContracts(user, openAccountabilityContractAddressIndex);
       delete users[user].openAccountabilityContracts[openAccountabilityContract];
     }
@@ -85,17 +85,19 @@ contract AccountabilityContract {
         status = Status.OPEN;
     }
 
-    function failContract() public payable returns (AccountabilityContract) {
-        require(tx.origin == referee);
-        require(status == Status.OPEN);
+    modifier restricted() {
+        require(tx.origin == referee, "Origin does not equal referee");
+        require(status == Status.OPEN, "Contract status is not equal to open");
+        _;
+    }
+
+    function failContract() public payable restricted returns (AccountabilityContract) {
         payable(failureRecipient).transfer(address(this).balance);
         status = Status.FAILURE;
         return this;
     } 
 
-    function completeContract() public payable returns (AccountabilityContract) {
-        require(tx.origin == referee);
-        require(status == Status.OPEN);
+    function completeContract() public payable restricted returns (AccountabilityContract) {
         payable(creator).transfer(address(this).balance);
         status = Status.SUCCESS;
         return this;

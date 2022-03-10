@@ -20,12 +20,15 @@ beforeEach(async () => {
   accounts = await web3.eth.getAccounts();
   creator = accounts[0];
   referee = accounts[0];
+  const abi = AccountabilityContractFactory.abi;
+  const bytecode = AccountabilityContractFactory.evm.bytecode.object;
+  const gas = await new web3.eth.Contract(abi as any)
+    .deploy({ data: bytecode })
+    .estimateGas();
   amount = web3.utils.toWei("0.001", "ether");
-  accountabilityContractFactory = await new web3.eth.Contract(
-    AccountabilityContractFactory.abi as any
-  )
-    .deploy({ data: AccountabilityContractFactory.evm.bytecode as any })
-    .send({ from: creator, gas: 1000000 });
+  accountabilityContractFactory = await new web3.eth.Contract(abi as any)
+    .deploy({ data: bytecode })
+    .send({ from: creator, gas });
   name = "Drink water everyday";
   description = "I must drink three litres of water everyday";
   failureRecipient = accounts[1];

@@ -31,8 +31,8 @@ const output = JSON.parse(solc.compile(JSON.stringify(input))).contracts;
 fs.ensureDirSync(buildPath);
 
 for (let contract of Object.keys(output.Contracts)) {
-  fs.outputJsonSync(
-    path.resolve(buildPath, `${contract}.json`),
-    output.Contracts[contract]
-  );
+  fs.outputJsonSync(path.resolve(buildPath, `${contract}.json`), {
+    abi: output.Contracts[contract].abi,
+    evm: output.Contracts[contract].evm,
+  });
 }

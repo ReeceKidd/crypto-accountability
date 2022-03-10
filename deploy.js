@@ -13,8 +13,8 @@ const accountabilityContractFactory = fs.readJSONSync(
 );
 
 const provider = new HDWalletProvider(
-  "abstract hat sure cherry whip genuine depth olive trouble dutch avoid add",
-  "https://rinkeby.infura.io/v3/414c373d3dee40608a74142ce4a62a6d"
+  "tortoise spy bridge maximum plug physical trouble clean humble define debris upset",
+  "https://rinkeby.infura.io/v3/236c8e8dd77b46e1b5fb499a334cfdb8"
 );
 
 const web3 = new Web3(provider);
@@ -30,7 +30,8 @@ const deploy = async () => {
     .estimateGas();
   const contract = await new web3.eth.Contract(abi)
     .deploy({ data: bytecode })
-    .send({ from: accounts[0], gas: "10000000", gasPrice });
+    .send({ from: accounts[0], gas: gasPrice });
+  console.log("Contract", contract);
   console.log(accountabilityContractFactory.abi);
   fs.writeFileSync(
     "address.json",

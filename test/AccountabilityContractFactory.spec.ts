@@ -16,52 +16,47 @@ let amount: string;
 beforeEach(async () => {
   accounts = await web3.eth.getAccounts();
   manager = accounts[0];
+  const abi = AccountabilityContractFactory.abi;
+  const bytecode = AccountabilityContractFactory.evm.bytecode.object;
+  const gas = await new web3.eth.Contract(abi as any)
+    .deploy({ data: bytecode })
+    .estimateGas();
   referee = accounts[0];
   amount = web3.utils.toWei("0.0001", "ether");
-  try {
-    accountabilityContractFactory = await new web3.eth.Contract(
-      AccountabilityContractFactory.abi as any
-    )
-      .deploy({
-        data: AccountabilityContractFactory.evm.bytecode as any,
-      })
-      .send({ from: manager, gas: 2000000 });
-    console.log("Deployed");
-    const name = "Drink water everyday";
-    const description = "I must drink three litres of water everyday";
-    const failureRecipient = accounts[1];
 
+  accountabilityContractFactory = await new web3.eth.Contract(
+    AccountabilityContractFactory.abi as any
+  )
+    .deploy({
+      data: bytecode,
+    })
+    .send({ from: manager, gas });
+  const name = "Drink water everyday";
+  const description = "I must drink three litres of water everyday";
+  const failureRecipient = accounts[1];
+  await accountabilityContractFactory.methods
+    .createAccountabilityContract(referee, name, description, failureRecipient)
+    .send({
+      from: manager,
+      gas: 3000000,
+      value: amount,
+    });
+  openAccountabilityContractAddresses =
     await accountabilityContractFactory.methods
-      .createAccountabilityContract(
-        referee,
-        name,
-        description,
-        failureRecipient
+      .getOpenAccountabilityContractAddresses(manager)
+      .call();
+  openAccountabilityContractAddress =
+    await accountabilityContractFactory.methods
+      .getOpenAccountabilityContract(
+        manager,
+        openAccountabilityContractAddresses[0]
       )
-      .send({
-        from: manager,
-        gas: 3000000,
-        value: amount,
-      });
-    openAccountabilityContractAddresses =
-      await accountabilityContractFactory.methods
-        .getOpenAccountabilityContractAddresses(manager)
-        .call();
-    openAccountabilityContractAddress =
-      await accountabilityContractFactory.methods
-        .getOpenAccountabilityContract(
-          manager,
-          openAccountabilityContractAddresses[0]
-        )
-        .call();
-  } catch (err) {
-    console.log(err);
-  }
+      .call();
 });
 
 describe("Accountability contract factory", () => {
   describe("success", () => {
-    it.only("deploys a contract", () => {
+    it("deploys a contract", () => {
       expect(accountabilityContractFactory.options.address).toBeDefined();
     });
     it("can get number of total users", async () => {
@@ -115,7 +110,6 @@ describe("Accountability contract factory", () => {
         await accountabilityContractFactory.methods
           .getOpenAccountabilityContractAddresses(manager)
           .call();
-      console.log("Open accountability contracts", openAccountabilityContracts);
       expect(openAccountabilityContracts.length).toEqual(0);
       const closedAccountabilityContractAddress =
         await accountabilityContractFactory.methods
@@ -132,36 +126,22 @@ describe("Accountability contract factory", () => {
         closedAccountabilityContractAddress
       );
       expect(closedAcccountabilityContractBalance).toEqual("0");
-      const openContractAddress = await accountabilityContractFactory.methods
-        .getOpenAccountabilityContract(manager, 0)
-        .call();
-      expect(openContractAddress).toEqual(
-        "0x0000000000000000000000000000000000000000"
-      );
     });
     it("referee can complete an open accountability contract", async () => {
-      const initialNumberOfOpenContracts = Number(
-        await accountabilityContractFactory.methods
-          .getNumberOfOpenAccountabilityContracts(manager)
-          .call()
-      );
       await accountabilityContractFactory.methods
         .completeOpenAccountabilityContract(manager, 0)
         .send({ from: manager, gas: 1000000 });
 
-      const numberOfClosedAccountabilityContracts =
+      const closedAccountabilityContracts =
         await accountabilityContractFactory.methods
-          .getNumberOfClosedAccountabilityContracts(manager)
+          .getClosedAccountabilityContractAddresses(manager)
           .call();
-      expect(numberOfClosedAccountabilityContracts).toEqual("1");
-      const updatedNumberOfOpenContracts = Number(
+      expect(closedAccountabilityContracts.length).toEqual(1);
+      const openAccountabilityContracts =
         await accountabilityContractFactory.methods
-          .getNumberOfOpenAccountabilityContracts(manager)
-          .call()
-      );
-      expect(updatedNumberOfOpenContracts).toEqual(
-        initialNumberOfOpenContracts - 1
-      );
+          .getOpenAccountabilityContractAddresses(manager)
+          .call();
+      expect(openAccountabilityContracts.length).toEqual(0);
       const closedAccountabilityContractAddress =
         await accountabilityContractFactory.methods
           .getClosedAccountabilityContract(manager, 0)
@@ -177,14 +157,8 @@ describe("Accountability contract factory", () => {
         closedAccountabilityContractAddress
       );
       expect(closedAcccountabilityContractBalance).toEqual("0");
-      const openContractAddress = await accountabilityContractFactory.methods
-        .getOpenAccountabilityContract(manager, 0)
-        .call();
-      expect(openContractAddress).toEqual(
-        "0x0000000000000000000000000000000000000000"
-      );
     });
-    it("can create additional accountability contracts for user", async () => {
+    it.only("can create additional accountability contracts for user", async () => {
       await accountabilityContractFactory.methods
         .createAccountabilityContract(
           referee,
@@ -197,14 +171,14 @@ describe("Accountability contract factory", () => {
           gas: 1000000,
           value: amount,
         });
-      const userNumberOfOpenAccountabilityContracts =
+      const openAccountabilityContracts =
         await accountabilityContractFactory.methods
-          .getNumberOfOpenAccountabilityContracts(manager)
+          .getOpenAccountabilityContractAddresses(manager)
           .call();
+      expect(openAccountabilityContracts.length).toEqual(2);
       const contractAddress = await accountabilityContractFactory.methods
         .getOpenAccountabilityContract(manager, 1)
         .call();
-      expect(userNumberOfOpenAccountabilityContracts).toEqual("2");
       expect(contractAddress).toBeDefined();
     });
     it("increases number of users by one when a new user creates a contract", async () => {
