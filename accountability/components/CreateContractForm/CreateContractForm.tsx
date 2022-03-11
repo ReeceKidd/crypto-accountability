@@ -41,6 +41,14 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
     event.preventDefault();
     try {
       setNetworkRequestMessage("Waiting on transaction success...");
+      const gas = await factory.methods
+        .createAccountabilityContract(
+          referee,
+          name,
+          description,
+          failureRecipient
+        )
+        .estimateGas();
       await factory.methods
         .createAccountabilityContract(
           referee,
@@ -50,12 +58,13 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
         )
         .send({
           from: web3Account,
-          gas: 1000000,
+          gas,
           value: web3.utils.toWei(amount, "ether"),
         });
       setNetworkRequestMessage("Transaction success");
       Router.push(`/contracts`);
     } catch (err) {
+      console.log("Error");
       setNetworkRequestMessage("");
       setNetworkErrorMessage((err as Error).message);
     }

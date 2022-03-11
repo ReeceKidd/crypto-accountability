@@ -11,21 +11,22 @@ interface ContractsProps {}
 
 const Contracts: NextPage<ContractsProps> = () => {
   const { account } = useWeb3React();
-  const geNumberOfAccountabillityContracts = async (
-    setNumberOfAccountabilityContracts: (
-      numberOfAccountabilityContracts: number
-    ) => void
+  const getOpenAccountabillityContractAddresses = async (
+    setAccountabilityContractAddresses: (addresses: string[]) => void
   ) => {
-    try {
-      const numberOfAccountabilityContracts = await factory.methods
-        .getNumberOfAccountabilityContracts(account)
-        .call({ from: account });
-      setNumberOfAccountabilityContracts(numberOfAccountabilityContracts);
-    } catch (err) {
-      console.log("Error", err);
+    if (account) {
+      const openAccountabilityContractAddresses = await factory.methods
+        .getOpenAccountabilityContractAddresses(account)
+        .call();
+      console.log(
+        "Open accountability contract addresses",
+        openAccountabilityContractAddresses
+      );
+      setAccountabilityContractAddresses(openAccountabilityContractAddresses);
     }
   };
-  const getAccountabillityContracts = async (
+  const getOpenAccountabillityContracts = async (
+    openAccountabilityContractAddresses: string[],
     setAccountabilityContracts: (
       accountabilityContracts: {
         id: string;
@@ -35,40 +36,43 @@ const Contracts: NextPage<ContractsProps> = () => {
       }[]
     ) => void
   ) => {
-    try {
-      const accountabilityContracts = await Promise.all(
-        Array(numberOfAccountabilityContracts)
-          .fill({})
-          .map(async (_item, index) => {
-            const id = await factory.methods
-              .getAccountabilityContract(account, index)
-              .call({ from: account });
-            const accountabilityContract = getAccountabilityContract(
-              id! as string
-            );
-            const [name, status, amount] = await Promise.all([
-              accountabilityContract.methods.name().call(),
-              accountabilityContract.methods.status().call(),
-              accountabilityContract.methods.amount().call(),
-            ]);
+    console.log(
+      "Open accountability contract addresses",
+      openAccountabilityContractAddresses
+    );
+    if (account) {
+      const openAccountabilityContracts = await Promise.all(
+        openAccountabilityContractAddresses.map(async (address) => {
+          const id = await factory.methods
+            .getOpenAccountabilityContract(account, address)
+            .call({ from: account });
+          const accountabilityContract = getAccountabilityContract(
+            id! as string
+          );
+          const [name, status, amount] = await Promise.all([
+            accountabilityContract.methods.name().call(),
+            accountabilityContract.methods.status().call(),
+            accountabilityContract.methods.amount().call(),
+          ]);
 
-            return { id, name, status: getContractStatus(status), amount };
-          })
+          return { id, name, status: getContractStatus(status), amount };
+        })
       );
-      setAccountabilityContracts(accountabilityContracts);
-    } catch (err) {
-      console.log("Error", err);
+      setAccountabilityContracts(openAccountabilityContracts);
     }
   };
-  const [numberOfAccountabilityContracts, setNumberOfAccountabilityContracts] =
-    useState<number>();
+  const [accountabilityContractAddresses, setAccountabilityContractAddresses] =
+    useState<string[]>([]);
   const [accountabilityContracts, setAcccountabilityContracts] = useState<
     { id: string; name: string; status: string; amount: string }[]
   >([]);
   useEffect(() => {
-    geNumberOfAccountabillityContracts(setNumberOfAccountabilityContracts);
-    getAccountabillityContracts(setAcccountabilityContracts);
-  }, []);
+    getOpenAccountabillityContractAddresses(setAccountabilityContractAddresses);
+    getOpenAccountabillityContracts(
+      accountabilityContractAddresses,
+      setAcccountabilityContracts
+    );
+  }, [account]);
 
   return (
     <div>
@@ -76,7 +80,7 @@ const Contracts: NextPage<ContractsProps> = () => {
         <title>Open contracts</title>
       </Head>
       <Layout>
-        <h1>Open contracts: {numberOfAccountabilityContracts}</h1>
+        <h1>Open contracts: {accountabilityContractAddresses.length}</h1>
         <ContractsTable contracts={accountabilityContracts} />
       </Layout>
     </div>
