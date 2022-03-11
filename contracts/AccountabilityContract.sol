@@ -86,6 +86,7 @@ contract AccountabilityContract {
     }
 
     modifier restricted() {
+        require(creator == msg.sender, "Function only available for the creator of the contract");
         require(tx.origin == referee, "Origin does not equal referee");
         require(status == Status.OPEN, "Contract status is not equal to open");
         _;

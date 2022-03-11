@@ -39,8 +39,15 @@ beforeEach(async () => {
       gas: 1000000,
       value: amount,
     });
+  const openAccountabilityContractAddresses =
+    await accountabilityContractFactory.methods
+      .getOpenAccountabilityContractAddresses(creator)
+      .call();
   accountabilityContractAddress = await accountabilityContractFactory.methods
-    .getOpenAccountabilityContract(creator, 0)
+    .getOpenAccountabilityContract(
+      creator,
+      openAccountabilityContractAddresses[0]
+    )
     .call();
   accountabilityContract = await new web3.eth.Contract(
     AccountabilityContract.abi as any,
@@ -94,20 +101,19 @@ describe("Accountability Contract", () => {
   });
 
   describe("errors", () => {
-    it("if someone other than the referre tries to complete contract", async () => {
+    it("fails if something other than the Accountability Contract factory calls failContract", async () => {
       try {
         await accountabilityContract.methods.completeContract().send({
-          from: accounts[1],
+          from: accounts[0],
         });
       } catch (err) {
         expect(err);
       }
     });
-
-    it("if someone other than the referre tries to fail contract", async () => {
+    it("fails if something other than the Accountability Contract factory calls completeContractContract", async () => {
       try {
-        await accountabilityContract.methods.failContract().send({
-          from: accounts[1],
+        await accountabilityContract.methods.completeContract().send({
+          from: accounts[0],
         });
       } catch (err) {
         expect(err);
