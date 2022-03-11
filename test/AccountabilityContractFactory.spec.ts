@@ -158,7 +158,7 @@ describe("Accountability contract factory", () => {
       );
       expect(closedAcccountabilityContractBalance).toEqual("0");
     });
-    it.only("can create additional accountability contracts for user", async () => {
+    it("can create additional accountability contracts for user", async () => {
       await accountabilityContractFactory.methods
         .createAccountabilityContract(
           referee,
@@ -177,7 +177,7 @@ describe("Accountability contract factory", () => {
           .call();
       expect(openAccountabilityContracts.length).toEqual(2);
       const contractAddress = await accountabilityContractFactory.methods
-        .getOpenAccountabilityContract(manager, 1)
+        .getOpenAccountabilityContract(manager, openAccountabilityContracts[1])
         .call();
       expect(contractAddress).toBeDefined();
     });
@@ -198,29 +198,6 @@ describe("Accountability contract factory", () => {
         .numberOfUsers()
         .call();
       expect(numberOfUsers).toEqual("2");
-    });
-    it("returns 0 if user has no contracts", async () => {
-      const userNumberOfAccountabilityContracts =
-        await accountabilityContractFactory.methods
-          .getNumberOfOpenAccountabilityContracts(accounts[3])
-          .call({ from: accounts[3] });
-      expect(userNumberOfAccountabilityContracts).toEqual("0");
-    });
-    it("returns null address if contract index doesn't exist", async () => {
-      const contractAddress = await accountabilityContractFactory.methods
-        .getOpenAccountabilityContract(manager, 5)
-        .call();
-      expect(contractAddress).toEqual(
-        "0x0000000000000000000000000000000000000000"
-      );
-    });
-    it("returns null address if user address has no contracts", async () => {
-      const contractAddress = await accountabilityContractFactory.methods
-        .getOpenAccountabilityContract(accounts[3], 0)
-        .call();
-      expect(contractAddress).toEqual(
-        "0x0000000000000000000000000000000000000000"
-      );
     });
   });
 
