@@ -57,29 +57,108 @@ const Contracts: NextPage<ContractsProps> = () => {
     },
     [account]
   );
-  const [accountabilityContractAddresses, setAccountabilityContractAddresses] =
-    useState<string[]>([]);
-  const [accountabilityContracts, setAcccountabilityContracts] = useState<
-    { id: string; name: string; status: string; amount: string }[]
-  >([]);
+  const [
+    openAccountabilityContractAddresses,
+    setOpenAccountabilityContractAddresses,
+  ] = useState<string[]>([]);
+  const [openAccountabilityContracts, setOpenAcccountabilityContracts] =
+    useState<{ id: string; name: string; status: string; amount: string }[]>(
+      []
+    );
   useEffect(() => {
-    getOpenAccountabillityContractAddresses(setAccountabilityContractAddresses);
+    getOpenAccountabillityContractAddresses(
+      setOpenAccountabilityContractAddresses
+    );
   }, [getOpenAccountabillityContractAddresses]);
   useEffect(() => {
     getOpenAccountabillityContracts(
-      accountabilityContractAddresses,
-      setAcccountabilityContracts
+      openAccountabilityContractAddresses,
+      setOpenAcccountabilityContracts
     );
-  }, [getOpenAccountabillityContracts, accountabilityContractAddresses]);
+  }, [getOpenAccountabillityContracts, openAccountabilityContractAddresses]);
+  const getClosedAccountabillityContractAddresses = useCallback(
+    async (
+      setAccountabilityContractAddresses: (addresses: string[]) => void
+    ) => {
+      if (account) {
+        const closedAccountabilityContractAddresses = await factory.methods
+          .getClosedAccountabilityContractAddresses(account)
+          .call();
+        setClosedAccountabilityContractAddresses(
+          closedAccountabilityContractAddresses
+        );
+      }
+    },
+    [account]
+  );
+  const getClosedAccountabillityContracts = useCallback(
+    async (
+      closedAccountabilityContractAddresses: string[],
+      setAccountabilityContracts: (
+        accountabilityContracts: {
+          id: string;
+          name: string;
+          status: string;
+          amount: string;
+        }[]
+      ) => void
+    ) => {
+      const closedAccountabilityContracts = await Promise.all(
+        closedAccountabilityContractAddresses.map(async (address) => {
+          const id = await factory.methods
+            .getClosedAccountabilityContract(account, address)
+            .call({ from: account });
+          const closedAccountabilityContract = getAccountabilityContract(
+            id! as string
+          );
+          const [name, status, amount] = await Promise.all([
+            closedAccountabilityContract.methods.name().call(),
+            closedAccountabilityContract.methods.status().call(),
+            closedAccountabilityContract.methods.amount().call(),
+          ]);
+
+          return { id, name, status: getContractStatus(status), amount };
+        })
+      );
+      setAccountabilityContracts(closedAccountabilityContracts);
+    },
+    [account]
+  );
+  const [
+    closedAccountabilityContractAddresses,
+    setClosedAccountabilityContractAddresses,
+  ] = useState<string[]>([]);
+  const [closedAccountabilityContracts, setClosedAcccountabilityContracts] =
+    useState<{ id: string; name: string; status: string; amount: string }[]>(
+      []
+    );
+  useEffect(() => {
+    getClosedAccountabillityContractAddresses(
+      setClosedAccountabilityContractAddresses
+    );
+  }, [getClosedAccountabillityContractAddresses]);
+  useEffect(() => {
+    getClosedAccountabillityContracts(
+      closedAccountabilityContractAddresses,
+      setClosedAcccountabilityContracts
+    );
+  }, [
+    getClosedAccountabillityContracts,
+    closedAccountabilityContractAddresses,
+  ]);
 
   return (
     <div>
       <Head>
-        <title>Open contracts</title>
+        <title>Contracts</title>
       </Head>
       <Layout>
-        <h1>Open contracts: {accountabilityContractAddresses.length}</h1>
-        <ContractsTable contracts={accountabilityContracts} />
+        <h1>Open contracts: {openAccountabilityContractAddresses.length}</h1>
+        <ContractsTable contracts={openAccountabilityContracts} />
+        <h1>
+          Closed contracts: {closedAccountabilityContractAddresses.length}
+        </h1>
+        <ContractsTable contracts={closedAccountabilityContracts} />
       </Layout>
     </div>
   );
