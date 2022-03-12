@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ContractsTable from "../components/ContractsTable/ContractsTable";
 import Layout from "../components/Layout/Layout";
 import factory, { getAccountabilityContract } from "../factory";
@@ -11,36 +11,31 @@ interface ContractsProps {}
 
 const Contracts: NextPage<ContractsProps> = () => {
   const { account } = useWeb3React();
-  const getOpenAccountabillityContractAddresses = async (
-    setAccountabilityContractAddresses: (addresses: string[]) => void
-  ) => {
-    if (account) {
-      const openAccountabilityContractAddresses = await factory.methods
-        .getOpenAccountabilityContractAddresses(account)
-        .call();
-      console.log(
-        "Open accountability contract addresses",
-        openAccountabilityContractAddresses
-      );
-      setAccountabilityContractAddresses(openAccountabilityContractAddresses);
-    }
-  };
-  const getOpenAccountabillityContracts = async (
-    openAccountabilityContractAddresses: string[],
-    setAccountabilityContracts: (
-      accountabilityContracts: {
-        id: string;
-        name: string;
-        status: string;
-        amount: string;
-      }[]
-    ) => void
-  ) => {
-    console.log(
-      "Open accountability contract addresses",
-      openAccountabilityContractAddresses
-    );
-    if (account) {
+  const getOpenAccountabillityContractAddresses = useCallback(
+    async (
+      setAccountabilityContractAddresses: (addresses: string[]) => void
+    ) => {
+      if (account) {
+        const openAccountabilityContractAddresses = await factory.methods
+          .getOpenAccountabilityContractAddresses(account)
+          .call();
+        setAccountabilityContractAddresses(openAccountabilityContractAddresses);
+      }
+    },
+    [account]
+  );
+  const getOpenAccountabillityContracts = useCallback(
+    async (
+      openAccountabilityContractAddresses: string[],
+      setAccountabilityContracts: (
+        accountabilityContracts: {
+          id: string;
+          name: string;
+          status: string;
+          amount: string;
+        }[]
+      ) => void
+    ) => {
       const openAccountabilityContracts = await Promise.all(
         openAccountabilityContractAddresses.map(async (address) => {
           const id = await factory.methods
@@ -59,8 +54,9 @@ const Contracts: NextPage<ContractsProps> = () => {
         })
       );
       setAccountabilityContracts(openAccountabilityContracts);
-    }
-  };
+    },
+    [account]
+  );
   const [accountabilityContractAddresses, setAccountabilityContractAddresses] =
     useState<string[]>([]);
   const [accountabilityContracts, setAcccountabilityContracts] = useState<
@@ -68,11 +64,13 @@ const Contracts: NextPage<ContractsProps> = () => {
   >([]);
   useEffect(() => {
     getOpenAccountabillityContractAddresses(setAccountabilityContractAddresses);
+  }, [getOpenAccountabillityContractAddresses]);
+  useEffect(() => {
     getOpenAccountabillityContracts(
       accountabilityContractAddresses,
       setAcccountabilityContracts
     );
-  }, [account]);
+  }, [getOpenAccountabillityContracts, accountabilityContractAddresses]);
 
   return (
     <div>
