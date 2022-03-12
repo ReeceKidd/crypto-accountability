@@ -86,19 +86,19 @@ contract AccountabilityContract {
     }
 
     modifier restricted() {
-        require(creator == msg.sender, "Function only available for the creator of the contract");
-        require(tx.origin == referee, "Origin does not equal referee");
         require(status == Status.OPEN, "Contract status is not equal to open");
         _;
     }
 
     function failContract() public payable restricted returns (AccountabilityContract) {
+        require(tx.origin == referee || tx.origin == creator, "Only referee or creator can fail contract");
         payable(failureRecipient).transfer(address(this).balance);
         status = Status.FAILURE;
         return this;
     } 
 
     function completeContract() public payable restricted returns (AccountabilityContract) {
+        require(tx.origin == referee, "Only referee can complete a contract");
         payable(creator).transfer(address(this).balance);
         status = Status.SUCCESS;
         return this;

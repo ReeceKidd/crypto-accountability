@@ -202,7 +202,28 @@ describe("Accountability contract factory", () => {
   });
 
   describe("errors", () => {
-    it("non referee cannot fail an open accountability contract", async () => {
+    it("creator cannot complete an open accountability contract if they are not the referee", async () => {
+      try {
+        await accountabilityContractFactory.methods
+          .createAccountabilityContract(
+            referee,
+            "Drink water",
+            "Everyday I must drink water",
+            manager
+          )
+          .send({
+            from: accounts[1],
+            gas: 1000000,
+            value: amount,
+          });
+        await accountabilityContractFactory.methods
+          .completeOpenAccountabilityContract(accounts[1], 0)
+          .send({ from: accounts[1], gas: 1000000 });
+      } catch (err: any) {
+        expect(err.message.includes("Only referee can complete a contract"));
+      }
+    });
+    it("user who is not referee or creator cannot fail an open accountability contract", async () => {
       try {
         await accountabilityContractFactory.methods
           .failOpenAccountabilityContract(manager, 0)

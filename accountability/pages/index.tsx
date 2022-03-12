@@ -83,9 +83,7 @@ const Home: NextPage = () => {
       />
       <Layout>
         <h1 className="text-3xl font-bold underline">Crypto accountability</h1>
-        <h2>
-          Stay accountable by betting crypto on the things you need to do.
-        </h2>
+        <h2>Create crypto accountability contracts.</h2>
         <h1>Open contracts: {openAccountabilityContractAddresses.length}</h1>
         <ContractsTable contracts={openAccountabilityContracts} />
         <Link href={"/contracts"}>View all contracts</Link>
