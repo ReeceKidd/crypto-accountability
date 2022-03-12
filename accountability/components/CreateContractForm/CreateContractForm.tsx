@@ -6,7 +6,7 @@ import web3 from "../../web3";
 
 interface CreateContractFormProps {
   web3Account: string;
-  referee: string;
+  referee: string | null | undefined;
   setReferee: (input: string) => void;
   amount: string;
   setAmount: (input: string) => void;
@@ -64,7 +64,6 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
       setNetworkRequestMessage("Transaction success");
       Router.push(`/contracts`);
     } catch (err) {
-      console.log("Error");
       setNetworkRequestMessage("");
       setNetworkErrorMessage((err as Error).message);
     }

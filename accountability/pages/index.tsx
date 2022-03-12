@@ -2,6 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { Button } from "semantic-ui-react";
 import ContractsTable from "../components/ContractsTable/ContractsTable";
 import Layout from "../components/Layout/Layout";
 import factory, { getAccountabilityContract } from "../factory";
@@ -84,7 +85,12 @@ const Home: NextPage = () => {
       <Layout>
         <h1 className="text-3xl font-bold underline">Crypto accountability</h1>
         <h2>Create crypto accountability contracts.</h2>
-        <h1>Open contracts: {openAccountabilityContractAddresses.length}</h1>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <h1>Open contracts: {openAccountabilityContractAddresses.length} </h1>
+          <Link href={"contracts/new"} passHref={true}>
+            <Button primary icon="plus" content="Create contract" />
+          </Link>
+        </div>
         <ContractsTable contracts={openAccountabilityContracts} />
         <Link href={"/contracts"}>View all contracts</Link>
       </Layout>
