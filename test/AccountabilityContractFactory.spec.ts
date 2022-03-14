@@ -7,7 +7,6 @@ const web3 = new Web3(ganache.provider());
 
 let accountabilityContractFactory: any;
 let openAccountabilityContractAddresses: any;
-let openAccountabilityContractAddress: any;
 let accounts: string[];
 let manager: string;
 let referee: string;
@@ -44,13 +43,6 @@ beforeEach(async () => {
   openAccountabilityContractAddresses =
     await accountabilityContractFactory.methods
       .getOpenAccountabilityContractAddresses(manager)
-      .call();
-  openAccountabilityContractAddress =
-    await accountabilityContractFactory.methods
-      .getOpenAccountabilityContract(
-        manager,
-        openAccountabilityContractAddresses[0]
-      )
       .call();
 });
 
