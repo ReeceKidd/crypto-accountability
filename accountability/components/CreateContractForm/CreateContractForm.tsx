@@ -1,6 +1,6 @@
 import Router from "next/router";
 import { FC, FormEvent, useState } from "react";
-import { Button, Form, Input, Message } from "semantic-ui-react";
+import { Button, Form, Input, Message, TextArea } from "semantic-ui-react";
 import factory from "../../factory";
 import web3 from "../../web3";
 
@@ -76,6 +76,17 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
           <label>
             Referee:
             <Input
+              label={
+                <Button
+                  primary
+                  content="Use my address"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setReferee(web3Account);
+                  }}
+                />
+              }
+              labelPosition="right"
               value={referee}
               onChange={(event) => setReferee(event.target.value)}
             />
@@ -104,7 +115,7 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
         <Form.Field>
           <label>
             Contract description:
-            <Input
+            <TextArea
               value={description}
               onChange={(event) => setDescription(event.target.value)}
             />
@@ -119,7 +130,7 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
             />
           </label>
         </Form.Field>
-        <Button loading={submitRequestLoading} type="submit">
+        <Button primary loading={submitRequestLoading} type="submit">
           Enter
         </Button>
       </Form>
