@@ -11,6 +11,10 @@ import { getContractStatus } from "../helpers/getContractStatus";
 
 const Home: NextPage = () => {
   const { account } = useWeb3React();
+  const [
+    loadingOpenAccountabilityContracts,
+    setLoadingOpenAccountabilityContracts,
+  ] = useState(false);
   const getOpenAccountabillityContractAddresses = useCallback(
     async (
       setAccountabilityContractAddresses: (addresses: string[]) => void
@@ -36,6 +40,7 @@ const Home: NextPage = () => {
         }[]
       ) => void
     ) => {
+      setLoadingOpenAccountabilityContracts(true);
       const openAccountabilityContracts = await Promise.all(
         openAccountabilityContractAddresses.map(async (address) => {
           const id = await factory.methods
@@ -54,8 +59,9 @@ const Home: NextPage = () => {
         })
       );
       setAccountabilityContracts(openAccountabilityContracts);
+      setLoadingOpenAccountabilityContracts(false);
     },
-    [account]
+    [account, setLoadingOpenAccountabilityContracts]
   );
   const [
     openAccountabilityContractAddresses,
@@ -93,7 +99,7 @@ const Home: NextPage = () => {
           </Link>
         </div>
         <ContractsTable
-          loading={false}
+          loading={loadingOpenAccountabilityContracts}
           contracts={openAccountabilityContracts}
         />
         <Link href={"/contracts"}>View all contracts</Link>
