@@ -61,7 +61,7 @@ const Home: NextPage = () => {
       setAccountabilityContracts(openAccountabilityContracts);
       setLoadingOpenAccountabilityContracts(false);
     },
-    [account, setLoadingOpenAccountabilityContracts]
+    [account]
   );
   const [
     openAccountabilityContractAddresses,

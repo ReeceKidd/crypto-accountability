@@ -30,16 +30,20 @@ const ContractsTable = ({ loading, contracts }: RequestsTableProps) => {
       Loading
     </Loader>
   ) : (
-    <Table celled>
-      <Table.Header>
-        <Table.Row>
-          <Table.HeaderCell>Name</Table.HeaderCell>
-          <Table.HeaderCell>Amount</Table.HeaderCell>
-          <Table.HeaderCell>Status</Table.HeaderCell>
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>{tableCells}</Table.Body>
-    </Table>
+    <>
+      {tableCells.length > 0 && (
+        <Table celled>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Name</Table.HeaderCell>
+              <Table.HeaderCell>Amount</Table.HeaderCell>
+              <Table.HeaderCell>Status</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>{tableCells}</Table.Body>
+        </Table>
+      )}
+    </>
   );
 };
 

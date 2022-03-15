@@ -24,6 +24,10 @@ const Contracts: NextPage<ContractsProps> = () => {
     },
     [account]
   );
+  const [
+    loadingGetOpenAccountabilityContracts,
+    setLoadingGetOpenAccountabilityContracts,
+  ] = useState(false);
   const getOpenAccountabillityContracts = useCallback(
     async (
       openAccountabilityContractAddresses: string[],
@@ -36,6 +40,7 @@ const Contracts: NextPage<ContractsProps> = () => {
         }[]
       ) => void
     ) => {
+      setLoadingGetOpenAccountabilityContracts(true);
       const openAccountabilityContracts = await Promise.all(
         openAccountabilityContractAddresses.map(async (address) => {
           const id = await factory.methods
@@ -54,6 +59,7 @@ const Contracts: NextPage<ContractsProps> = () => {
         })
       );
       setAccountabilityContracts(openAccountabilityContracts);
+      setLoadingGetOpenAccountabilityContracts(false);
     },
     [account]
   );
@@ -95,6 +101,10 @@ const Contracts: NextPage<ContractsProps> = () => {
     },
     [account]
   );
+  const [
+    loadingGetClosedAccountabilityContracts,
+    setLoadingGetClosedAccountabilityContracts,
+  ] = useState(false);
   const getClosedAccountabillityContracts = useCallback(
     async (
       closedAccountabilityContractAddresses: string[],
@@ -107,6 +117,7 @@ const Contracts: NextPage<ContractsProps> = () => {
         }[]
       ) => void
     ) => {
+      setLoadingGetClosedAccountabilityContracts(true);
       const closedAccountabilityContracts = await Promise.all(
         closedAccountabilityContractAddresses.map(async (address) => {
           const id = await factory.methods
@@ -125,6 +136,7 @@ const Contracts: NextPage<ContractsProps> = () => {
         })
       );
       setAccountabilityContracts(closedAccountabilityContracts);
+      setLoadingGetClosedAccountabilityContracts(false);
     },
     [account]
   );
@@ -160,14 +172,14 @@ const Contracts: NextPage<ContractsProps> = () => {
       <Layout>
         <h1>Open contracts: {openAccountabilityContractAddresses.length}</h1>
         <ContractsTable
-          loading={false}
+          loading={loadingGetOpenAccountabilityContracts}
           contracts={openAccountabilityContracts}
         />
         <h1>
           Closed contracts: {closedAccountabilityContractAddresses.length}
         </h1>
         <ContractsTable
-          loading={false}
+          loading={loadingGetClosedAccountabilityContracts}
           contracts={closedAccountabilityContracts}
         />
       </Layout>
