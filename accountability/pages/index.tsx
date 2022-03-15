@@ -21,7 +21,7 @@ const Home: NextPage = () => {
     ) => {
       if (account) {
         const openAccountabilityContractAddresses = await factory.methods
-          .getOpenAccountabilityContractAddresses(account)
+          .getOpenAccountabilityContractAddressesForUser(account)
           .call();
         setAccountabilityContractAddresses(openAccountabilityContractAddresses);
       }
@@ -44,7 +44,7 @@ const Home: NextPage = () => {
       const openAccountabilityContracts = await Promise.all(
         openAccountabilityContractAddresses.map(async (address) => {
           const id = await factory.methods
-            .getOpenAccountabilityContract(account, address)
+            .getOpenAccountabilityContractForUser(account, address)
             .call({ from: account });
           const accountabilityContract = getAccountabilityContract(
             id! as string
@@ -90,13 +90,8 @@ const Home: NextPage = () => {
         content="Stay accountability by betting crypto"
       />
       <Layout>
-        <h1 className="text-3xl font-bold underline">Crypto accountability</h1>
-        <h2>Create crypto accountability contracts.</h2>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <h1>Open contracts: {openAccountabilityContractAddresses.length} </h1>
-          <Link href={"contracts/new"} passHref={true}>
-            <Button primary icon="plus" content="Create contract" />
-          </Link>
         </div>
         <ContractsTable
           loading={loadingOpenAccountabilityContracts}

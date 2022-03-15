@@ -17,7 +17,7 @@ const Contracts: NextPage<ContractsProps> = () => {
     ) => {
       if (account) {
         const openAccountabilityContractAddresses = await factory.methods
-          .getOpenAccountabilityContractAddresses(account)
+          .getOpenAccountabilityContractAddressesForUser(account)
           .call();
         setAccountabilityContractAddresses(openAccountabilityContractAddresses);
       }
@@ -25,8 +25,8 @@ const Contracts: NextPage<ContractsProps> = () => {
     [account]
   );
   const [
-    loadingGetOpenAccountabilityContracts,
-    setLoadingGetOpenAccountabilityContracts,
+    loadinggetOpenAccountabilityContractForUsers,
+    setLoadinggetOpenAccountabilityContractForUsers,
   ] = useState(false);
   const getOpenAccountabillityContracts = useCallback(
     async (
@@ -40,11 +40,11 @@ const Contracts: NextPage<ContractsProps> = () => {
         }[]
       ) => void
     ) => {
-      setLoadingGetOpenAccountabilityContracts(true);
+      setLoadinggetOpenAccountabilityContractForUsers(true);
       const openAccountabilityContracts = await Promise.all(
         openAccountabilityContractAddresses.map(async (address) => {
           const id = await factory.methods
-            .getOpenAccountabilityContract(account, address)
+            .getOpenAccountabilityContractForUser(account, address)
             .call({ from: account });
           const accountabilityContract = getAccountabilityContract(
             id! as string
@@ -59,7 +59,7 @@ const Contracts: NextPage<ContractsProps> = () => {
         })
       );
       setAccountabilityContracts(openAccountabilityContracts);
-      setLoadingGetOpenAccountabilityContracts(false);
+      setLoadinggetOpenAccountabilityContractForUsers(false);
     },
     [account]
   );
@@ -92,7 +92,7 @@ const Contracts: NextPage<ContractsProps> = () => {
     ) => {
       if (account) {
         const closedAccountabilityContractAddresses = await factory.methods
-          .getClosedAccountabilityContractAddresses(account)
+          .getClosedAccountabilityContractAddressesForUser(account)
           .call();
         setClosedAccountabilityContractAddresses(
           closedAccountabilityContractAddresses
@@ -172,7 +172,7 @@ const Contracts: NextPage<ContractsProps> = () => {
       <Layout>
         <h1>Open contracts: {openAccountabilityContractAddresses.length}</h1>
         <ContractsTable
-          loading={loadingGetOpenAccountabilityContracts}
+          loading={loadinggetOpenAccountabilityContractForUsers}
           contracts={openAccountabilityContracts}
         />
         <h1>
