@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button, Table } from "semantic-ui-react";
+import { Button, Dimmer, Loader, Segment, Table } from "semantic-ui-react";
 import web3 from "../../web3";
 
 export interface AccountabilityContract {
@@ -10,10 +10,11 @@ export interface AccountabilityContract {
 }
 
 interface RequestsTableProps {
+  loading: boolean;
   contracts: AccountabilityContract[];
 }
 
-const ContractsTable = ({ contracts }: RequestsTableProps) => {
+const ContractsTable = ({ loading, contracts }: RequestsTableProps) => {
   const tableCells = contracts.map(({ id, name, status, amount }, index) => (
     <Table.Row key={index}>
       <Table.Cell>
@@ -24,7 +25,11 @@ const ContractsTable = ({ contracts }: RequestsTableProps) => {
     </Table.Row>
   ));
 
-  return (
+  return loading ? (
+    <Loader inline="centered" active={loading} size="medium">
+      Loading
+    </Loader>
+  ) : (
     <Table celled>
       <Table.Header>
         <Table.Row>

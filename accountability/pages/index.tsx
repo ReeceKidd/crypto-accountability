@@ -8,6 +8,7 @@ import Layout from "../components/Layout/Layout";
 import factory, { getAccountabilityContract } from "../factory";
 import { getContractStatus } from "../helpers/getContractStatus";
 
+
 const Home: NextPage = () => {
   const { account } = useWeb3React();
   const getOpenAccountabillityContractAddresses = useCallback(
@@ -91,7 +92,10 @@ const Home: NextPage = () => {
             <Button primary icon="plus" content="Create contract" />
           </Link>
         </div>
-        <ContractsTable contracts={openAccountabilityContracts} />
+        <ContractsTable
+          loading={false}
+          contracts={openAccountabilityContracts}
+        />
         <Link href={"/contracts"}>View all contracts</Link>
       </Layout>
     </div>

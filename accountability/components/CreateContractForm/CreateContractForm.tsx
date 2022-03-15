@@ -58,7 +58,7 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
         )
         .send({
           from: web3Account,
-          gas,
+          gas: 3000000,
           value: web3.utils.toWei(amount, "ether"),
         });
       setNetworkRequestMessage("Transaction success");

@@ -75,10 +75,14 @@ const Contracts: NextPage<ContractsProps> = () => {
       openAccountabilityContractAddresses,
       setOpenAcccountabilityContracts
     );
-  }, [getOpenAccountabillityContracts, openAccountabilityContractAddresses]);
+  }, [
+    getOpenAccountabillityContracts,
+    openAccountabilityContractAddresses,
+    openAccountabilityContractAddresses.length,
+  ]);
   const getClosedAccountabillityContractAddresses = useCallback(
     async (
-      setAccountabilityContractAddresses: (addresses: string[]) => void
+      setClosedAccountabilityContractAddresses: (addresses: string[]) => void
     ) => {
       if (account) {
         const closedAccountabilityContractAddresses = await factory.methods
@@ -145,6 +149,7 @@ const Contracts: NextPage<ContractsProps> = () => {
   }, [
     getClosedAccountabillityContracts,
     closedAccountabilityContractAddresses,
+    closedAccountabilityContractAddresses.length,
   ]);
 
   return (
@@ -154,11 +159,17 @@ const Contracts: NextPage<ContractsProps> = () => {
       </Head>
       <Layout>
         <h1>Open contracts: {openAccountabilityContractAddresses.length}</h1>
-        <ContractsTable contracts={openAccountabilityContracts} />
+        <ContractsTable
+          loading={false}
+          contracts={openAccountabilityContracts}
+        />
         <h1>
           Closed contracts: {closedAccountabilityContractAddresses.length}
         </h1>
-        <ContractsTable contracts={closedAccountabilityContracts} />
+        <ContractsTable
+          loading={false}
+          contracts={closedAccountabilityContracts}
+        />
       </Layout>
     </div>
   );
