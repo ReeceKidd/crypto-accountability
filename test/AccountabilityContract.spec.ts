@@ -36,19 +36,14 @@ beforeEach(async () => {
     .createAccountabilityContract(referee, name, description, failureRecipient)
     .send({
       from: creator,
-      gas: 1000000,
+      gas: 3000000,
       value: amount,
     });
   const openAccountabilityContractAddresses =
     await accountabilityContractFactory.methods
-      .getOpenAccountabilityContractAddresses(creator)
+      .getOpenAccountabilityContractAddressesForUser(creator)
       .call();
-  accountabilityContractAddress = await accountabilityContractFactory.methods
-    .getOpenAccountabilityContract(
-      creator,
-      openAccountabilityContractAddresses[0]
-    )
-    .call();
+  accountabilityContractAddress = openAccountabilityContractAddresses[0];
   accountabilityContract = await new web3.eth.Contract(
     AccountabilityContract.abi as any,
     accountabilityContractAddress

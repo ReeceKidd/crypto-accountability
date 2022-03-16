@@ -42,7 +42,7 @@ beforeEach(async () => {
     });
   openAccountabilityContractAddresses =
     await accountabilityContractFactory.methods
-      .getOpenAccountabilityContractAddresses(manager)
+      .getOpenAccountabilityContractAddressesForUser(manager)
       .call();
 });
 
@@ -57,65 +57,49 @@ describe("Accountability contract factory", () => {
         .call();
       expect(numberOfUsers).toEqual("1");
     });
-    it("can get open accountability contract address of user", async () => {
+    it("can get open accountability contract addresses of user", async () => {
       const openAccountabilityContractAddresses =
         await accountabilityContractFactory.methods
-          .getOpenAccountabilityContractAddresses(manager)
+          .getOpenAccountabilityContractAddressesForUser(manager)
           .call();
-      const openAccountabilityContractAddress =
-        await accountabilityContractFactory.methods
-          .getOpenAccountabilityContract(
-            manager,
-            openAccountabilityContractAddresses[0]
-          )
-          .call();
-      expect(openAccountabilityContractAddress).toBeDefined();
+      expect(openAccountabilityContractAddresses).toBeDefined();
+      expect(openAccountabilityContractAddresses.length).toEqual(1);
     });
-    it("can get closed accountability contract address of user", async () => {
+    it("can get closed accountability contract addresses of user", async () => {
       await accountabilityContractFactory.methods
         .failOpenAccountabilityContract(manager, 0)
         .send({ from: manager, gas: 1000000 });
       const closedAccountabilityContractAddresses =
         await accountabilityContractFactory.methods
-          .getClosedAccountabilityContractAddresses(manager)
+          .getClosedAccountabilityContractAddressesForUser(manager)
           .call();
-      const closedAccountabilityContractAddress =
-        await accountabilityContractFactory.methods
-          .getOpenAccountabilityContract(
-            manager,
-            closedAccountabilityContractAddresses[0]
-          )
-          .call();
-      expect(closedAccountabilityContractAddress).toBeDefined();
+      expect(closedAccountabilityContractAddresses).toBeDefined();
+      expect(closedAccountabilityContractAddresses.length).toEqual(1);
     });
     it("referee can fail an open accountability contract", async () => {
       await accountabilityContractFactory.methods
         .failOpenAccountabilityContract(manager, 0)
         .send({ from: manager, gas: 1000000 });
 
-      const closedAccountabilityContracts =
+      const closedAccountabilityContractAddresses =
         await accountabilityContractFactory.methods
-          .getClosedAccountabilityContractAddresses(manager)
+          .getClosedAccountabilityContractAddressesForUser(manager)
           .call();
-      expect(closedAccountabilityContracts.length).toEqual(1);
-      const openAccountabilityContracts =
+      expect(closedAccountabilityContractAddresses.length).toEqual(1);
+      const openAccountabilityContractAddresses =
         await accountabilityContractFactory.methods
-          .getOpenAccountabilityContractAddresses(manager)
+          .getOpenAccountabilityContractAddressesForUser(manager)
           .call();
-      expect(openAccountabilityContracts.length).toEqual(0);
-      const closedAccountabilityContractAddress =
-        await accountabilityContractFactory.methods
-          .getClosedAccountabilityContract(manager, 0)
-          .call();
+      expect(openAccountabilityContractAddresses.length).toEqual(0);
       const closedAccountabilityContract = await new web3.eth.Contract(
         AccountabilityContract.abi as any,
-        closedAccountabilityContractAddress
+        closedAccountabilityContractAddresses[0]
       );
       const closedAccountabilityContractStatus =
         await closedAccountabilityContract.methods.status().call();
       expect(closedAccountabilityContractStatus).toEqual("2");
       const closedAcccountabilityContractBalance = await web3.eth.getBalance(
-        closedAccountabilityContractAddress
+        closedAccountabilityContractAddresses[0]
       );
       expect(closedAcccountabilityContractBalance).toEqual("0");
     });
@@ -124,29 +108,25 @@ describe("Accountability contract factory", () => {
         .completeOpenAccountabilityContract(manager, 0)
         .send({ from: manager, gas: 1000000 });
 
-      const closedAccountabilityContracts =
+      const closedAccountabilityContractAddresses =
         await accountabilityContractFactory.methods
-          .getClosedAccountabilityContractAddresses(manager)
+          .getClosedAccountabilityContractAddressesForUser(manager)
           .call();
-      expect(closedAccountabilityContracts.length).toEqual(1);
-      const openAccountabilityContracts =
+      expect(closedAccountabilityContractAddresses.length).toEqual(1);
+      const openAccountabilityContractAddresses =
         await accountabilityContractFactory.methods
-          .getOpenAccountabilityContractAddresses(manager)
+          .getOpenAccountabilityContractAddressesForUser(manager)
           .call();
-      expect(openAccountabilityContracts.length).toEqual(0);
-      const closedAccountabilityContractAddress =
-        await accountabilityContractFactory.methods
-          .getClosedAccountabilityContract(manager, 0)
-          .call();
+      expect(openAccountabilityContractAddresses.length).toEqual(0);
       const closedAccountabilityContract = await new web3.eth.Contract(
         AccountabilityContract.abi as any,
-        closedAccountabilityContractAddress
+        closedAccountabilityContractAddresses[0]
       );
       const closedAccountabilityContractStatus =
         await closedAccountabilityContract.methods.status().call();
       expect(closedAccountabilityContractStatus).toEqual("1");
       const closedAcccountabilityContractBalance = await web3.eth.getBalance(
-        closedAccountabilityContractAddress
+        closedAccountabilityContractAddresses[0]
       );
       expect(closedAcccountabilityContractBalance).toEqual("0");
     });
@@ -163,15 +143,11 @@ describe("Accountability contract factory", () => {
           gas: 1000000,
           value: amount,
         });
-      const openAccountabilityContracts =
+      const openAccountabilityContractAddresses =
         await accountabilityContractFactory.methods
-          .getOpenAccountabilityContractAddresses(manager)
+          .getOpenAccountabilityContractAddressesForUser(manager)
           .call();
-      expect(openAccountabilityContracts.length).toEqual(2);
-      const contractAddress = await accountabilityContractFactory.methods
-        .getOpenAccountabilityContract(manager, openAccountabilityContracts[1])
-        .call();
-      expect(contractAddress).toBeDefined();
+      expect(openAccountabilityContractAddresses.length).toEqual(2);
     });
     it("increases number of users by one when a new user creates a contract", async () => {
       await accountabilityContractFactory.methods
