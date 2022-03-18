@@ -53,11 +53,11 @@ contract AccountabilityContractFactory {
         return referees[referee].closedAccountabilityContractAddresses;
     }
 
-    function failOpenAccountabilityContract(address user, uint contractIndex) public {
+    function failOpenAccountabilityContract(address user, uint contractIndex) public returns (uint, address[] memory, address) {
       AccountabilityContract accountabilityContract = AccountabilityContract(users[user].openAccountabilityContractAddresses[contractIndex]);
       accountabilityContract.failContract();
       moveOpenContractToClosedContractsForUser(user, contractIndex);
-      moveOpenContractToClosedContractsForReferee(accountabilityContract.referee(), address(accountabilityContract));
+      return getContractIndex(accountabilityContract.referee(), address(accountabilityContract));
     }
 
     function completeOpenAccountabilityContract(address user, uint contractIndex) public {
@@ -75,6 +75,16 @@ contract AccountabilityContractFactory {
         }
         users[user].closedAccountabilityContractAddresses.push(users[user].openAccountabilityContractAddresses[users[user].openAccountabilityContractAddresses.length-1]);
         users[user].openAccountabilityContractAddresses.pop();
+    }
+
+    function getContractIndex(address referee, address contractAddress) public view returns (uint, address[] memory, address) {
+        uint contractIndex;
+        for (uint i = 0; i<referees[referee].openAccountabilityContractAddresses.length-1; i++){
+            if(referees[referee].openAccountabilityContractAddresses[i] == contractAddress){
+                contractIndex = i;
+            }
+        }
+        return (contractIndex, referees[referee].openAccountabilityContractAddresses, contractAddress);
     }
 
      function moveOpenContractToClosedContractsForReferee(address referee, address contractAddress) private {

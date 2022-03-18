@@ -37,7 +37,7 @@ beforeEach(async () => {
     .createAccountabilityContract(referee, name, description, failureRecipient)
     .send({
       from: manager,
-      gas: 3000000,
+      gas: 4000000,
       value: amount,
     });
   openAccountabilityContractAddresses =
@@ -66,9 +66,10 @@ describe("Accountability contract factory", () => {
       expect(openAccountabilityContractAddresses.length).toEqual(1);
     });
     it.only("can get closed accountability contract addresses of user", async () => {
-      await accountabilityContractFactory.methods
+      const response = await accountabilityContractFactory.methods
         .failOpenAccountabilityContract(manager, 0)
         .send({ from: manager, gas: 1000000 });
+      console.log(response);
       const closedAccountabilityContractAddressesForReferee =
         await accountabilityContractFactory.methods
           .getClosedAccountabilityContractAddressesForReferee(manager)

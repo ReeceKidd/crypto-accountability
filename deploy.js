@@ -25,9 +25,11 @@ const bytecode = accountabilityContractFactory.evm.bytecode.object;
 const deploy = async () => {
   console.log("Started deploy...");
   const accounts = await web3.eth.getAccounts();
+  console.log("Balance", await web3.eth.getBalance(accounts[0]));
   const gasPrice = await new web3.eth.Contract(abi)
     .deploy({ data: bytecode })
     .estimateGas();
+  console.log("Gas price", gasPrice);
   const contract = await new web3.eth.Contract(abi)
     .deploy({ data: bytecode })
     .send({ from: accounts[0], gas: gasPrice });
