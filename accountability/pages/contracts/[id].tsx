@@ -1,12 +1,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Grid } from "semantic-ui-react";
 import ContractsCards from "../../components/ContractCards/ContractCards";
 import Layout from "../../components/Layout/Layout";
 import { getAccountabilityContract } from "../../factory";
-import web3 from "../../web3";
 import { useWeb3React } from "@web3-react/core";
 import {
   ContractStatus,
@@ -33,8 +32,8 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
   status,
 }) => {
   const router = useRouter();
-  const { id } = router.query;
-  const accountabilityContract = getAccountabilityContract(id! as string);
+  const { address } = router.query;
+  const accountabilityContract = getAccountabilityContract(address! as string);
   const [completeContractLoading, setCompleteContractLoading] = useState(false);
   const [failContractLoading, setFailContractLoading] = useState(false);
   const { account } = useWeb3React();
@@ -58,7 +57,7 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
     <Layout>
       <Head>
         <title>
-          {id}-{name}
+          {address}-{name}
         </title>
       </Head>
       <h1>{name}</h1>

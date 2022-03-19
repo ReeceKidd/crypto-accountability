@@ -2,12 +2,10 @@ import { useWeb3React } from "@web3-react/core";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "semantic-ui-react";
 import ContractsTable from "../components/ContractsTable/ContractsTable";
 import Layout from "../components/Layout/Layout";
 import factory, { getAccountabilityContract } from "../factory";
 import { getContractStatus } from "../helpers/getContractStatus";
-
 
 const Home: NextPage = () => {
   const { account } = useWeb3React();
@@ -33,7 +31,7 @@ const Home: NextPage = () => {
       openAccountabilityContractAddresses: string[],
       setAccountabilityContracts: (
         accountabilityContracts: {
-          id: string;
+          address: string;
           name: string;
           status: string;
           amount: string;
@@ -43,11 +41,8 @@ const Home: NextPage = () => {
       setLoadingOpenAccountabilityContracts(true);
       const openAccountabilityContracts = await Promise.all(
         openAccountabilityContractAddresses.map(async (address) => {
-          const id = await factory.methods
-            .getOpenAccountabilityContractForUser(account, address)
-            .call({ from: account });
           const accountabilityContract = getAccountabilityContract(
-            id! as string
+            address! as string
           );
           const [name, status, amount] = await Promise.all([
             accountabilityContract.methods.name().call(),
@@ -55,22 +50,27 @@ const Home: NextPage = () => {
             accountabilityContract.methods.amount().call(),
           ]);
 
-          return { id, name, status: getContractStatus(status), amount };
+          return {
+            address,
+            name,
+            status: getContractStatus(status),
+            amount,
+          };
         })
       );
       setAccountabilityContracts(openAccountabilityContracts);
       setLoadingOpenAccountabilityContracts(false);
     },
-    [account]
+    []
   );
   const [
     openAccountabilityContractAddresses,
     setOpenAccountabilityContractAddresses,
   ] = useState<string[]>([]);
   const [openAccountabilityContracts, setOpenAcccountabilityContracts] =
-    useState<{ id: string; name: string; status: string; amount: string }[]>(
-      []
-    );
+    useState<
+      { address: string; name: string; status: string; amount: string }[]
+    >([]);
   useEffect(() => {
     getOpenAccountabillityContractAddresses(
       setOpenAccountabilityContractAddresses

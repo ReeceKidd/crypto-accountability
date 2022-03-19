@@ -33,7 +33,7 @@ const Contracts: NextPage<ContractsProps> = () => {
       openAccountabilityContractAddresses: string[],
       setAccountabilityContracts: (
         accountabilityContracts: {
-          id: string;
+          address: string;
           name: string;
           status: string;
           amount: string;
@@ -43,11 +43,8 @@ const Contracts: NextPage<ContractsProps> = () => {
       setLoadinggetOpenAccountabilityContractForUsers(true);
       const openAccountabilityContracts = await Promise.all(
         openAccountabilityContractAddresses.map(async (address) => {
-          const id = await factory.methods
-            .getOpenAccountabilityContractForUser(account, address)
-            .call({ from: account });
           const accountabilityContract = getAccountabilityContract(
-            id! as string
+            address! as string
           );
           const [name, status, amount] = await Promise.all([
             accountabilityContract.methods.name().call(),
@@ -55,22 +52,27 @@ const Contracts: NextPage<ContractsProps> = () => {
             accountabilityContract.methods.amount().call(),
           ]);
 
-          return { id, name, status: getContractStatus(status), amount };
+          return {
+            address,
+            name,
+            status: getContractStatus(status),
+            amount,
+          };
         })
       );
       setAccountabilityContracts(openAccountabilityContracts);
       setLoadinggetOpenAccountabilityContractForUsers(false);
     },
-    [account]
+    []
   );
   const [
     openAccountabilityContractAddresses,
     setOpenAccountabilityContractAddresses,
   ] = useState<string[]>([]);
   const [openAccountabilityContracts, setOpenAcccountabilityContracts] =
-    useState<{ id: string; name: string; status: string; amount: string }[]>(
-      []
-    );
+    useState<
+      { address: string; name: string; status: string; amount: string }[]
+    >([]);
   useEffect(() => {
     getOpenAccountabillityContractAddresses(
       setOpenAccountabilityContractAddresses
@@ -110,7 +112,7 @@ const Contracts: NextPage<ContractsProps> = () => {
       closedAccountabilityContractAddresses: string[],
       setAccountabilityContracts: (
         accountabilityContracts: {
-          id: string;
+          address: string;
           name: string;
           status: string;
           amount: string;
@@ -120,11 +122,8 @@ const Contracts: NextPage<ContractsProps> = () => {
       setLoadingGetClosedAccountabilityContracts(true);
       const closedAccountabilityContracts = await Promise.all(
         closedAccountabilityContractAddresses.map(async (address) => {
-          const id = await factory.methods
-            .getClosedAccountabilityContract(account, address)
-            .call({ from: account });
           const closedAccountabilityContract = getAccountabilityContract(
-            id! as string
+            address! as string
           );
           const [name, status, amount] = await Promise.all([
             closedAccountabilityContract.methods.name().call(),
@@ -132,22 +131,22 @@ const Contracts: NextPage<ContractsProps> = () => {
             closedAccountabilityContract.methods.amount().call(),
           ]);
 
-          return { id, name, status: getContractStatus(status), amount };
+          return { address, name, status: getContractStatus(status), amount };
         })
       );
       setAccountabilityContracts(closedAccountabilityContracts);
       setLoadingGetClosedAccountabilityContracts(false);
     },
-    [account]
+    []
   );
   const [
     closedAccountabilityContractAddresses,
     setClosedAccountabilityContractAddresses,
   ] = useState<string[]>([]);
   const [closedAccountabilityContracts, setClosedAcccountabilityContracts] =
-    useState<{ id: string; name: string; status: string; amount: string }[]>(
-      []
-    );
+    useState<
+      { address: string; name: string; status: string; amount: string }[]
+    >([]);
   useEffect(() => {
     getClosedAccountabillityContractAddresses(
       setClosedAccountabilityContractAddresses

@@ -3,7 +3,7 @@ import { Button, Dimmer, Loader, Segment, Table } from "semantic-ui-react";
 import web3 from "../../web3";
 
 export interface AccountabilityContract {
-  id: string;
+  address: string;
   name: string;
   status: string;
   amount: string;
@@ -15,15 +15,17 @@ interface RequestsTableProps {
 }
 
 const ContractsTable = ({ loading, contracts }: RequestsTableProps) => {
-  const tableCells = contracts.map(({ id, name, status, amount }, index) => (
-    <Table.Row key={index}>
-      <Table.Cell>
-        <Link href={`/contracts/${id}`}>{name}</Link>
-      </Table.Cell>
-      <Table.Cell>{web3.utils.fromWei(amount)}</Table.Cell>
-      <Table.Cell>{status}</Table.Cell>
-    </Table.Row>
-  ));
+  const tableCells = contracts.map(
+    ({ address, name, status, amount }, index) => (
+      <Table.Row key={index}>
+        <Table.Cell>
+          <Link href={`/contracts/${address}`}>{name}</Link>
+        </Table.Cell>
+        <Table.Cell>{web3.utils.fromWei(amount)}</Table.Cell>
+        <Table.Cell>{status}</Table.Cell>
+      </Table.Row>
+    )
+  );
 
   return loading ? (
     <Loader inline="centered" active={loading} size="medium">
