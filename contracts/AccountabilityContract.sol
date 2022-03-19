@@ -67,13 +67,18 @@ contract AccountabilityContractFactory {
       moveOpenContractToClosedContractsForReferee(accountabilityContract.referee(), contractAddress);
     }
 
-    function moveOpenContractToClosedContractsForUser(address user, address contractAddress) private {
+    function getContractIndexForUser(address user, address contractAddress) view private returns (uint){
         uint contractIndex;
         for (uint i = 0; i<=users[user].openAccountabilityContractAddresses.length-1; i++){
             if(users[user].openAccountabilityContractAddresses[i] == contractAddress){
-                contractIndex = i;
+                contractIndex = i;    
             }
         }
+        return contractIndex;
+    }
+
+    function moveOpenContractToClosedContractsForUser(address user, address contractAddress) private {
+        uint contractIndex = getContractIndexForUser(user, contractAddress);
         uint openContractAddressesLength = users[user].openAccountabilityContractAddresses.length;
         for (uint i = contractIndex; i<openContractAddressesLength-1; i++){
             users[user].openAccountabilityContractAddresses[i] = users[user].openAccountabilityContractAddresses[i+1];
@@ -82,13 +87,18 @@ contract AccountabilityContractFactory {
         users[user].openAccountabilityContractAddresses.pop();
     }
 
-     function moveOpenContractToClosedContractsForReferee(address referee, address contractAddress) private {
+      function getContractIndexForReferee(address referee, address contractAddress) view private returns (uint){
         uint contractIndex;
         for (uint i = 0; i<=referees[referee].openAccountabilityContractAddresses.length-1; i++){
             if(referees[referee].openAccountabilityContractAddresses[i] == contractAddress){
                 contractIndex = i;
             }
         }
+        return contractIndex;
+    }
+
+     function moveOpenContractToClosedContractsForReferee(address referee, address contractAddress) private {
+         uint contractIndex = getContractIndexForReferee(referee, contractAddress);
         for (uint i = contractIndex; i<referees[referee].openAccountabilityContractAddresses.length-1; i++){
             referees[referee].openAccountabilityContractAddresses[i] = referees[referee].openAccountabilityContractAddresses[i+1];
         }
