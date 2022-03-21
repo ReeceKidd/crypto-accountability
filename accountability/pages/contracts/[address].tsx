@@ -97,8 +97,8 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
 };
 
 SpecificContract.getInitialProps = async (ctx) => {
-  const { id } = ctx.query;
-  const accountabilityContract = getAccountabilityContract(id! as string);
+  const { address } = ctx.query;
+  const accountabilityContract = getAccountabilityContract(address! as string);
   const [
     creator,
     referee,

@@ -2,6 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
+import { Segment } from "semantic-ui-react";
 import ContractsTable from "../components/ContractsTable/ContractsTable";
 import Layout from "../components/Layout/Layout";
 import factory, { getAccountabilityContract } from "../factory";
@@ -169,18 +170,22 @@ const Contracts: NextPage<ContractsProps> = () => {
         <title>Contracts</title>
       </Head>
       <Layout>
-        <h1>Open contracts: {openAccountabilityContractAddresses.length}</h1>
-        <ContractsTable
-          loading={loadinggetOpenAccountabilityContractForUsers}
-          contracts={openAccountabilityContracts}
-        />
-        <h1>
-          Closed contracts: {closedAccountabilityContractAddresses.length}
-        </h1>
-        <ContractsTable
-          loading={loadingGetClosedAccountabilityContracts}
-          contracts={closedAccountabilityContracts}
-        />
+        <Segment>
+          <h2>Open contracts: {openAccountabilityContractAddresses.length}</h2>
+          <ContractsTable
+            loading={loadinggetOpenAccountabilityContractForUsers}
+            contracts={openAccountabilityContracts}
+          />
+        </Segment>
+        <Segment>
+          <h2>
+            Closed contracts: {closedAccountabilityContractAddresses.length}
+          </h2>
+          <ContractsTable
+            loading={loadingGetClosedAccountabilityContracts}
+            contracts={closedAccountabilityContracts}
+          />
+        </Segment>
       </Layout>
     </div>
   );

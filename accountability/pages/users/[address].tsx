@@ -1,15 +1,26 @@
 import { useWeb3React } from "@web3-react/core";
 import type { NextPage } from "next";
+import Head from "next/head";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
-import { Segment } from "semantic-ui-react";
-import ContractsTable from "../components/ContractsTable/ContractsTable";
-import Layout from "../components/Layout/Layout";
-import factory, { getAccountabilityContract } from "../factory";
-import { getContractStatus } from "../helpers/getContractStatus";
+import { useRouter } from "next/router";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import { Button, Segment } from "semantic-ui-react";
+import ContractsTable from "../../components/ContractsTable/ContractsTable";
+import Layout from "../../components/Layout/Layout";
+import factory, { getAccountabilityContract } from "../../factory";
+import { getContractStatus } from "../../helpers/getContractStatus";
 
-const Home: NextPage = () => {
-  const { account } = useWeb3React();
+interface SpecificUserProps {}
+
+const SpecificUser: NextPage<SpecificUserProps> = () => {
+  const router = useRouter();
+  const { address } = router.query;
   const [
     loadingOpenAccountabilityContractsForUser,
     setLoadingOpenAccountabilityContractsForUser,
@@ -18,14 +29,14 @@ const Home: NextPage = () => {
     async (
       setAccountabilityContractAddresses: (addresses: string[]) => void
     ) => {
-      if (account) {
+      if (address) {
         const openAccountabilityContractAddresses = await factory.methods
-          .getOpenAccountabilityContractAddressesForUser(account)
+          .getOpenAccountabilityContractAddressesForUser(address)
           .call();
         setAccountabilityContractAddresses(openAccountabilityContractAddresses);
       }
     },
-    [account]
+    [address]
   );
   const getOpenAccountabillityContracts = useCallback(
     async (
@@ -37,8 +48,10 @@ const Home: NextPage = () => {
           status: string;
           amount: string;
         }[]
-      ) => void
+      ) => void,
+      setLoadingOpenAccountabilityContracts: Dispatch<SetStateAction<boolean>>
     ) => {
+      setLoadingOpenAccountabilityContracts(true);
       const openAccountabilityContracts = await Promise.all(
         openAccountabilityContractAddresses.map(async (address) => {
           const accountabilityContract = getAccountabilityContract(
@@ -59,6 +72,7 @@ const Home: NextPage = () => {
         })
       );
       setAccountabilityContracts(openAccountabilityContracts);
+      setLoadingOpenAccountabilityContracts(false);
     },
     []
   );
@@ -78,12 +92,11 @@ const Home: NextPage = () => {
     );
   }, [getOpenAccountabillityContractAddressesForUser]);
   useEffect(() => {
-    setLoadingOpenAccountabilityContractsForUser(true);
     getOpenAccountabillityContracts(
       openAccountabilityContractAddresses,
-      setOpenAcccountabilityContractsForUser
+      setOpenAcccountabilityContractsForUser,
+      setLoadingOpenAccountabilityContractsForUser
     );
-    setLoadingOpenAccountabilityContractsForUser(false);
   }, [getOpenAccountabillityContracts, openAccountabilityContractAddresses]);
   const [
     loadingOpenAccountabilityContractsForReferee,
@@ -95,16 +108,16 @@ const Home: NextPage = () => {
         addresses: string[]
       ) => void
     ) => {
-      if (account) {
+      if (address) {
         const openAccountabilityContractAddresses = await factory.methods
-          .getOpenAccountabilityContractAddressesForReferee(account)
+          .getOpenAccountabilityContractAddressesForReferee(address)
           .call();
         setAccountabilityContractAddressesForReferee(
           openAccountabilityContractAddresses
         );
       }
     },
-    [account]
+    [address]
   );
   const [
     openAccountabilityContractAddressesForReferee,
@@ -122,54 +135,54 @@ const Home: NextPage = () => {
     );
   }, [getOpenAccountabillityContractAddressesForReferee]);
   useEffect(() => {
-    setLoadingOpenAccountabilityContractsForReferee(true);
     getOpenAccountabillityContracts(
       openAccountabilityContractAddressesForReferee,
-      setOpenAcccountabilityContractsForReferee
+      setOpenAcccountabilityContractsForReferee,
+      setLoadingOpenAccountabilityContractsForReferee
     );
-    setLoadingOpenAccountabilityContractsForReferee(false);
   }, [
     getOpenAccountabillityContracts,
     getOpenAccountabillityContractAddressesForReferee,
     openAccountabilityContractAddressesForReferee,
   ]);
   return (
-    <div>
-      <title>Crypto accountability</title>
-      <meta
-        name="description"
-        content="Stay accountability by betting crypto"
-      />
+    <>
+      <Head>
+        <title>{address}</title>
+      </Head>
       <Layout>
+        <h1>{`User: ${address}`}</h1>
+        <Link passHref href={`https://rinkeby.etherscan.io/address/${address}`}>
+          <Button primary>View on etherscan</Button>
+        </Link>
+
         <Segment>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <h1>
-              Your open contracts: {openAccountabilityContractAddresses.length}{" "}
-            </h1>
+            <h2>
+              Open contracts: {openAccountabilityContractAddresses.length}
+            </h2>
           </div>
           <ContractsTable
             loading={loadingOpenAccountabilityContractsForUser}
             contracts={openAccountabilityContractsForUser}
           />
         </Segment>
-        <Link href={"/contracts"}>View all contracts</Link>
         <br />
         <Segment>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <h1>
-              Contracts you referee:{" "}
-              {openAccountabilityContractAddresses.length}{" "}
-            </h1>
+            <h2>
+              Contracts user referees:
+              {openAccountabilityContractAddresses.length}
+            </h2>
           </div>
           <ContractsTable
             loading={loadingOpenAccountabilityContractsForReferee}
             contracts={openAccountabilityContractsForReferee}
           />
         </Segment>
-        <Link href={"/referee"}>View all contracts you referee</Link>
       </Layout>
-    </div>
+    </>
   );
 };
 
-export default Home;
+export default SpecificUser;

@@ -25,22 +25,14 @@ const ContractCards = ({
     },
     {
       header: "Creator",
-      description: (
-        <Link href={`https://rinkeby.etherscan.io/address/${creator}`}>
-          {creator}
-        </Link>
-      ),
+      description: <Link href={`/users/${creator}`}>{creator}</Link>,
       meta: "Creator of the contract.",
       raised: true,
       style: { overflowWrap: "break-word" },
     },
     {
       header: "Referee",
-      description: (
-        <Link href={`https://rinkeby.etherscan.io/address/${referee}`}>
-          {referee}
-        </Link>
-      ),
+      description: <Link href={`/users/${referee}`}>{referee}</Link>,
       meta: "Referee of the contract.",
       raised: true,
       style: { overflowWrap: "break-word" },
