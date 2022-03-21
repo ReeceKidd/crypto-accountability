@@ -1,0 +1,5 @@
+2) View open and closed contracts of other users in the app. 
+3) View open and closed contracts of other referees in the app.
+4) Figure out mechanism for completing a contract based on stick. 
+5) Keep track of the total amount of money bet in the contracts. 
+6) Create a landing page similar to Uniswap. 

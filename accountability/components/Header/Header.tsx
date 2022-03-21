@@ -32,6 +32,9 @@ const Header: FC<HeaderProps> = () => {
               <Link href={"/contracts"} passHref={true}>
                 <Menu.Item>Contracts</Menu.Item>
               </Link>
+              <Link href={"/referee"} passHref={true}>
+                <Menu.Item>Referee</Menu.Item>
+              </Link>
               <Link href="/contracts/new" passHref={true}>
                 <Menu.Item link={true}>
                   <Button primary icon="plus" />

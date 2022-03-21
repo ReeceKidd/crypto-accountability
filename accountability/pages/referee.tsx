@@ -17,7 +17,7 @@ const Contracts: NextPage<ContractsProps> = () => {
     ) => {
       if (account) {
         const openAccountabilityContractAddresses = await factory.methods
-          .getOpenAccountabilityContractAddressesForUser(account)
+          .getOpenAccountabilityContractAddressesForReferee(account)
           .call();
         setAccountabilityContractAddresses(openAccountabilityContractAddresses);
       }
@@ -25,8 +25,8 @@ const Contracts: NextPage<ContractsProps> = () => {
     [account]
   );
   const [
-    loadinggetOpenAccountabilityContractForUsers,
-    setLoadingGetOpenAccountabilityContractsForUser,
+    loadinggetOpenAccountabilityContractForReferees,
+    setLoadingGetOpenAccountabilityContractsForReferee,
   ] = useState(false);
   const getOpenAccountabillityContracts = useCallback(
     async (
@@ -40,7 +40,7 @@ const Contracts: NextPage<ContractsProps> = () => {
         }[]
       ) => void
     ) => {
-      setLoadingGetOpenAccountabilityContractsForUser(true);
+      setLoadingGetOpenAccountabilityContractsForReferee(true);
       const openAccountabilityContracts = await Promise.all(
         openAccountabilityContractAddresses.map(async (address) => {
           const accountabilityContract = getAccountabilityContract(
@@ -61,7 +61,7 @@ const Contracts: NextPage<ContractsProps> = () => {
         })
       );
       setAccountabilityContracts(openAccountabilityContracts);
-      setLoadingGetOpenAccountabilityContractsForUser(false);
+      setLoadingGetOpenAccountabilityContractsForReferee(false);
     },
     []
   );
@@ -94,7 +94,7 @@ const Contracts: NextPage<ContractsProps> = () => {
     ) => {
       if (account) {
         const closedAccountabilityContractAddresses = await factory.methods
-          .getClosedAccountabilityContractAddressesForUser(account)
+          .getClosedAccountabilityContractAddressesForReferee(account)
           .call();
         setClosedAccountabilityContractAddresses(
           closedAccountabilityContractAddresses
@@ -166,12 +166,12 @@ const Contracts: NextPage<ContractsProps> = () => {
   return (
     <div>
       <Head>
-        <title>Contracts</title>
+        <title>Contracts you referee</title>
       </Head>
       <Layout>
         <h1>Open contracts: {openAccountabilityContractAddresses.length}</h1>
         <ContractsTable
-          loading={loadinggetOpenAccountabilityContractForUsers}
+          loading={loadinggetOpenAccountabilityContractForReferees}
           contracts={openAccountabilityContracts}
         />
         <h1>

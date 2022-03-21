@@ -2,6 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { Segment } from "semantic-ui-react";
 import ContractsTable from "../components/ContractsTable/ContractsTable";
 import Layout from "../components/Layout/Layout";
 import factory, { getAccountabilityContract } from "../factory";
@@ -10,10 +11,10 @@ import { getContractStatus } from "../helpers/getContractStatus";
 const Home: NextPage = () => {
   const { account } = useWeb3React();
   const [
-    loadingOpenAccountabilityContracts,
-    setLoadingOpenAccountabilityContracts,
+    loadingOpenAccountabilityContractsForUser,
+    setLoadingOpenAccountabilityContractsForUser,
   ] = useState(false);
-  const getOpenAccountabillityContractAddresses = useCallback(
+  const getOpenAccountabillityContractAddressesForUser = useCallback(
     async (
       setAccountabilityContractAddresses: (addresses: string[]) => void
     ) => {
@@ -38,7 +39,6 @@ const Home: NextPage = () => {
         }[]
       ) => void
     ) => {
-      setLoadingOpenAccountabilityContracts(true);
       const openAccountabilityContracts = await Promise.all(
         openAccountabilityContractAddresses.map(async (address) => {
           const accountabilityContract = getAccountabilityContract(
@@ -59,7 +59,6 @@ const Home: NextPage = () => {
         })
       );
       setAccountabilityContracts(openAccountabilityContracts);
-      setLoadingOpenAccountabilityContracts(false);
     },
     []
   );
@@ -67,21 +66,73 @@ const Home: NextPage = () => {
     openAccountabilityContractAddresses,
     setOpenAccountabilityContractAddresses,
   ] = useState<string[]>([]);
-  const [openAccountabilityContracts, setOpenAcccountabilityContracts] =
-    useState<
-      { address: string; name: string; status: string; amount: string }[]
-    >([]);
+  const [
+    openAccountabilityContractsForUser,
+    setOpenAcccountabilityContractsForUser,
+  ] = useState<
+    { address: string; name: string; status: string; amount: string }[]
+  >([]);
   useEffect(() => {
-    getOpenAccountabillityContractAddresses(
+    getOpenAccountabillityContractAddressesForUser(
       setOpenAccountabilityContractAddresses
     );
-  }, [getOpenAccountabillityContractAddresses]);
+  }, [getOpenAccountabillityContractAddressesForUser]);
   useEffect(() => {
+    setLoadingOpenAccountabilityContractsForUser(true);
     getOpenAccountabillityContracts(
       openAccountabilityContractAddresses,
-      setOpenAcccountabilityContracts
+      setOpenAcccountabilityContractsForUser
     );
+    setLoadingOpenAccountabilityContractsForUser(false);
   }, [getOpenAccountabillityContracts, openAccountabilityContractAddresses]);
+  const [
+    loadingOpenAccountabilityContractsForReferee,
+    setLoadingOpenAccountabilityContractsForReferee,
+  ] = useState(false);
+  const getOpenAccountabillityContractAddressesForReferee = useCallback(
+    async (
+      setAccountabilityContractAddressesForReferee: (
+        addresses: string[]
+      ) => void
+    ) => {
+      if (account) {
+        const openAccountabilityContractAddresses = await factory.methods
+          .getOpenAccountabilityContractAddressesForReferee(account)
+          .call();
+        setAccountabilityContractAddressesForReferee(
+          openAccountabilityContractAddresses
+        );
+      }
+    },
+    [account]
+  );
+  const [
+    openAccountabilityContractAddressesForReferee,
+    setOpenAccountabilityContractAddressesForReferee,
+  ] = useState<string[]>([]);
+  const [
+    openAccountabilityContractsForReferee,
+    setOpenAcccountabilityContractsForReferee,
+  ] = useState<
+    { address: string; name: string; status: string; amount: string }[]
+  >([]);
+  useEffect(() => {
+    getOpenAccountabillityContractAddressesForReferee(
+      setOpenAccountabilityContractAddressesForReferee
+    );
+  }, [getOpenAccountabillityContractAddressesForReferee]);
+  useEffect(() => {
+    setLoadingOpenAccountabilityContractsForReferee(true);
+    getOpenAccountabillityContracts(
+      openAccountabilityContractAddressesForReferee,
+      setOpenAcccountabilityContractsForReferee
+    );
+    setLoadingOpenAccountabilityContractsForReferee(false);
+  }, [
+    getOpenAccountabillityContracts,
+    getOpenAccountabillityContractAddressesForReferee,
+    openAccountabilityContractAddressesForReferee,
+  ]);
   return (
     <div>
       <title>Crypto accountability</title>
@@ -90,14 +141,32 @@ const Home: NextPage = () => {
         content="Stay accountability by betting crypto"
       />
       <Layout>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <h1>Open contracts: {openAccountabilityContractAddresses.length} </h1>
-        </div>
-        <ContractsTable
-          loading={loadingOpenAccountabilityContracts}
-          contracts={openAccountabilityContracts}
-        />
-        <Link href={"/contracts"}>View all contracts</Link>
+        <Segment>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <h1>
+              Your open contracts: {openAccountabilityContractAddresses.length}{" "}
+            </h1>
+          </div>
+          <ContractsTable
+            loading={loadingOpenAccountabilityContractsForUser}
+            contracts={openAccountabilityContractsForUser}
+          />
+          <Link href={"/contracts"}>View all contracts</Link>
+        </Segment>
+        <br />
+        <Segment>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <h1>
+              Contracts you referee:{" "}
+              {openAccountabilityContractAddresses.length}{" "}
+            </h1>
+          </div>
+          <ContractsTable
+            loading={loadingOpenAccountabilityContractsForReferee}
+            contracts={openAccountabilityContractsForReferee}
+          />
+          <Link href={"/referee"}>View all contracts you referee</Link>
+        </Segment>
       </Layout>
     </div>
   );
