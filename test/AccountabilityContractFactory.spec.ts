@@ -53,6 +53,18 @@ describe("Accountability contract factory", () => {
           .call();
         expect(numberOfUsers).toEqual("1");
       });
+      it("can get number of contracts", async () => {
+        const numberOfContracts = await accountabilityContractFactory.methods
+          .numberOfContracts()
+          .call();
+        expect(numberOfContracts).toEqual("1");
+      });
+      it("can get total eth in contracts", async () => {
+        const totalEthInContracts = await accountabilityContractFactory.methods
+          .totalEthInContracts()
+          .call();
+        expect(totalEthInContracts).toEqual(amount);
+      });
       it("increases number of users by one when a new user creates a contract", async () => {
         await accountabilityContractFactory.methods
           .createAccountabilityContract(

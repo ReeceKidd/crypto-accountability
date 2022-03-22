@@ -1,5 +1,14 @@
-2) View open and closed contracts of other users in the app. 
-3) View open and closed contracts of other referees in the app.
-4) Figure out mechanism for completing a contract based on stick. 
-5) Keep track of the total amount of money bet in the contracts. 
-6) Create a landing page similar to Uniswap. 
+-Add total eth on the line to homepage
+-Add number of contracts on the line
+-Add the ability to select charities
+-Add the ability to select antichairties
+-Add the ability to select enemeies
+-Add the ability to select friends
+-Figure out mechanism for completing a contract based on stick. 
+-Users can submit request to complete task which referee must approve. 
+-When users fail task task is automatically failed. 
+-When referees fail task task is automatically failed. 
+-Keep track of the total amount of money bet in the contracts. 
+-Create a landing page similar to Uniswap. 
+-View all users of apps
+-View recent contracts created in app

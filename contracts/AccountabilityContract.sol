@@ -4,6 +4,8 @@ pragma solidity ^0.8.0;
 contract AccountabilityContractFactory {
   mapping(address => User) public users;
   uint public numberOfUsers;
+  uint public numberOfContracts;
+  uint public totalEthInContracts;
   address[] userAddresses;
   mapping(address => Referee) public referees;
   uint public numberOfReferees;
@@ -31,6 +33,8 @@ contract AccountabilityContractFactory {
             refereeAddresses.push(_referee);
         }
         AccountabilityContract newContract = (new AccountabilityContract){value: msg.value}(msg.sender, _referee, _name, _description, _failureRecipient, msg.value);
+        numberOfContracts++;
+        totalEthInContracts+=msg.value;
         users[msg.sender].createdContracts++;
         users[msg.sender].openAccountabilityContractAddresses.push(address(newContract));
         referees[_referee].managedContracts++;
