@@ -7,11 +7,12 @@ interface Web3ReactManagerProps {}
 
 const Web3ReactManager: FC<Web3ReactManagerProps> = ({ children }) => {
   const { activate } = useWeb3React<Web3Provider>();
+ 
   useEffect(() => {
     const injectedConnector = new InjectedConnector({
       supportedChainIds: [1, 3, 4, 5, 42],
     });
-    activate(injectedConnector);
+    setTimeout(() => activate(injectedConnector), 500);
   }, [activate]);
   return <>{children}</>;
 };
