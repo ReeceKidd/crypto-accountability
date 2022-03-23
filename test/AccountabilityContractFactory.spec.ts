@@ -53,9 +53,9 @@ describe("Accountability contract factory", () => {
           .call();
         expect(numberOfUsers).toEqual("1");
       });
-      it("can get number of contracts", async () => {
+      it("can get number of accountability contracts", async () => {
         const numberOfContracts = await accountabilityContractFactory.methods
-          .numberOfContracts()
+          .numberOfAccountabilityContracts()
           .call();
         expect(numberOfContracts).toEqual("1");
       });
@@ -82,6 +82,19 @@ describe("Accountability contract factory", () => {
           .numberOfUsers()
           .call();
         expect(numberOfUsers).toEqual("2");
+      });
+      it("can get user addresses", async () => {
+        const userAddresses = await accountabilityContractFactory.methods
+          .getUserAddresses(0, 1)
+          .call();
+        expect(userAddresses.length).toEqual(1);
+      });
+      it("can get accountability contract addresses", async () => {
+        const accountabilityContractAddresses =
+          await accountabilityContractFactory.methods
+            .getAccountabilityContractAddresses(0, 1)
+            .call();
+        expect(accountabilityContractAddresses.length).toEqual(1);
       });
     });
     describe("user", () => {

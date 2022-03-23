@@ -3,13 +3,14 @@ pragma solidity ^0.8.0;
 
 contract AccountabilityContractFactory {
   mapping(address => User) public users;
+  address[] public userAddresses;
   uint public numberOfUsers;
-  uint public numberOfContracts;
+  address[] public accountabilityContractAddresses;
+  uint public numberOfAccountabilityContracts;
   uint public totalEthInContracts;
-  address[] userAddresses;
   mapping(address => Referee) public referees;
   uint public numberOfReferees;
-  address[] refereeAddresses;
+  address[] public refereeAddresses;
 
     struct User {
     uint createdContracts;
@@ -33,7 +34,8 @@ contract AccountabilityContractFactory {
             refereeAddresses.push(_referee);
         }
         AccountabilityContract newContract = (new AccountabilityContract){value: msg.value}(msg.sender, _referee, _name, _description, _failureRecipient, msg.value);
-        numberOfContracts++;
+        numberOfAccountabilityContracts++;
+        accountabilityContractAddresses.push(address(newContract));
         totalEthInContracts+=msg.value;
         users[msg.sender].createdContracts++;
         users[msg.sender].openAccountabilityContractAddresses.push(address(newContract));
@@ -102,12 +104,32 @@ contract AccountabilityContractFactory {
     }
 
      function moveOpenContractToClosedContractsForReferee(address referee, address contractAddress) private {
-         uint contractIndex = getContractIndexForReferee(referee, contractAddress);
+        uint contractIndex = getContractIndexForReferee(referee, contractAddress);
         for (uint i = contractIndex; i<referees[referee].openAccountabilityContractAddresses.length-1; i++){
             referees[referee].openAccountabilityContractAddresses[i] = referees[referee].openAccountabilityContractAddresses[i+1];
         }
         referees[referee].closedAccountabilityContractAddresses.push(referees[referee].openAccountabilityContractAddresses[referees[referee].openAccountabilityContractAddresses.length-1]);
         referees[referee].openAccountabilityContractAddresses.pop();
+    }
+
+    function getUserAddresses(uint startIndex, uint endIndex) public view returns (address[] memory) {
+       require(startIndex >= 0, "Start index cannot be negative");
+       require(endIndex <= userAddresses.length, "End index exceeds user addresses length");
+       address[] memory slicedUserAddresses = new address[](endIndex-startIndex);
+       for(uint i=startIndex; i<endIndex; i++){
+            slicedUserAddresses[i] = userAddresses[i];
+        }
+        return slicedUserAddresses;
+    }
+
+    function getAccountabilityContractAddresses(uint startIndex, uint endIndex) public view returns (address[] memory) {
+       require(startIndex >= 0, "Start index cannot be negative");
+       require(endIndex <= accountabilityContractAddresses.length, "End index exceeds user addresses length");
+       address[] memory slicedAccountabilityContractAddresses = new address[](endIndex-startIndex);
+       for(uint i=startIndex; i<endIndex; i++){
+            slicedAccountabilityContractAddresses[i] = accountabilityContractAddresses[i];
+        }
+        return slicedAccountabilityContractAddresses;
     }
 }
 
