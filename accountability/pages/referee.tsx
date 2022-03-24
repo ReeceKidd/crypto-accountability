@@ -172,15 +172,14 @@ const Contracts: NextPage<ContractsProps> = () => {
       <Layout>
         <Segment>
           <h2>
-            Open contracts you referee:
-            {openAccountabilityContractAddresses.length}
+            {`Open contracts you referee:
+            ${openAccountabilityContractAddresses.length}`}
           </h2>
           <ContractsTable contracts={openAccountabilityContracts} />
         </Segment>
         <Segment>
           <h2>
-            Closed contracts you referee:
-            {closedAccountabilityContractAddresses.length}
+            {`Closed contracts you referee: ${closedAccountabilityContractAddresses.length}`}
           </h2>
           <ContractsTable contracts={closedAccountabilityContracts} />
         </Segment>
