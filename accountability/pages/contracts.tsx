@@ -12,21 +12,27 @@ interface ContractsProps {}
 
 const Contracts: NextPage<ContractsProps> = () => {
   const { account } = useWeb3React();
+  const [
+    loadingGetOpenAccountabilityContractAddresses,
+    setLoadingGetOpenAccountabilityContractAddresses,
+  ] = useState(false);
   const getOpenAccountabillityContractAddresses = useCallback(
     async (
       setAccountabilityContractAddresses: (addresses: string[]) => void
     ) => {
+      setLoadingGetOpenAccountabilityContractAddresses(true);
       if (account) {
         const openAccountabilityContractAddresses = await factory.methods
           .getOpenAccountabilityContractAddressesForUser(account)
           .call();
         setAccountabilityContractAddresses(openAccountabilityContractAddresses);
       }
+      setLoadingGetOpenAccountabilityContractAddresses(false);
     },
     [account]
   );
   const [
-    loadinggetOpenAccountabilityContractForUsers,
+    loadingGetOpenAccountabilityContractForUsers,
     setLoadingGetOpenAccountabilityContractsForUser,
   ] = useState(false);
   const getOpenAccountabillityContracts = useCallback(
@@ -170,21 +176,20 @@ const Contracts: NextPage<ContractsProps> = () => {
         <title>Contracts</title>
       </Head>
       <Layout>
-        <Segment>
+        <Segment
+          loading={
+            loadingGetOpenAccountabilityContractAddresses ||
+            loadingGetOpenAccountabilityContractForUsers
+          }
+        >
           <h2>Open contracts: {openAccountabilityContractAddresses.length}</h2>
-          <ContractsTable
-            loading={loadinggetOpenAccountabilityContractForUsers}
-            contracts={openAccountabilityContracts}
-          />
+          <ContractsTable contracts={openAccountabilityContracts} />
         </Segment>
-        <Segment>
+        <Segment loading={loadingGetClosedAccountabilityContracts}>
           <h2>
             Closed contracts: {closedAccountabilityContractAddresses.length}
           </h2>
-          <ContractsTable
-            loading={loadingGetClosedAccountabilityContracts}
-            contracts={closedAccountabilityContracts}
-          />
+          <ContractsTable contracts={closedAccountabilityContracts} />
         </Segment>
       </Layout>
     </div>

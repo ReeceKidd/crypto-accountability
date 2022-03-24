@@ -162,10 +162,7 @@ const SpecificUser: NextPage<SpecificUserProps> = () => {
               Open contracts: {openAccountabilityContractAddresses.length}
             </h2>
           </div>
-          <ContractsTable
-            loading={loadingOpenAccountabilityContractsForUser}
-            contracts={openAccountabilityContractsForUser}
-          />
+          <ContractsTable contracts={openAccountabilityContractsForUser} />
         </Segment>
         <br />
         <Segment>
@@ -175,10 +172,7 @@ const SpecificUser: NextPage<SpecificUserProps> = () => {
               {openAccountabilityContractAddresses.length}
             </h2>
           </div>
-          <ContractsTable
-            loading={loadingOpenAccountabilityContractsForReferee}
-            contracts={openAccountabilityContractsForReferee}
-          />
+          <ContractsTable contracts={openAccountabilityContractsForReferee} />
         </Segment>
       </Layout>
     </>

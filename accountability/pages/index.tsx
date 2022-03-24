@@ -2,10 +2,12 @@ import { useWeb3React } from "@web3-react/core";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { Segment } from "semantic-ui-react";
+import { Grid, Segment } from "semantic-ui-react";
+import ContractsList from "../components/ContractsList/ContractsList";
 import ContractsTable from "../components/ContractsTable/ContractsTable";
 import Layout from "../components/Layout/Layout";
 import StatisticCards from "../components/StatisticCards/StatisticCards";
+import UsersList from "../components/UsersList/UsersList";
 import factory, { getAccountabilityContract } from "../factory";
 import { getContractStatus } from "../helpers/getContractStatus";
 
@@ -135,7 +137,8 @@ const Home: NextPage = () => {
     openAccountabilityContractAddressesForReferee,
   ]);
   const [numberOfUsers, setNumberOfUsers] = useState(0);
-  const [numberOfContracts, setNumberOfContracts] = useState(0);
+  const [numberOfAccountabilityContracts, setNumberOfAccountabilityContracts] =
+    useState(0);
   const [totalEthInContracts, setTotalEthInContracts] = useState("");
   const getNumberOfUsers = useCallback(
     async (setNumberOfUsers: (users: number) => void) => {
@@ -145,11 +148,11 @@ const Home: NextPage = () => {
     []
   );
   const getNumberOfContracts = useCallback(
-    async (setNumberOfContracts: (contracts: number) => void) => {
-      const numberOfContracts = await factory.methods
-        .numberOfContracts()
+    async (setNumberOfAccountabilityContracts: (contracts: number) => void) => {
+      const numberOfAccountabilityContracts = await factory.methods
+        .numberOfAccountabilityContracts()
         .call();
-      setNumberOfContracts(numberOfContracts);
+      setNumberOfAccountabilityContracts(numberOfAccountabilityContracts);
     },
     []
   );
@@ -164,9 +167,36 @@ const Home: NextPage = () => {
   );
   useEffect(() => {
     getNumberOfUsers(setNumberOfUsers);
-    getNumberOfContracts(setNumberOfContracts);
+    getNumberOfContracts(setNumberOfAccountabilityContracts);
     getTotalEthInContracts(setTotalEthInContracts);
   }, [getNumberOfUsers, getNumberOfContracts, getTotalEthInContracts]);
+  const [userAddresses, setUserAddresses] = useState<string[]>([]);
+  const getUserAddresses = useCallback(
+    async (setUserAddresses: (addresses: string[]) => void) => {
+      const userAddresses = await factory.methods
+        .getUserAddresses(0, numberOfUsers)
+        .call();
+      setUserAddresses(userAddresses);
+    },
+    [numberOfUsers]
+  );
+  useEffect(() => {
+    getUserAddresses(setUserAddresses);
+  }, [getUserAddresses]);
+  const [contractAddresses, setContractAddresses] = useState<string[]>([]);
+  const getContractAddresses = useCallback(
+    async (setContractAddresses: (addresses: string[]) => void) => {
+      const contractAddresses = await factory.methods
+        .getAccountabilityContractAddresses(0, numberOfAccountabilityContracts)
+        .call();
+      setContractAddresses(contractAddresses);
+    },
+    [numberOfAccountabilityContracts]
+  );
+  useEffect(() => {
+    getContractAddresses(setContractAddresses);
+  }, [getContractAddresses]);
+
   return (
     <div>
       <title>Crypto accountability</title>
@@ -181,12 +211,10 @@ const Home: NextPage = () => {
               Your open contracts: {openAccountabilityContractAddresses.length}{" "}
             </h2>
           </div>
-          <ContractsTable
-            loading={loadingOpenAccountabilityContractsForUser}
-            contracts={openAccountabilityContractsForUser}
-          />
+          <ContractsTable contracts={openAccountabilityContractsForUser} />
+          <Link href={"/contracts"}>View all contracts</Link>
         </Segment>
-        <Link href={"/contracts"}>View all contracts</Link>
+
         <br />
         <Segment>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -195,20 +223,36 @@ const Home: NextPage = () => {
               {openAccountabilityContractAddresses.length}{" "}
             </h2>
           </div>
-          <ContractsTable
-            loading={loadingOpenAccountabilityContractsForReferee}
-            contracts={openAccountabilityContractsForReferee}
-          />
+          <ContractsTable contracts={openAccountabilityContractsForReferee} />
+          <Link href={"/referee"}>View all contracts you referee</Link>
         </Segment>
-        <Link href={"/referee"}>View all contracts you referee</Link>
-        <Segment>
-          <h2>The numbers</h2>
-          <StatisticCards
-            numberOfUsers={numberOfUsers}
-            numberOfContracts={numberOfContracts}
-            totalEthInContracts={totalEthInContracts}
-          />
-        </Segment>
+
+        <Grid>
+          <Grid.Column width={4}>
+            <Segment>
+              <h2>The numbers</h2>
+              <StatisticCards
+                numberOfUsers={numberOfUsers}
+                numberOfAccountabilityContracts={
+                  numberOfAccountabilityContracts
+                }
+                totalEthInContracts={totalEthInContracts}
+              />
+            </Segment>
+          </Grid.Column>
+          <Grid.Column width={4}>
+            <Segment>
+              <h2>Users</h2>
+              <UsersList userAddresses={userAddresses} />
+            </Segment>
+          </Grid.Column>
+          <Grid.Column width={4}>
+            <Segment>
+              <h2>Contracts</h2>
+              <ContractsList contractAddresses={contractAddresses} />
+            </Segment>
+          </Grid.Column>
+        </Grid>
       </Layout>
     </div>
   );

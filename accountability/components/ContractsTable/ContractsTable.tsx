@@ -10,11 +10,10 @@ export interface AccountabilityContract {
 }
 
 interface RequestsTableProps {
-  loading: boolean;
   contracts: AccountabilityContract[];
 }
 
-const ContractsTable = ({ loading, contracts }: RequestsTableProps) => {
+const ContractsTable = ({ contracts }: RequestsTableProps) => {
   const tableCells = contracts.map(
     ({ address, name, status, amount }, index) => (
       <Table.Row key={index}>
@@ -27,11 +26,7 @@ const ContractsTable = ({ loading, contracts }: RequestsTableProps) => {
     )
   );
 
-  return loading ? (
-    <Loader inline="centered" active={loading} size="medium">
-      Loading
-    </Loader>
-  ) : (
+  return (
     <>
       {tableCells.length > 0 && (
         <Table celled>

@@ -1,16 +1,15 @@
-import Link from "next/link";
 import { Card } from "semantic-ui-react";
 import web3 from "../../web3";
 
 interface StatisticCardsProps {
   numberOfUsers: number;
-  numberOfContracts: number;
+  numberOfAccountabilityContracts: number;
   totalEthInContracts: string;
 }
 
 const StatisticCards = ({
   numberOfUsers,
-  numberOfContracts,
+  numberOfAccountabilityContracts,
   totalEthInContracts,
 }: StatisticCardsProps) => {
   const cards = [
@@ -21,7 +20,7 @@ const StatisticCards = ({
     },
     {
       header: "Total Contracts",
-      description: numberOfContracts,
+      description: numberOfAccountabilityContracts,
       raised: true,
     },
     {
