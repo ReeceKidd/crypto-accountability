@@ -1,13 +1,13 @@
 
--View all users of app
--View recent contracts created in app
--Figure out mechanism for completing a contract based on stick. 
 -Users can submit request to complete task which referee must approve. 
 -When users fail task task is automatically failed. 
 -When referees fail task task is automatically failed. 
--Keep track of the total amount of money bet in the contracts. 
+-When referee approves contract it is automatically approved. 
 -Create a landing page similar to Uniswap. 
+-Create multi step form. 
 -Add the ability to select charities
 -Add the ability to select antichairties
 -Add the ability to select enemeies
 -Add the ability to select friends
+-Retreive charities from my own crypto charities website. 
+-Retreive charities from crypto charity website. 
