@@ -324,6 +324,73 @@ describe("Accountability contract factory", () => {
           expect(err);
         }
       });
+      describe("request referee completes contract", () => {
+        it("user cannot request a referee completes a contract for a contract that is closed", async () => {
+          try {
+            const openAccountabilityContractAddresses =
+              await accountabilityContractFactory.methods
+                .getOpenAccountabilityContractAddressesForUser(manager)
+                .call();
+            await accountabilityContractFactory.methods
+              .requestRefereeCompletesContract(
+                referee,
+                openAccountabilityContractAddresses[0]
+              )
+              .send({ from: manager, gas: 1000000 });
+            await accountabilityContractFactory.methods
+              .completeOpenAccountabilityContract(
+                manager,
+                openAccountabilityContractAddresses[0]
+              )
+              .send({ from: manager, gas: 1000000 });
+            await accountabilityContractFactory.methods;
+          } catch (err: any) {
+            expect(err.message.includes("Contract status must be open"));
+          }
+        });
+        it("user cannot request a referee completes a contract where they are not the referee", async () => {
+          try {
+            const openAccountabilityContractAddresses =
+              await accountabilityContractFactory.methods
+                .getOpenAccountabilityContractAddressesForUser(manager)
+                .call();
+            await accountabilityContractFactory.methods
+              .completeOpenAccountabilityContract(
+                accounts[1],
+                openAccountabilityContractAddresses[0]
+              )
+              .send({ from: manager, gas: 1000000 });
+            await accountabilityContractFactory.methods;
+          } catch (err: any) {
+            expect(
+              err.message.includes(
+                "Contract referee must equal requested referee"
+              )
+            );
+          }
+        });
+        it("user cannot request a referee completes a contract where they are not the creator", async () => {
+          try {
+            const openAccountabilityContractAddresses =
+              await accountabilityContractFactory.methods
+                .getOpenAccountabilityContractAddressesForUser(manager)
+                .call();
+            await accountabilityContractFactory.methods
+              .completeOpenAccountabilityContract(
+                accounts[1],
+                openAccountabilityContractAddresses[0]
+              )
+              .send({ from: accounts[1], gas: 1000000 });
+            await accountabilityContractFactory.methods;
+          } catch (err: any) {
+            expect(
+              err.message.includes(
+                "Only creator of contract can request completion"
+              )
+            );
+          }
+        });
+      });
     });
 
     describe("referee", () => {

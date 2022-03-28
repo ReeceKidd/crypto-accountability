@@ -87,6 +87,15 @@ contract AccountabilityContractFactory {
         referees[referee].completeAccountabilityContractRequestsAddresses.push(address(newApprovalRequest));
     }
 
+    function approveRequestForCompletion(address referee, address completionRequestContractAddress) public {
+        AccountabilityContractApprovalRequest approvalRequest = AccountabilityContractApprovalRequest(completionRequestContractAddress);
+        AccountabilityContract accountabilityContract = AccountabilityContract(approvalRequest.accountabilityContractAddress());
+        require(accountabilityContract.referee() == referee, "Only contract referee can approve request for completion");
+        accountabilityContract.completeContract();
+        moveOpenContractToClosedContractsForUser(accountabilityContract.creator(), approvalRequest.accountabilityContractAddress());
+        moveOpenContractToClosedContractsForReferee(accountabilityContract.referee(), approvalRequest.accountabilityContractAddress());
+    }
+
     function getContractIndexForUser(address user, address contractAddress) view private returns (uint){
         uint contractIndex;
         for (uint i = 0; i<=users[user].openAccountabilityContractAddresses.length-1; i++){
@@ -149,8 +158,9 @@ contract AccountabilityContractFactory {
 
 contract AccountabilityContractApprovalRequest {
     address public user;
+    address public referee;
     address public accountabilityContractAddress;
-    enum Status{ OPEN, CLOSED }
+    enum Status{ OPEN, APPROVED, DENIED }
     Status public status;
     
     constructor(address _user, address _accountabilityContractAddress) {
@@ -158,6 +168,18 @@ contract AccountabilityContractApprovalRequest {
         accountabilityContractAddress = _accountabilityContractAddress;
         status = Status.OPEN;
     }
+
+    function approveRequest() public  returns (AccountabilityContractApprovalRequest) {
+        require(tx.origin == referee, "Only referee can approve approval request");
+        status = Status.APPROVED;
+        return this;
+    } 
+
+    function denyRequest() public  returns (AccountabilityContractApprovalRequest) {
+        require(tx.origin == referee, "Only referee can deny approval request");
+        status = Status.DENIED;
+        return this;
+    } 
 }
 
 contract AccountabilityContract {
