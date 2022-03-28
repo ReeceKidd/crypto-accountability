@@ -64,33 +64,32 @@ contract AccountabilityContractFactory {
         return referees[referee].completeAccountabilityContractRequestsAddresses;
     }
 
-    function failOpenAccountabilityContract(address user, address contractAddress) public {
+    function failOpenAccountabilityContract(address contractAddress) public {
       AccountabilityContract accountabilityContract = AccountabilityContract(contractAddress);
       accountabilityContract.failContract();
-      moveOpenContractToClosedContractsForUser(user,contractAddress);
+      moveOpenContractToClosedContractsForUser(accountabilityContract.creator(),contractAddress);
       moveOpenContractToClosedContractsForReferee(accountabilityContract.referee(), contractAddress);
     }
 
-    function completeOpenAccountabilityContract(address user, address contractAddress) public {
+    function completeOpenAccountabilityContract(address contractAddress) public {
       AccountabilityContract accountabilityContract = AccountabilityContract(contractAddress);
       accountabilityContract.completeContract();
-      moveOpenContractToClosedContractsForUser(user, contractAddress);
+      moveOpenContractToClosedContractsForUser(accountabilityContract.creator(), contractAddress);
       moveOpenContractToClosedContractsForReferee(accountabilityContract.referee(), contractAddress);
     }
 
-    function requestRefereeCompletesContract(address referee, address contractAddress) public {
+    function requestRefereeCompletesContract(address contractAddress) public {
         AccountabilityContract accountabilityContract = AccountabilityContract(contractAddress);
         require(accountabilityContract.status() == AccountabilityContract.Status.OPEN, "Contract status must be open");
-        require(accountabilityContract.referee() == referee, "Contract referee must equal requested referee");
         require(tx.origin == accountabilityContract.creator(), "Only creator of contract can request completion");
-        AccountabilityContractApprovalRequest newApprovalRequest = new AccountabilityContractApprovalRequest(accountabilityContract.creator(), contractAddress);
-        referees[referee].completeAccountabilityContractRequestsAddresses.push(address(newApprovalRequest));
+        AccountabilityContractApprovalRequest newApprovalRequest = new AccountabilityContractApprovalRequest(contractAddress);
+        referees[accountabilityContract.referee()].completeAccountabilityContractRequestsAddresses.push(address(newApprovalRequest));
     }
 
-    function approveRequestForCompletion(address referee, address completionRequestContractAddress) public {
+    function approveRequestForCompletion(address completionRequestContractAddress) public {
         AccountabilityContractApprovalRequest approvalRequest = AccountabilityContractApprovalRequest(completionRequestContractAddress);
         AccountabilityContract accountabilityContract = AccountabilityContract(approvalRequest.accountabilityContractAddress());
-        require(accountabilityContract.referee() == referee, "Only contract referee can approve request for completion");
+        require(accountabilityContract.referee() == approvalRequest.referee(), "Only contract referee can approve request for completion");
         accountabilityContract.completeContract();
         moveOpenContractToClosedContractsForUser(accountabilityContract.creator(), approvalRequest.accountabilityContractAddress());
         moveOpenContractToClosedContractsForReferee(accountabilityContract.referee(), approvalRequest.accountabilityContractAddress());
@@ -157,14 +156,16 @@ contract AccountabilityContractFactory {
 }
 
 contract AccountabilityContractApprovalRequest {
-    address public user;
+    address public creator;
     address public referee;
     address public accountabilityContractAddress;
     enum Status{ OPEN, APPROVED, DENIED }
     Status public status;
     
-    constructor(address _user, address _accountabilityContractAddress) {
-        user = _user;
+    constructor(address _accountabilityContractAddress) {
+        AccountabilityContract accountabilityContract = AccountabilityContract(_accountabilityContractAddress);
+        creator = accountabilityContract.creator();
+        referee = accountabilityContract.referee();
         accountabilityContractAddress = _accountabilityContractAddress;
         status = Status.OPEN;
     }

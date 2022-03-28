@@ -113,7 +113,6 @@ describe("Accountability contract factory", () => {
             .call();
         await accountabilityContractFactory.methods
           .failOpenAccountabilityContract(
-            manager,
             openAccountabilityContractAddresses[0]
           )
           .send({ from: manager, gas: 1000000 });
@@ -143,6 +142,17 @@ describe("Accountability contract factory", () => {
             .call();
         expect(openAccountabilityContractAddresses.length).toEqual(2);
       });
+      it("can request that referee completes contract", async () => {
+        const openAccountabilityContractAddresses =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForUser(manager)
+            .call();
+        await accountabilityContractFactory.methods
+          .requestRefereeCompletesContract(
+            openAccountabilityContractAddresses[0]
+          )
+          .send({ from: manager, gas: 1000000 });
+      });
     });
     describe("referee", () => {
       it("can get open accountability contract addresses of referee", async () => {
@@ -160,7 +170,6 @@ describe("Accountability contract factory", () => {
             .call();
         await accountabilityContractFactory.methods
           .failOpenAccountabilityContract(
-            manager,
             openAccountabilityContractAddresses[0]
           )
           .send({ from: manager, gas: 1000000 });
@@ -180,7 +189,6 @@ describe("Accountability contract factory", () => {
             .call();
         await accountabilityContractFactory.methods
           .requestRefereeCompletesContract(
-            referee,
             openAccountabilityContractAddresses[0]
           )
           .send({ from: manager, gas: 1000000 });
@@ -188,7 +196,9 @@ describe("Accountability contract factory", () => {
           await accountabilityContractFactory.methods
             .getCompleteAccountabilityContractRequestsForReferee(manager)
             .call();
-       expect(completeAccountabilityContractRequestAddresses.length).toEqual(1);
+        expect(completeAccountabilityContractRequestAddresses.length).toEqual(
+          1
+        );
       });
       it("referee can fail an open accountability contract", async () => {
         const initialOpenAccountabilityContractAddresses =
@@ -197,7 +207,6 @@ describe("Accountability contract factory", () => {
             .call();
         await accountabilityContractFactory.methods
           .failOpenAccountabilityContract(
-            manager,
             initialOpenAccountabilityContractAddresses[0]
           )
           .send({ from: manager, gas: 1000000 });
@@ -231,7 +240,6 @@ describe("Accountability contract factory", () => {
             .call();
         await accountabilityContractFactory.methods
           .completeOpenAccountabilityContract(
-            manager,
             initialOpenAccountabilityContractAddresses[0]
           )
           .send({ from: manager, gas: 1000000 });
@@ -256,6 +264,24 @@ describe("Accountability contract factory", () => {
           closedAccountabilityContractAddresses[0]
         );
         expect(closedAcccountabilityContractBalance).toEqual("0");
+      });
+      it("referee can approve request for completion", async () => {
+        const openAccountabilityContractAddresses =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForReferee(manager)
+            .call();
+        await accountabilityContractFactory.methods
+          .requestRefereeCompletesContract(
+            openAccountabilityContractAddresses[0]
+          )
+          .send({ from: manager, gas: 1000000 });
+        const completeAccountabilityContractRequestAddresses =
+          await accountabilityContractFactory.methods
+            .getCompleteAccountabilityContractRequestsForReferee(manager)
+            .call();
+        await accountabilityContractFactory.methods.approveRequestForCompletion(
+          completeAccountabilityContractRequestAddresses[0]
+        );
       });
     });
   });
@@ -285,11 +311,19 @@ describe("Accountability contract factory", () => {
       });
       it("user who is not referee or creator cannot fail an open accountability contract", async () => {
         try {
+          const openAccountabilityContractAddresses =
+            await accountabilityContractFactory.methods
+              .getOpenAccountabilityContractAddressesForUser(manager)
+              .call();
           await accountabilityContractFactory.methods
-            .failOpenAccountabilityContract(manager, 0)
+            .failOpenAccountabilityContract(
+              openAccountabilityContractAddresses[0]
+            )
             .send({ from: accounts[2], gas: 1000000 });
-        } catch (err) {
-          expect(err);
+        } catch (err: any) {
+          expect(
+            err.message.includes("Only referee or creator can fail contract")
+          );
         }
       });
       it("non referee cannot complete an open accountability contract", async () => {
@@ -300,7 +334,6 @@ describe("Accountability contract factory", () => {
               .call();
           await accountabilityContractFactory.methods
             .completeOpenAccountabilityContract(
-              manager,
               openAccountabilityContractAddresses[0]
             )
             .send({ from: accounts[2], gas: 1000000 });
@@ -316,7 +349,6 @@ describe("Accountability contract factory", () => {
               .call();
           await accountabilityContractFactory.methods
             .completeOpenAccountabilityContract(
-              manager,
               openAccountabilityContractAddresses[0]
             )
             .send({ from: accounts[2], gas: 1000000 });
@@ -333,13 +365,11 @@ describe("Accountability contract factory", () => {
                 .call();
             await accountabilityContractFactory.methods
               .requestRefereeCompletesContract(
-                referee,
                 openAccountabilityContractAddresses[0]
               )
               .send({ from: manager, gas: 1000000 });
             await accountabilityContractFactory.methods
               .completeOpenAccountabilityContract(
-                manager,
                 openAccountabilityContractAddresses[0]
               )
               .send({ from: manager, gas: 1000000 });
@@ -356,7 +386,6 @@ describe("Accountability contract factory", () => {
                 .call();
             await accountabilityContractFactory.methods
               .completeOpenAccountabilityContract(
-                accounts[1],
                 openAccountabilityContractAddresses[0]
               )
               .send({ from: manager, gas: 1000000 });
@@ -377,7 +406,6 @@ describe("Accountability contract factory", () => {
                 .call();
             await accountabilityContractFactory.methods
               .completeOpenAccountabilityContract(
-                accounts[1],
                 openAccountabilityContractAddresses[0]
               )
               .send({ from: accounts[1], gas: 1000000 });
@@ -401,14 +429,12 @@ describe("Accountability contract factory", () => {
             .call();
         await accountabilityContractFactory.methods
           .completeOpenAccountabilityContract(
-            manager,
             openAccountabilityContractAddresses[0]
           )
           .send({ from: manager, gas: 1000000 });
         try {
           await accountabilityContractFactory.methods
             .completeOpenAccountabilityContract(
-              manager,
               openAccountabilityContractAddresses[0]
             )
             .send({ from: manager, gas: 1000000 });
@@ -423,14 +449,12 @@ describe("Accountability contract factory", () => {
             .call();
         await accountabilityContractFactory.methods
           .completeOpenAccountabilityContract(
-            manager,
             openAccountabilityContractAddresses[0]
           )
           .send({ from: manager, gas: 1000000 });
         try {
           await accountabilityContractFactory.methods
             .failOpenAccountabilityContract(
-              manager,
               openAccountabilityContractAddresses[0]
             )
             .send({ from: manager, gas: 1000000 });
@@ -445,14 +469,12 @@ describe("Accountability contract factory", () => {
             .call();
         await accountabilityContractFactory.methods
           .completeOpenAccountabilityContract(
-            manager,
             openAccountabilityContractAddresses[0]
           )
           .send({ from: manager, gas: 1000000 });
         try {
           await accountabilityContractFactory.methods
             .completeOpenAccountabilityContract(
-              manager,
               openAccountabilityContractAddresses[0]
             )
             .send({ from: manager, gas: 1000000 });
@@ -468,14 +490,12 @@ describe("Accountability contract factory", () => {
             .call();
         await accountabilityContractFactory.methods
           .completeOpenAccountabilityContract(
-            manager,
             openAccountabilityContractAddresses[0]
           )
           .send({ from: manager, gas: 1000000 });
         try {
           await accountabilityContractFactory.methods
             .failOpenAccountabilityContract(
-              manager,
               openAccountabilityContractAddresses[0]
             )
             .send({ from: manager, gas: 1000000 });
@@ -490,14 +510,12 @@ describe("Accountability contract factory", () => {
             .call();
         await accountabilityContractFactory.methods
           .failOpenAccountabilityContract(
-            manager,
             openAccountabilityContractAddresses[0]
           )
           .send({ from: manager, gas: 1000000 });
         try {
           await accountabilityContractFactory.methods
             .completeOpenAccountabilityContract(
-              manager,
               openAccountabilityContractAddresses[0]
             )
             .send({ from: manager, gas: 1000000 });
@@ -506,11 +524,5 @@ describe("Accountability contract factory", () => {
         }
       });
     });
-
-
-
-  
- 
-
   });
 });
