@@ -22,7 +22,7 @@ contract AccountabilityContractFactory {
     uint managedContracts;
     address[] openAccountabilityContractAddresses;
     address[] closedAccountabilityContractAddresses;
-    address [] completeAccountabilityContractRequests;
+    address[] completeAccountabilityContractRequestsAddresses;
     }
 
     function createAccountabilityContract(address _referee, string memory _name, string memory _description, address payable _failureRecipient) public payable {
@@ -61,7 +61,7 @@ contract AccountabilityContractFactory {
     }
 
     function getCompleteAccountabilityContractRequestsForReferee(address referee) public view returns (address[] memory){
-        return referees[referee].completeAccountabilityContractRequests;
+        return referees[referee].completeAccountabilityContractRequestsAddresses;
     }
 
     function failOpenAccountabilityContract(address user, address contractAddress) public {
@@ -83,8 +83,8 @@ contract AccountabilityContractFactory {
         require(accountabilityContract.status() == AccountabilityContract.Status.OPEN, "Contract status must be open");
         require(accountabilityContract.referee() == referee, "Contract referee must equal requested referee");
         require(tx.origin == accountabilityContract.creator(), "Only creator of contract can request completion");
-        AccountabilityContractApprovalRequest newApprovalRequest = (new AccountabilityContractApprovalRequest)(accountabilityContract.creator(), contractAddress);
-        referees[referee].completeAccountabilityContractRequests.push(address(newApprovalRequest));
+        AccountabilityContractApprovalRequest newApprovalRequest = new AccountabilityContractApprovalRequest(accountabilityContract.creator(), contractAddress);
+        referees[referee].completeAccountabilityContractRequestsAddresses.push(address(newApprovalRequest));
     }
 
     function getContractIndexForUser(address user, address contractAddress) view private returns (uint){

@@ -173,23 +173,22 @@ describe("Accountability contract factory", () => {
           1
         );
       });
-      it.only("can get complete accountability contract requests of referee", async () => {
+      it("can get complete accountability contract requests of referee", async () => {
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForReferee(manager)
             .call();
-        await accountabilityContractFactory.methods.requestRefereeCompletesContract(
-          referee,
-          openAccountabilityContractAddresses[0]
-        );
+        await accountabilityContractFactory.methods
+          .requestRefereeCompletesContract(
+            referee,
+            openAccountabilityContractAddresses[0]
+          )
+          .send({ from: manager, gas: 1000000 });
         const completeAccountabilityContractRequestAddresses =
           await accountabilityContractFactory.methods
             .getCompleteAccountabilityContractRequestsForReferee(manager)
             .call();
-        console.log(
-          "Contract requests",
-          completeAccountabilityContractRequestAddresses
-        );
+       expect(completeAccountabilityContractRequestAddresses.length).toEqual(1);
       });
       it("referee can fail an open accountability contract", async () => {
         const initialOpenAccountabilityContractAddresses =
