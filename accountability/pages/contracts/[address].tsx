@@ -54,34 +54,6 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
     setFailContractLoading(false);
     router.reload();
   };
-  const getStatusMessage = () => {
-    if (status === ContractStatus.SUCCESS) {
-      return (
-        <Message
-          color="green"
-          icon="check"
-          header="Completed"
-          content="You successfully completed this contract."
-        />
-      );
-    }
-    if (status === ContractStatus.FAILURE) {
-      <Message
-        color="red"
-        icon="cross"
-        header="Failed"
-        content="You failed to complete this contract."
-      />;
-    }
-    return (
-      <Message
-        color="red"
-        icon="cross"
-        header="Failed"
-        content="You failed to complete this contract."
-      />
-    );
-  };
   return (
     <Layout>
       <Head>
@@ -94,7 +66,7 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
       <br />
       <Grid>
         <Grid.Column width={12}>
-          <ContractStatusMessage status={ContractStatus.FAILURE} />
+          <ContractStatusMessage status={status as ContractStatus} />
           <ContractsCards
             creator={creator}
             referee={referee}

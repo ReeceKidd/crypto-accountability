@@ -12,7 +12,7 @@ const ContractStatusMessage = ({ status }: ContractStatusMessageProps) => {
         color="green"
         icon="check"
         header="Completed"
-        content="You successfully completed this contract."
+        content="This contract has been completed."
       />
     );
   }
@@ -22,7 +22,7 @@ const ContractStatusMessage = ({ status }: ContractStatusMessageProps) => {
         color="red"
         icon="times circle"
         header="Failed"
-        content="You failed to complete this contract."
+        content="This contract was failed."
       />
     );
   }

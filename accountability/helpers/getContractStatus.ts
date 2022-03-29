@@ -2,6 +2,7 @@ export enum ContractStatus {
   OPEN = "Open",
   SUCCESS = "Success",
   FAILURE = "Failure",
+  UNKNOWN = "Unknown",
 }
 
 export const getContractStatus = (status: string): string => {
@@ -10,5 +11,5 @@ export const getContractStatus = (status: string): string => {
     "1": ContractStatus.SUCCESS,
     "2": ContractStatus.FAILURE,
   };
-  return statusDictionary[status] || "Unknown";
+  return statusDictionary[status];
 };
