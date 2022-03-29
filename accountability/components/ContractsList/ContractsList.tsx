@@ -2,13 +2,13 @@ import Link from "next/link";
 import { List } from "semantic-ui-react";
 
 interface ContractsListProps {
-  contractAddresses: string[];
+  contracts: { address: string; title: string }[];
 }
 
-const ContractsList = ({ contractAddresses }: ContractsListProps) => {
+const ContractsList = ({ contracts }: ContractsListProps) => {
   return (
     <List>
-      {contractAddresses.map((address, index) => (
+      {contracts.map(({ address, title }, index) => (
         <List.Item key={index}>
           <List.Content>
             <Link href={`/contracts/${address}`} passHref={true}>
@@ -19,7 +19,7 @@ const ContractsList = ({ contractAddresses }: ContractsListProps) => {
                   textOverflow: "ellipsis",
                 }}
               >
-                {address}
+                {title}
               </List.Header>
             </Link>
           </List.Content>

@@ -183,19 +183,33 @@ const Home: NextPage = () => {
   useEffect(() => {
     getUserAddresses(setUserAddresses);
   }, [getUserAddresses]);
-  const [contractAddresses, setContractAddresses] = useState<string[]>([]);
-  const getContractAddresses = useCallback(
-    async (setContractAddresses: (addresses: string[]) => void) => {
-      const contractAddresses = await factory.methods
+  const [contracts, setContracts] = useState<
+    { address: string; title: string }[]
+  >([]);
+  const getContracts = useCallback(
+    async (
+      setContracts: (addresses: { address: string; title: string }[]) => void
+    ) => {
+      const contractAddresses: string[] = await factory.methods
         .getAccountabilityContractAddresses(0, numberOfAccountabilityContracts)
         .call();
-      setContractAddresses(contractAddresses);
+      const contractNames = await Promise.all(
+        contractAddresses.map(async (address) => {
+          const accountabilityContract = getAccountabilityContract(address!);
+          const title = await accountabilityContract.methods.name().call();
+          return {
+            address,
+            title,
+          };
+        })
+      );
+      setContracts(contractNames);
     },
     [numberOfAccountabilityContracts]
   );
   useEffect(() => {
-    getContractAddresses(setContractAddresses);
-  }, [getContractAddresses]);
+    getContracts(setContracts);
+  }, [getContracts]);
 
   return (
     <div>
@@ -205,7 +219,7 @@ const Home: NextPage = () => {
         content="Stay accountability by betting crypto"
       />
       <Layout>
-        <Segment>
+        <Segment loading={loadingOpenAccountabilityContractsForUser}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <h2>
               Your open contracts: {openAccountabilityContractAddresses.length}{" "}
@@ -214,19 +228,16 @@ const Home: NextPage = () => {
           <ContractsTable contracts={openAccountabilityContractsForUser} />
           <Link href={"/contracts"}>View all contracts</Link>
         </Segment>
-
-        <br />
-        <Segment>
+        <Segment loading={loadingOpenAccountabilityContractsForReferee}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <h2>
-              Contracts you referee:{" "}
-              {openAccountabilityContractAddresses.length}{" "}
+              Contracts you referee:
+              {openAccountabilityContractAddresses.length}
             </h2>
           </div>
           <ContractsTable contracts={openAccountabilityContractsForReferee} />
           <Link href={"/referee"}>View all contracts you referee</Link>
         </Segment>
-
         <Grid>
           <Grid.Column width={4}>
             <Segment>
@@ -242,14 +253,14 @@ const Home: NextPage = () => {
           </Grid.Column>
           <Grid.Column width={4}>
             <Segment>
-              <h2>Users</h2>
+              <h2>New Users</h2>
               <UsersList userAddresses={userAddresses} />
             </Segment>
           </Grid.Column>
           <Grid.Column width={4}>
             <Segment>
-              <h2>Contracts</h2>
-              <ContractsList contractAddresses={contractAddresses} />
+              <h2>New Contracts</h2>
+              <ContractsList contracts={contracts} />
             </Segment>
           </Grid.Column>
         </Grid>

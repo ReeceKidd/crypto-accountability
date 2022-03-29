@@ -7,22 +7,15 @@ interface ContractCardsProps {
   referee: string;
   failureRecipient: string;
   amount: string;
-  status: string;
 }
 
 const ContractCards = ({
   creator,
   referee,
   failureRecipient,
-  status,
   amount,
 }: ContractCardsProps) => {
   const cards = [
-    {
-      header: "Status",
-      description: status,
-      meta: "Status",
-    },
     {
       header: "Creator",
       description: <Link href={`/users/${creator}`}>{creator}</Link>,

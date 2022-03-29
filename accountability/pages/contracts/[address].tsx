@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { Button, Grid } from "semantic-ui-react";
+import { Button, Grid, Message } from "semantic-ui-react";
 import ContractsCards from "../../components/ContractCards/ContractCards";
 import Layout from "../../components/Layout/Layout";
 import { getAccountabilityContract } from "../../factory";
@@ -11,6 +11,7 @@ import {
   ContractStatus,
   getContractStatus,
 } from "../../helpers/getContractStatus";
+import ContractStatusMessage from "../../components/ContractStatusMessage/ContractStatusMessage";
 
 interface SpecificContractProps {
   creator: string;
@@ -53,6 +54,34 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
     setFailContractLoading(false);
     router.reload();
   };
+  const getStatusMessage = () => {
+    if (status === ContractStatus.SUCCESS) {
+      return (
+        <Message
+          color="green"
+          icon="check"
+          header="Completed"
+          content="You successfully completed this contract."
+        />
+      );
+    }
+    if (status === ContractStatus.FAILURE) {
+      <Message
+        color="red"
+        icon="cross"
+        header="Failed"
+        content="You failed to complete this contract."
+      />;
+    }
+    return (
+      <Message
+        color="red"
+        icon="cross"
+        header="Failed"
+        content="You failed to complete this contract."
+      />
+    );
+  };
   return (
     <Layout>
       <Head>
@@ -65,12 +94,12 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
       <br />
       <Grid>
         <Grid.Column width={12}>
+          <ContractStatusMessage status={ContractStatus.FAILURE} />
           <ContractsCards
             creator={creator}
             referee={referee}
             failureRecipient={failureRecipient}
             amount={amount}
-            status={status}
           />
         </Grid.Column>
         {account === referee && status === ContractStatus.OPEN && (
