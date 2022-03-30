@@ -4,10 +4,8 @@ import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
 import { Segment } from "semantic-ui-react";
 import AccountabilityContracts from "../components/AccountabilityContracts/AccountabilityContracts";
-import ContractsTable from "../components/ContractsTable/ContractsTable";
 import Layout from "../components/Layout/Layout";
-import factory, { getAccountabilityContract } from "../factory";
-import { getContractStatus } from "../helpers/getContractStatus";
+import factory from "../factory";
 
 interface ContractsProps {}
 
@@ -33,22 +31,18 @@ const Contracts: NextPage<ContractsProps> = () => {
     [account]
   );
   const [
-    loadingGetOpenAccountabilityContractForUsers,
-    setLoadingGetOpenAccountabilityContractsForUser,
-  ] = useState(false);
-  const [
     openAccountabilityContractAddresses,
     setOpenAccountabilityContractAddresses,
   ] = useState<string[]>([]);
-  const [openAccountabilityContracts, setOpenAcccountabilityContracts] =
-    useState<
-      { address: string; name: string; status: string; amount: string }[]
-    >([]);
   useEffect(() => {
     getOpenAccountabillityContractAddresses(
       setOpenAccountabilityContractAddresses
     );
   }, [getOpenAccountabillityContractAddresses]);
+  const [
+    loadingGetClosedAccountabilityContractAddresses,
+    setLoadingGetClosedAccountabilityContractAddresses,
+  ] = useState(false);
   const getClosedAccountabillityContractAddresses = useCallback(
     async (
       setClosedAccountabilityContractAddresses: (addresses: string[]) => void
@@ -65,10 +59,6 @@ const Contracts: NextPage<ContractsProps> = () => {
     [account]
   );
   const [
-    loadingGetClosedAccountabilityContracts,
-    setLoadingGetClosedAccountabilityContracts,
-  ] = useState(false);
-  const [
     closedAccountabilityContractAddresses,
     setClosedAccountabilityContractAddresses,
   ] = useState<string[]>([]);
@@ -84,12 +74,7 @@ const Contracts: NextPage<ContractsProps> = () => {
         <title>Contracts</title>
       </Head>
       <Layout>
-        <Segment
-          loading={
-            loadingGetOpenAccountabilityContractAddresses ||
-            loadingGetOpenAccountabilityContractForUsers
-          }
-        >
+        <Segment loading={loadingGetOpenAccountabilityContractAddresses}>
           <h2>Open contracts: {openAccountabilityContractAddresses.length}</h2>
           <AccountabilityContracts
             setLoading={setLoadingGetOpenAccountabilityContractAddresses}
@@ -98,12 +83,12 @@ const Contracts: NextPage<ContractsProps> = () => {
             }
           />
         </Segment>
-        <Segment loading={loadingGetClosedAccountabilityContracts}>
+        <Segment loading={loadingGetClosedAccountabilityContractAddresses}>
           <h2>
             Closed contracts: {closedAccountabilityContractAddresses.length}
           </h2>
           <AccountabilityContracts
-            setLoading={setLoadingGetOpenAccountabilityContractAddresses}
+            setLoading={setLoadingGetClosedAccountabilityContractAddresses}
             accountabilityContractAddresses={
               closedAccountabilityContractAddresses
             }

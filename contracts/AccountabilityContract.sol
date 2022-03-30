@@ -90,9 +90,15 @@ contract AccountabilityContractFactory {
         AccountabilityContractApprovalRequest approvalRequest = AccountabilityContractApprovalRequest(completionRequestContractAddress);
         AccountabilityContract accountabilityContract = AccountabilityContract(approvalRequest.accountabilityContractAddress());
         require(accountabilityContract.referee() == approvalRequest.referee(), "Only contract referee can approve request for completion");
+        approvalRequest.approveRequest();
         accountabilityContract.completeContract();
         moveOpenContractToClosedContractsForUser(accountabilityContract.creator(), approvalRequest.accountabilityContractAddress());
         moveOpenContractToClosedContractsForReferee(accountabilityContract.referee(), approvalRequest.accountabilityContractAddress());
+    }
+
+    function rejectRequestForCompletion(address completionRequestContractAddress, string memory response) public {
+        AccountabilityContractApprovalRequest approvalRequest = AccountabilityContractApprovalRequest(completionRequestContractAddress);
+        approvalRequest.denyRequest(response);
     }
 
     function getContractIndexForUser(address user, address contractAddress) view private returns (uint){
@@ -161,6 +167,7 @@ contract AccountabilityContractApprovalRequest {
     address public accountabilityContractAddress;
     enum Status{ OPEN, APPROVED, DENIED }
     Status public status;
+    string public response;
     
     constructor(address _accountabilityContractAddress) {
         AccountabilityContract accountabilityContract = AccountabilityContract(_accountabilityContractAddress);
@@ -176,9 +183,10 @@ contract AccountabilityContractApprovalRequest {
         return this;
     } 
 
-    function denyRequest() public  returns (AccountabilityContractApprovalRequest) {
+    function denyRequest(string memory _response) public  returns (AccountabilityContractApprovalRequest) {
         require(tx.origin == referee, "Only referee can deny approval request");
         status = Status.DENIED;
+        response = _response;
         return this;
     } 
 }

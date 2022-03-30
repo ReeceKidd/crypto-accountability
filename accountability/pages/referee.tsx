@@ -62,10 +62,6 @@ const Contracts: NextPage<ContractsProps> = () => {
     closedAccountabilityContractAddresses,
     setClosedAccountabilityContractAddresses,
   ] = useState<string[]>([]);
-  const [closedAccountabilityContracts, setClosedAcccountabilityContracts] =
-    useState<
-      { address: string; name: string; status: string; amount: string }[]
-    >([]);
   useEffect(() => {
     getClosedAccountabillityContractAddresses(
       setClosedAccountabilityContractAddresses

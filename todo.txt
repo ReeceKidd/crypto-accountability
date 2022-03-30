@@ -1,8 +1,15 @@
 
--Users can submit request to complete task which referee must approve. 
+-Display requests for referee that need approved. 
+-Referee can reject request that needs approved. 
+-Referee can accept request that needs approved. 
+-Redirect user to contracts page after they complete it. 
+-Check why contract is being moved to closed when user completes it. 
 -When users fail task task is automatically failed. 
 -When referees fail task task is automatically failed. 
 -When referee approves contract it is automatically approved. 
+
+
+
 -Create a landing page similar to Uniswap. 
 -Create multi step form. 
 -Add the ability to select charities
