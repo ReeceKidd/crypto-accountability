@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
 import { Segment } from "semantic-ui-react";
+import AccountabilityContracts from "../components/AccountabilityContracts/AccountabilityContracts";
 import ContractsTable from "../components/ContractsTable/ContractsTable";
 import Layout from "../components/Layout/Layout";
 import factory, { getAccountabilityContract } from "../factory";
@@ -35,43 +36,6 @@ const Contracts: NextPage<ContractsProps> = () => {
     loadingGetOpenAccountabilityContractForUsers,
     setLoadingGetOpenAccountabilityContractsForUser,
   ] = useState(false);
-  const getOpenAccountabillityContracts = useCallback(
-    async (
-      openAccountabilityContractAddresses: string[],
-      setAccountabilityContracts: (
-        accountabilityContracts: {
-          address: string;
-          name: string;
-          status: string;
-          amount: string;
-        }[]
-      ) => void
-    ) => {
-      setLoadingGetOpenAccountabilityContractsForUser(true);
-      const openAccountabilityContracts = await Promise.all(
-        openAccountabilityContractAddresses.map(async (address) => {
-          const accountabilityContract = getAccountabilityContract(
-            address! as string
-          );
-          const [name, status, amount] = await Promise.all([
-            accountabilityContract.methods.name().call(),
-            accountabilityContract.methods.status().call(),
-            accountabilityContract.methods.amount().call(),
-          ]);
-
-          return {
-            address,
-            name,
-            status: getContractStatus(status),
-            amount,
-          };
-        })
-      );
-      setAccountabilityContracts(openAccountabilityContracts);
-      setLoadingGetOpenAccountabilityContractsForUser(false);
-    },
-    []
-  );
   const [
     openAccountabilityContractAddresses,
     setOpenAccountabilityContractAddresses,
@@ -85,16 +49,6 @@ const Contracts: NextPage<ContractsProps> = () => {
       setOpenAccountabilityContractAddresses
     );
   }, [getOpenAccountabillityContractAddresses]);
-  useEffect(() => {
-    getOpenAccountabillityContracts(
-      openAccountabilityContractAddresses,
-      setOpenAcccountabilityContracts
-    );
-  }, [
-    getOpenAccountabillityContracts,
-    openAccountabilityContractAddresses,
-    openAccountabilityContractAddresses.length,
-  ]);
   const getClosedAccountabillityContractAddresses = useCallback(
     async (
       setClosedAccountabilityContractAddresses: (addresses: string[]) => void
@@ -114,61 +68,15 @@ const Contracts: NextPage<ContractsProps> = () => {
     loadingGetClosedAccountabilityContracts,
     setLoadingGetClosedAccountabilityContracts,
   ] = useState(false);
-  const getClosedAccountabillityContracts = useCallback(
-    async (
-      closedAccountabilityContractAddresses: string[],
-      setAccountabilityContracts: (
-        accountabilityContracts: {
-          address: string;
-          name: string;
-          status: string;
-          amount: string;
-        }[]
-      ) => void
-    ) => {
-      setLoadingGetClosedAccountabilityContracts(true);
-      const closedAccountabilityContracts = await Promise.all(
-        closedAccountabilityContractAddresses.map(async (address) => {
-          const closedAccountabilityContract = getAccountabilityContract(
-            address! as string
-          );
-          const [name, status, amount] = await Promise.all([
-            closedAccountabilityContract.methods.name().call(),
-            closedAccountabilityContract.methods.status().call(),
-            closedAccountabilityContract.methods.amount().call(),
-          ]);
-
-          return { address, name, status: getContractStatus(status), amount };
-        })
-      );
-      setAccountabilityContracts(closedAccountabilityContracts);
-      setLoadingGetClosedAccountabilityContracts(false);
-    },
-    []
-  );
   const [
     closedAccountabilityContractAddresses,
     setClosedAccountabilityContractAddresses,
   ] = useState<string[]>([]);
-  const [closedAccountabilityContracts, setClosedAcccountabilityContracts] =
-    useState<
-      { address: string; name: string; status: string; amount: string }[]
-    >([]);
   useEffect(() => {
     getClosedAccountabillityContractAddresses(
       setClosedAccountabilityContractAddresses
     );
   }, [getClosedAccountabillityContractAddresses]);
-  useEffect(() => {
-    getClosedAccountabillityContracts(
-      closedAccountabilityContractAddresses,
-      setClosedAcccountabilityContracts
-    );
-  }, [
-    getClosedAccountabillityContracts,
-    closedAccountabilityContractAddresses,
-    closedAccountabilityContractAddresses.length,
-  ]);
 
   return (
     <div>
@@ -183,13 +91,23 @@ const Contracts: NextPage<ContractsProps> = () => {
           }
         >
           <h2>Open contracts: {openAccountabilityContractAddresses.length}</h2>
-          <ContractsTable contracts={openAccountabilityContracts} />
+          <AccountabilityContracts
+            setLoading={setLoadingGetOpenAccountabilityContractAddresses}
+            accountabilityContractAddresses={
+              openAccountabilityContractAddresses
+            }
+          />
         </Segment>
         <Segment loading={loadingGetClosedAccountabilityContracts}>
           <h2>
             Closed contracts: {closedAccountabilityContractAddresses.length}
           </h2>
-          <ContractsTable contracts={closedAccountabilityContracts} />
+          <AccountabilityContracts
+            setLoading={setLoadingGetOpenAccountabilityContractAddresses}
+            accountabilityContractAddresses={
+              closedAccountabilityContractAddresses
+            }
+          />
         </Segment>
       </Layout>
     </div>
