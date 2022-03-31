@@ -1,5 +1,5 @@
-import Web3 from "web3";
- 
+import Web3 from 'web3';
+
 declare global {
   interface Window {
     ethereum: any;
@@ -9,13 +9,13 @@ declare global {
 
 let web3: Web3;
 
-if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
+if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
   // We are in the browser and metamask is running.
   web3 = new Web3(window.ethereum);
 } else {
   // We are on the server *OR* the user is not running metamask
   const provider = new Web3.providers.HttpProvider(
-    "https://rinkeby.infura.io/v3/414c373d3dee40608a74142ce4a62a6d"
+    'https://rinkeby.infura.io/v3/414c373d3dee40608a74142ce4a62a6d'
   );
   web3 = new Web3(provider);
 }

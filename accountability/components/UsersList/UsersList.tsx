@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { List } from "semantic-ui-react";
+import Link from 'next/link';
+import { List } from 'semantic-ui-react';
 
 interface UsersListProps {
   userAddresses: string[];
@@ -14,9 +14,9 @@ const UsersList = ({ userAddresses }: UsersListProps) => {
             <Link href={`/users/${address}`} passHref={true}>
               <List.Header
                 style={{
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
                 }}
               >
                 {address}

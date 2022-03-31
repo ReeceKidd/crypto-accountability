@@ -1,18 +1,18 @@
-import { useWeb3React } from "@web3-react/core";
-import type { NextPage } from "next";
-import Head from "next/head";
-import { useState } from "react";
-import { Grid, GridColumn } from "semantic-ui-react";
-import CreateContractForm from "../../components/CreateContractForm/CreateContractForm";
-import Layout from "../../components/Layout/Layout";
+import { useWeb3React } from '@web3-react/core';
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import { useState } from 'react';
+import { Grid, GridColumn } from 'semantic-ui-react';
+import CreateContractForm from '../../components/CreateContractForm/CreateContractForm';
+import Layout from '../../components/Layout/Layout';
 
 const NewContract: NextPage = () => {
   const { account } = useWeb3React();
-  const [referee, setReferee] = useState("");
-  const [amount, setAmount] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [failureRecipient, setFailureRecipient] = useState("");
+  const [referee, setReferee] = useState('');
+  const [amount, setAmount] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [failureRecipient, setFailureRecipient] = useState('');
 
   return (
     <Layout>

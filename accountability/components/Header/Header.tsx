@@ -1,6 +1,6 @@
-import { useWeb3React } from "@web3-react/core";
-import Link from "next/link";
-import { FC, useState } from "react";
+import { useWeb3React } from '@web3-react/core';
+import Link from 'next/link';
+import { FC, useState } from 'react';
 import { Button, Menu, Modal } from 'semantic-ui-react';
 
 const Header: FC = () => {

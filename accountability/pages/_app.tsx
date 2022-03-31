@@ -1,10 +1,10 @@
-import '../styles/globals.css'
-import "semantic-ui-css/semantic.min.css";
-import type { AppProps } from 'next/app'
+import '../styles/globals.css';
+import 'semantic-ui-css/semantic.min.css';
+import type { AppProps } from 'next/app';
 
-import { Web3ReactProvider } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
-import Web3ReactManager from "../components/Web3ReactManager/Web3ReactManager";
+import { Web3ReactProvider } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+import Web3ReactManager from '../components/Web3ReactManager/Web3ReactManager';
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
@@ -22,4 +22,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp
+export default MyApp;

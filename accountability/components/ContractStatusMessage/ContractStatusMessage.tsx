@@ -1,5 +1,5 @@
-import { Message } from "semantic-ui-react";
-import { ContractStatus } from "../../helpers/getContractStatus";
+import { Message } from 'semantic-ui-react';
+import { ContractStatus } from '../../helpers/getContractStatus';
 
 interface ContractStatusMessageProps {
   status: ContractStatus;

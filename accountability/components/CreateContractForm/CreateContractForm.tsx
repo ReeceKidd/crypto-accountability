@@ -1,8 +1,8 @@
-import Router from "next/router";
-import { FC, FormEvent, useState } from "react";
-import { Button, Form, Input, Message, TextArea } from "semantic-ui-react";
-import factory from "../../factory";
-import web3 from "../../web3";
+import Router from 'next/router';
+import { FC, FormEvent, useState } from 'react';
+import { Button, Form, Input, Message, TextArea } from 'semantic-ui-react';
+import factory from '../../factory';
+import web3 from '../../web3';
 
 interface CreateContractFormProps {
   web3Account: string;
@@ -29,18 +29,18 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
   description,
   setDescription,
   failureRecipient,
-  setFailureRecipient,
+  setFailureRecipient
 }) => {
   const [submitRequestLoading, setSubmitRequestLoading] = useState(false);
-  const [networkRequestMessage, setNetworkRequestMessage] = useState("");
-  const [networkErrorMessage, setNetworkErrorMessage] = useState("");
+  const [networkRequestMessage, setNetworkRequestMessage] = useState('');
+  const [networkErrorMessage, setNetworkErrorMessage] = useState('');
 
   const onSubmit = async (event: FormEvent) => {
-    setNetworkErrorMessage("");
+    setNetworkErrorMessage('');
     setSubmitRequestLoading(true);
     event.preventDefault();
     try {
-      setNetworkRequestMessage("Waiting on transaction success...");
+      setNetworkRequestMessage('Waiting on transaction success...');
       const gas = await factory.methods
         .createAccountabilityContract(
           referee,
@@ -59,12 +59,12 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
         .send({
           from: web3Account,
           gas: 3000000,
-          value: web3.utils.toWei(amount, "ether"),
+          value: web3.utils.toWei(amount, 'ether')
         });
-      setNetworkRequestMessage("Transaction success");
+      setNetworkRequestMessage('Transaction success');
       Router.push(`/contracts`);
     } catch (err) {
-      setNetworkRequestMessage("");
+      setNetworkRequestMessage('');
       setNetworkErrorMessage((err as Error).message);
     }
     setSubmitRequestLoading(false);
@@ -137,7 +137,7 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
       {networkRequestMessage && (
         <Message
           content={networkRequestMessage}
-          success={networkRequestMessage === "Transaction success"}
+          success={networkRequestMessage === 'Transaction success'}
         />
       )}
       {networkErrorMessage && (

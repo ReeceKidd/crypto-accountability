@@ -1,20 +1,20 @@
-import { useWeb3React } from "@web3-react/core";
-import type { NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { useWeb3React } from '@web3-react/core';
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import {
   Dispatch,
   SetStateAction,
   useCallback,
   useEffect,
-  useState,
-} from "react";
-import { Button, Segment } from "semantic-ui-react";
-import ContractsTable from "../../components/ContractsTable/ContractsTable";
-import Layout from "../../components/Layout/Layout";
-import factory, { getAccountabilityContract } from "../../factory";
-import { getContractStatus } from "../../helpers/getContractStatus";
+  useState
+} from 'react';
+import { Button, Segment } from 'semantic-ui-react';
+import ContractsTable from '../../components/ContractsTable/ContractsTable';
+import Layout from '../../components/Layout/Layout';
+import factory, { getAccountabilityContract } from '../../factory';
+import { getContractStatus } from '../../helpers/getContractStatus';
 
 interface SpecificUserProps {}
 
@@ -23,7 +23,7 @@ const SpecificUser: NextPage<SpecificUserProps> = () => {
   const { address } = router.query;
   const [
     loadingOpenAccountabilityContractsForUser,
-    setLoadingOpenAccountabilityContractsForUser,
+    setLoadingOpenAccountabilityContractsForUser
   ] = useState(false);
   const getOpenAccountabillityContractAddressesForUser = useCallback(
     async (
@@ -60,14 +60,14 @@ const SpecificUser: NextPage<SpecificUserProps> = () => {
           const [name, status, amount] = await Promise.all([
             accountabilityContract.methods.name().call(),
             accountabilityContract.methods.status().call(),
-            accountabilityContract.methods.amount().call(),
+            accountabilityContract.methods.amount().call()
           ]);
 
           return {
             address,
             name,
             status: getContractStatus(status),
-            amount,
+            amount
           };
         })
       );
@@ -78,11 +78,11 @@ const SpecificUser: NextPage<SpecificUserProps> = () => {
   );
   const [
     openAccountabilityContractAddresses,
-    setOpenAccountabilityContractAddresses,
+    setOpenAccountabilityContractAddresses
   ] = useState<string[]>([]);
   const [
     openAccountabilityContractsForUser,
-    setOpenAcccountabilityContractsForUser,
+    setOpenAcccountabilityContractsForUser
   ] = useState<
     { address: string; name: string; status: string; amount: string }[]
   >([]);
@@ -100,7 +100,7 @@ const SpecificUser: NextPage<SpecificUserProps> = () => {
   }, [getOpenAccountabillityContracts, openAccountabilityContractAddresses]);
   const [
     loadingOpenAccountabilityContractsForReferee,
-    setLoadingOpenAccountabilityContractsForReferee,
+    setLoadingOpenAccountabilityContractsForReferee
   ] = useState(false);
   const getOpenAccountabillityContractAddressesForReferee = useCallback(
     async (
@@ -121,11 +121,11 @@ const SpecificUser: NextPage<SpecificUserProps> = () => {
   );
   const [
     openAccountabilityContractAddressesForReferee,
-    setOpenAccountabilityContractAddressesForReferee,
+    setOpenAccountabilityContractAddressesForReferee
   ] = useState<string[]>([]);
   const [
     openAccountabilityContractsForReferee,
-    setOpenAcccountabilityContractsForReferee,
+    setOpenAcccountabilityContractsForReferee
   ] = useState<
     { address: string; name: string; status: string; amount: string }[]
   >([]);
@@ -143,7 +143,7 @@ const SpecificUser: NextPage<SpecificUserProps> = () => {
   }, [
     getOpenAccountabillityContracts,
     getOpenAccountabillityContractAddressesForReferee,
-    openAccountabilityContractAddressesForReferee,
+    openAccountabilityContractAddressesForReferee
   ]);
   return (
     <>
@@ -157,7 +157,7 @@ const SpecificUser: NextPage<SpecificUserProps> = () => {
         </Link>
 
         <Segment>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <h2>
               Open contracts: {openAccountabilityContractAddresses.length}
             </h2>
@@ -166,7 +166,7 @@ const SpecificUser: NextPage<SpecificUserProps> = () => {
         </Segment>
         <br />
         <Segment>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <h2>
               Contracts user referees:
               {openAccountabilityContractAddresses.length}

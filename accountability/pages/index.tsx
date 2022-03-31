@@ -1,25 +1,25 @@
-import { useWeb3React } from "@web3-react/core";
-import type { NextPage } from "next";
-import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
-import { Grid, Segment } from "semantic-ui-react";
-import ContractsList from "../components/ContractsList/ContractsList";
-import ContractsTable from "../components/ContractsTable/ContractsTable";
-import Layout from "../components/Layout/Layout";
-import OpenAccountabilityContracts from "../components/AccountabilityContracts/AccountabilityContracts";
-import StatisticCards from "../components/StatisticCards/StatisticCards";
-import UsersList from "../components/UsersList/UsersList";
-import factory, { getAccountabilityContract } from "../factory";
+import { useWeb3React } from '@web3-react/core';
+import type { NextPage } from 'next';
+import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
+import { Grid, Segment } from 'semantic-ui-react';
+import ContractsList from '../components/ContractsList/ContractsList';
+import ContractsTable from '../components/ContractsTable/ContractsTable';
+import Layout from '../components/Layout/Layout';
+import OpenAccountabilityContracts from '../components/AccountabilityContracts/AccountabilityContracts';
+import StatisticCards from '../components/StatisticCards/StatisticCards';
+import UsersList from '../components/UsersList/UsersList';
+import factory, { getAccountabilityContract } from '../factory';
 
 const Home: NextPage = () => {
   const { account } = useWeb3React();
   const [
     loadingOpenAccountabilityContractsForUser,
-    setLoadingOpenAccountabilityContractsForUser,
+    setLoadingOpenAccountabilityContractsForUser
   ] = useState(false);
   const [
     openAccountabilityContractAddressesUser,
-    setOpenAccountabilityContractAddressesUser,
+    setOpenAccountabilityContractAddressesUser
   ] = useState<string[]>([]);
   const getOpenAccountabillityContractAddressesForUser = useCallback(
     async (
@@ -41,11 +41,11 @@ const Home: NextPage = () => {
   }, [getOpenAccountabillityContractAddressesForUser]);
   const [
     loadingOpenAccountabilityContractsReferee,
-    setLoadingOpenAccountabilityContractsReferee,
+    setLoadingOpenAccountabilityContractsReferee
   ] = useState(false);
   const [
     openAccountabilityContractAddressesReferee,
-    setOpenAccountabilityContractAddressesReferee,
+    setOpenAccountabilityContractAddressesReferee
   ] = useState<string[]>([]);
   const getOpenAccountabillityContractAddressesReferee = useCallback(
     async (
@@ -68,7 +68,7 @@ const Home: NextPage = () => {
   const [numberOfUsers, setNumberOfUsers] = useState(0);
   const [numberOfAccountabilityContracts, setNumberOfAccountabilityContracts] =
     useState(0);
-  const [totalEthInContracts, setTotalEthInContracts] = useState("");
+  const [totalEthInContracts, setTotalEthInContracts] = useState('');
   const getNumberOfUsers = useCallback(
     async (setNumberOfUsers: (users: number) => void) => {
       const numberOfUsers = await factory.methods.numberOfUsers().call();
@@ -128,7 +128,7 @@ const Home: NextPage = () => {
           const title = await accountabilityContract.methods.name().call();
           return {
             address,
-            title,
+            title
           };
         })
       );
@@ -149,7 +149,7 @@ const Home: NextPage = () => {
       />
       <Layout>
         <Segment loading={loadingOpenAccountabilityContractsForUser}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <h2>
               Your open contracts:
               {openAccountabilityContractAddressesReferee.length}
@@ -163,7 +163,7 @@ const Home: NextPage = () => {
           />
         </Segment>
         <Segment loading={loadingOpenAccountabilityContractsReferee}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <h2>
               Contracts you referee:
               {openAccountabilityContractAddressesReferee.length}

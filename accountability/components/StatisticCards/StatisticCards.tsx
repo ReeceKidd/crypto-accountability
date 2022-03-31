@@ -1,5 +1,5 @@
-import { Card } from "semantic-ui-react";
-import web3 from "../../web3";
+import { Card } from 'semantic-ui-react';
+import web3 from '../../web3';
 
 interface StatisticCardsProps {
   numberOfUsers: number;
@@ -10,30 +10,30 @@ interface StatisticCardsProps {
 const StatisticCards = ({
   numberOfUsers,
   numberOfAccountabilityContracts,
-  totalEthInContracts,
+  totalEthInContracts
 }: StatisticCardsProps) => {
   const cards = [
     {
-      header: "Total Users",
+      header: 'Total Users',
       description: numberOfUsers,
-      raised: true,
+      raised: true
     },
     {
-      header: "Total Contracts",
+      header: 'Total Contracts',
       description: numberOfAccountabilityContracts,
-      raised: true,
+      raised: true
     },
     {
-      header: "Total Eth in contracts",
+      header: 'Total Eth in contracts',
       description: web3.utils.fromWei(totalEthInContracts),
-      raised: true,
-    },
+      raised: true
+    }
   ];
   return (
     <Card.Group
       items={cards.map((card, index) => ({
         ...card,
-        key: index,
+        key: index
       }))}
     />
   );

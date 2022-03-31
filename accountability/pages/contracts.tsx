@@ -1,19 +1,17 @@
-import { useWeb3React } from "@web3-react/core";
-import type { NextPage } from "next";
-import Head from "next/head";
-import { useCallback, useEffect, useState } from "react";
-import { Segment } from "semantic-ui-react";
-import AccountabilityContracts from "../components/AccountabilityContracts/AccountabilityContracts";
-import Layout from "../components/Layout/Layout";
-import factory from "../factory";
+import { useWeb3React } from '@web3-react/core';
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import { useCallback, useEffect, useState } from 'react';
+import { Segment } from 'semantic-ui-react';
+import AccountabilityContracts from '../components/AccountabilityContracts/AccountabilityContracts';
+import Layout from '../components/Layout/Layout';
+import factory from '../factory';
 
-interface ContractsProps {}
-
-const Contracts: NextPage<ContractsProps> = () => {
+const Contracts: NextPage = () => {
   const { account } = useWeb3React();
   const [
     loadingGetOpenAccountabilityContractAddresses,
-    setLoadingGetOpenAccountabilityContractAddresses,
+    setLoadingGetOpenAccountabilityContractAddresses
   ] = useState(false);
   const getOpenAccountabillityContractAddresses = useCallback(
     async (
@@ -32,7 +30,7 @@ const Contracts: NextPage<ContractsProps> = () => {
   );
   const [
     openAccountabilityContractAddresses,
-    setOpenAccountabilityContractAddresses,
+    setOpenAccountabilityContractAddresses
   ] = useState<string[]>([]);
   useEffect(() => {
     getOpenAccountabillityContractAddresses(
@@ -41,7 +39,7 @@ const Contracts: NextPage<ContractsProps> = () => {
   }, [getOpenAccountabillityContractAddresses]);
   const [
     loadingGetClosedAccountabilityContractAddresses,
-    setLoadingGetClosedAccountabilityContractAddresses,
+    setLoadingGetClosedAccountabilityContractAddresses
   ] = useState(false);
   const getClosedAccountabillityContractAddresses = useCallback(
     async (
@@ -60,7 +58,7 @@ const Contracts: NextPage<ContractsProps> = () => {
   );
   const [
     closedAccountabilityContractAddresses,
-    setClosedAccountabilityContractAddresses,
+    setClosedAccountabilityContractAddresses
   ] = useState<string[]>([]);
   useEffect(() => {
     getClosedAccountabillityContractAddresses(
