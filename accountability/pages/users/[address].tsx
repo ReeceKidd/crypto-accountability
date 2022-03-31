@@ -14,7 +14,7 @@ import { Button, Segment } from 'semantic-ui-react';
 import ContractsTable from '../../components/ContractsTable/ContractsTable';
 import Layout from '../../components/Layout/Layout';
 import factory, { getAccountabilityContract } from '../../factory';
-import { getContractStatus } from '../../helpers/getContractStatus';
+import { getAccountabilityContractStatus } from '../../helpers/getAccountabilityContractStatus';
 
 interface SpecificUserProps {}
 
@@ -66,7 +66,7 @@ const SpecificUser: NextPage<SpecificUserProps> = () => {
           return {
             address,
             name,
-            status: getContractStatus(status),
+            status: getAccountabilityContractStatus(status),
             amount
           };
         })

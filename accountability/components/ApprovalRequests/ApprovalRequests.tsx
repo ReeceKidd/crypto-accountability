@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { getAccountabilityContract } from '../../factory';
-import { getContractStatus } from '../../helpers/getContractStatus';
+import { getAccountabilityContractStatus } from '../../helpers/getAccountabilityContractStatus';
 import ContractsTable from '../ContractsTable/ContractsTable';
 
 interface ApprovalRequestsProps {
@@ -39,7 +39,7 @@ const ApprovalRequests = ({
           return {
             address,
             name,
-            status: getContractStatus(status),
+            status: getAccountabilityContractStatus(status),
             amount
           };
         })

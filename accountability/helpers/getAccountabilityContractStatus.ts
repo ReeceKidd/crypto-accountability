@@ -5,7 +5,7 @@ export enum ContractStatus {
   UNKNOWN = 'Unknown'
 }
 
-export const getContractStatus = (status: string): string => {
+export const getAccountabilityContractStatus = (status: string): string => {
   const statusDictionary: { [key: string]: string } = {
     '0': ContractStatus.OPEN,
     '1': ContractStatus.SUCCESS,

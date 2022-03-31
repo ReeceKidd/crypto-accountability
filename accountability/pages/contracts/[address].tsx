@@ -11,8 +11,8 @@ import crowdfundFactoryInstance, {
 import { useWeb3React } from '@web3-react/core';
 import {
   ContractStatus,
-  getContractStatus
-} from '../../helpers/getContractStatus';
+  getAccountabilityContractStatus
+} from '../../helpers/getAccountabilityContractStatus';
 import ContractStatusMessage from '../../components/ContractStatusMessage/ContractStatusMessage';
 
 interface SpecificContractProps {
@@ -154,7 +154,7 @@ SpecificContract.getInitialProps = async (ctx) => {
     name,
     description,
     failureRecipient,
-    status: getContractStatus(status),
+    status: getAccountabilityContractStatus(status),
     amount
   };
 };

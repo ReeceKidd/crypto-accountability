@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { getAccountabilityContract } from '../../factory';
-import { getContractStatus } from '../../helpers/getContractStatus';
+import { getAccountabilityContractStatus } from '../../helpers/getAccountabilityContractStatus';
 import ContractsTable from '../ContractsTable/ContractsTable';
 
 interface AccountabilityContractsProps {
@@ -40,7 +40,7 @@ const AccountabilityContracts = ({
           return {
             address,
             name,
-            status: getContractStatus(status),
+            status: getAccountabilityContractStatus(status),
             amount
           };
         })
