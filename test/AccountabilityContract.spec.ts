@@ -1,7 +1,7 @@
-const ganache = require("ganache-cli");
-import Web3 from "web3";
-import * as AccountabilityContractFactory from "../build/AccountabilityContractFactory.json";
-import * as AccountabilityContract from "../build/AccountabilityContract.json";
+const ganache = require('ganache-cli');
+import Web3 from 'web3';
+import * as AccountabilityContractFactory from '../build/AccountabilityContractFactory.json';
+import * as AccountabilityContract from '../build/AccountabilityContract.json';
 
 const web3 = new Web3(ganache.provider());
 
@@ -25,19 +25,19 @@ beforeEach(async () => {
   const gas = await new web3.eth.Contract(abi as any)
     .deploy({ data: bytecode })
     .estimateGas();
-  amount = web3.utils.toWei("0.001", "ether");
+  amount = web3.utils.toWei('0.001', 'ether');
   accountabilityContractFactory = await new web3.eth.Contract(abi as any)
     .deploy({ data: bytecode })
     .send({ from: creator, gas });
-  name = "Drink water everyday";
-  description = "I must drink three litres of water everyday";
+  name = 'Drink water everyday';
+  description = 'I must drink three litres of water everyday';
   failureRecipient = accounts[1];
   await accountabilityContractFactory.methods
     .createAccountabilityContract(referee, name, description, failureRecipient)
     .send({
       from: creator,
       gas: 3000000,
-      value: amount,
+      value: amount
     });
   const openAccountabilityContractAddresses =
     await accountabilityContractFactory.methods
@@ -50,43 +50,43 @@ beforeEach(async () => {
   );
 });
 
-describe("Accountability Contract", () => {
-  describe("success", () => {
-    it("deploys a contract", () => {
+describe('Accountability Contract', () => {
+  describe('success', () => {
+    it('deploys a contract', () => {
       expect(accountabilityContract.options.address).toBeDefined();
     });
-    describe("initial values", () => {
-      it("has a creator", async () => {
+    describe('initial values', () => {
+      it('has a creator', async () => {
         const creator = await accountabilityContract.methods.creator().call();
         expect(creator).toEqual(creator);
       });
-      it("has a name", async () => {
+      it('has a name', async () => {
         const contractName = await accountabilityContract.methods.name().call();
         expect(contractName).toEqual(name);
       });
-      it("has a description", async () => {
+      it('has a description', async () => {
         const contractDescription = await accountabilityContract.methods
           .description()
           .call();
         expect(contractDescription).toEqual(description);
       });
-      it("has a failure recipient", async () => {
+      it('has a failure recipient', async () => {
         const contractFaulureRecipient = await accountabilityContract.methods
           .failureRecipient()
           .call();
         expect(contractFaulureRecipient).toEqual(failureRecipient);
       });
-      it("has an amount of value sent", async () => {
+      it('has an amount of value sent', async () => {
         const contractAmount = await accountabilityContract.methods
           .amount()
           .call();
         expect(contractAmount).toEqual(amount);
       });
-      it("has a status of OPEN", async () => {
+      it('has a status of OPEN', async () => {
         const status = await accountabilityContract.methods.status().call();
-        expect(status).toEqual("0");
+        expect(status).toEqual('0');
       });
-      it("has initial balance of value sent", async () => {
+      it('has initial balance of value sent', async () => {
         const initialBalance = await web3.eth.getBalance(
           accountabilityContractAddress
         );
@@ -95,20 +95,20 @@ describe("Accountability Contract", () => {
     });
   });
 
-  describe("errors", () => {
-    it("fails if something other than the Accountability Contract factory calls failContract", async () => {
+  describe('errors', () => {
+    it('fails if something other than the Accountability Contract factory calls failContract', async () => {
       try {
         await accountabilityContract.methods.completeContract().send({
-          from: accounts[0],
+          from: accounts[0]
         });
       } catch (err) {
         expect(err);
       }
     });
-    it("fails if something other than the Accountability Contract factory calls completeContractContract", async () => {
+    it('fails if something other than the Accountability Contract factory calls completeContractContract', async () => {
       try {
         await accountabilityContract.methods.completeContract().send({
-          from: accounts[0],
+          from: accounts[0]
         });
       } catch (err) {
         expect(err);
