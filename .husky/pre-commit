@@ -1,6 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx pretty-quick
-npx eslint --fix
+yarn lint-staged
 yarn test
