@@ -5,10 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Segment } from 'semantic-ui-react';
 import AccountabilityContracts from '../components/AccountabilityContracts/AccountabilityContracts';
 import Layout from '../components/Layout/Layout';
-import factory, {
-  getAccountabilityContract,
-  getAccountabilityContractApprovalRequest
-} from '../factory';
+import factory, { getAccountabilityContractApprovalRequest } from '../factory';
 
 interface RefereeProps {}
 
