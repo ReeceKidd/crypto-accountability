@@ -1,7 +1,7 @@
-const ganache = require("ganache-cli");
-import Web3 from "web3";
-import * as AccountabilityContractFactory from "../build/AccountabilityContractFactory.json";
-import * as AccountabilityContract from "../build/AccountabilityContract.json";
+const ganache = require('ganache-cli');
+import Web3 from 'web3';
+import * as AccountabilityContractFactory from '../build/AccountabilityContractFactory.json';
+import * as AccountabilityContract from '../build/AccountabilityContract.json';
 
 const web3 = new Web3(ganache.provider());
 
@@ -20,76 +20,76 @@ beforeEach(async () => {
     .deploy({ data: bytecode })
     .estimateGas();
   referee = accounts[0];
-  amount = web3.utils.toWei("0.0001", "ether");
+  amount = web3.utils.toWei('0.0001', 'ether');
 
   accountabilityContractFactory = await new web3.eth.Contract(
     AccountabilityContractFactory.abi as any
   )
     .deploy({
-      data: bytecode,
+      data: bytecode
     })
     .send({ from: manager, gas });
-  const name = "Drink water everyday";
-  const description = "I must drink three litres of water everyday";
+  const name = 'Drink water everyday';
+  const description = 'I must drink three litres of water everyday';
   const failureRecipient = accounts[1];
   await accountabilityContractFactory.methods
     .createAccountabilityContract(referee, name, description, failureRecipient)
     .send({
       from: manager,
       gas: 4000000,
-      value: amount,
+      value: amount
     });
 });
 
-describe("Accountability contract factory", () => {
-  describe("success", () => {
-    it("deploys a contract", () => {
+describe('Accountability contract factory', () => {
+  describe('success', () => {
+    it('deploys a contract', () => {
       expect(accountabilityContractFactory.options.address).toBeDefined();
     });
-    describe("factory", () => {
-      it("can get number of total users", async () => {
+    describe('factory', () => {
+      it('can get number of total users', async () => {
         const numberOfUsers = await accountabilityContractFactory.methods
           .numberOfUsers()
           .call();
-        expect(numberOfUsers).toEqual("1");
+        expect(numberOfUsers).toEqual('1');
       });
-      it("can get number of accountability contracts", async () => {
+      it('can get number of accountability contracts', async () => {
         const numberOfContracts = await accountabilityContractFactory.methods
           .numberOfAccountabilityContracts()
           .call();
-        expect(numberOfContracts).toEqual("1");
+        expect(numberOfContracts).toEqual('1');
       });
-      it("can get total eth in contracts", async () => {
+      it('can get total eth in contracts', async () => {
         const totalEthInContracts = await accountabilityContractFactory.methods
           .totalEthInContracts()
           .call();
         expect(totalEthInContracts).toEqual(amount);
       });
-      it("increases number of users by one when a new user creates a contract", async () => {
+      it('increases number of users by one when a new user creates a contract', async () => {
         await accountabilityContractFactory.methods
           .createAccountabilityContract(
             manager,
-            "Drink water",
-            "Everyday I must drink water",
+            'Drink water',
+            'Everyday I must drink water',
             manager
           )
           .send({
             from: accounts[2],
             gas: 1000000,
-            value: amount,
+            value: amount
           });
         const numberOfUsers = await accountabilityContractFactory.methods
           .numberOfUsers()
           .call();
-        expect(numberOfUsers).toEqual("2");
+        expect(numberOfUsers).toEqual('2');
       });
-      it("can get user addresses", async () => {
+      it('can get user addresses', async () => {
         const userAddresses = await accountabilityContractFactory.methods
           .getUserAddresses(0, 1)
           .call();
         expect(userAddresses.length).toEqual(1);
       });
-      it("can get accountability contract addresses", async () => {
+      it('can get accountability contract addresses', async () => {
         const accountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getAccountabilityContractAddresses(0, 1)
@@ -97,8 +97,8 @@ describe("Accountability contract factory", () => {
         expect(accountabilityContractAddresses.length).toEqual(1);
       });
     });
-    describe("user", () => {
-      it("can get open accountability contract addresses of user", async () => {
+    describe('user', () => {
+      it('can get open accountability contract addresses of user', async () => {
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForUser(manager)
@@ -106,7 +106,7 @@ describe("Accountability contract factory", () => {
         expect(openAccountabilityContractAddresses).toBeDefined();
         expect(openAccountabilityContractAddresses.length).toEqual(1);
       });
-      it("can get closed accountability contract addresses of user", async () => {
+      it('can get closed accountability contract addresses of user', async () => {
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForUser(manager)
@@ -123,18 +123,18 @@ describe("Accountability contract factory", () => {
         expect(closedAccountabilityContractAddressesForUser).toBeDefined();
         expect(closedAccountabilityContractAddressesForUser.length).toEqual(1);
       });
-      it("can create additional accountability contracts for user", async () => {
+      it('can create additional accountability contracts for user', async () => {
         await accountabilityContractFactory.methods
           .createAccountabilityContract(
             referee,
-            "Drink water",
-            "Everyday I must drink water",
+            'Drink water',
+            'Everyday I must drink water',
             manager
           )
           .send({
             from: manager,
             gas: 1000000,
-            value: amount,
+            value: amount
           });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -142,7 +142,7 @@ describe("Accountability contract factory", () => {
             .call();
         expect(openAccountabilityContractAddresses.length).toEqual(2);
       });
-      it("can request that referee completes contract", async () => {
+      it('can request that referee completes contract', async () => {
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForUser(manager)
@@ -154,8 +154,8 @@ describe("Accountability contract factory", () => {
           .send({ from: manager, gas: 1000000 });
       });
     });
-    describe("referee", () => {
-      it("can get open accountability contract addresses of referee", async () => {
+    describe('referee', () => {
+      it('can get open accountability contract addresses of referee', async () => {
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForReferee(manager)
@@ -163,7 +163,7 @@ describe("Accountability contract factory", () => {
         expect(openAccountabilityContractAddresses).toBeDefined();
         expect(openAccountabilityContractAddresses.length).toEqual(1);
       });
-      it("can get closed accountability contract addresses of referee", async () => {
+      it('can get closed accountability contract addresses of referee', async () => {
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForReferee(manager)
@@ -182,7 +182,7 @@ describe("Accountability contract factory", () => {
           1
         );
       });
-      it("can get complete accountability contract requests of referee", async () => {
+      it('can get complete accountability contract requests of referee', async () => {
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForReferee(manager)
@@ -200,7 +200,7 @@ describe("Accountability contract factory", () => {
           1
         );
       });
-      it("referee can fail an open accountability contract", async () => {
+      it('referee can fail an open accountability contract', async () => {
         const initialOpenAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForReferee(manager)
@@ -227,13 +227,13 @@ describe("Accountability contract factory", () => {
         );
         const closedAccountabilityContractStatus =
           await closedAccountabilityContract.methods.status().call();
-        expect(closedAccountabilityContractStatus).toEqual("2");
+        expect(closedAccountabilityContractStatus).toEqual('2');
         const closedAcccountabilityContractBalance = await web3.eth.getBalance(
           closedAccountabilityContractAddresses[0]
         );
-        expect(closedAcccountabilityContractBalance).toEqual("0");
+        expect(closedAcccountabilityContractBalance).toEqual('0');
       });
-      it("referee can complete an open accountability contract", async () => {
+      it('referee can complete an open accountability contract', async () => {
         const initialOpenAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForReferee(manager)
@@ -259,13 +259,13 @@ describe("Accountability contract factory", () => {
         );
         const closedAccountabilityContractStatus =
           await closedAccountabilityContract.methods.status().call();
-        expect(closedAccountabilityContractStatus).toEqual("1");
+        expect(closedAccountabilityContractStatus).toEqual('1');
         const closedAcccountabilityContractBalance = await web3.eth.getBalance(
           closedAccountabilityContractAddresses[0]
         );
-        expect(closedAcccountabilityContractBalance).toEqual("0");
+        expect(closedAcccountabilityContractBalance).toEqual('0');
       });
-      it("referee can approve request for completion", async () => {
+      it('referee can approve request for completion', async () => {
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForReferee(manager)
@@ -286,30 +286,30 @@ describe("Accountability contract factory", () => {
     });
   });
 
-  describe("errors", () => {
-    describe("user", () => {
-      it("creator cannot complete an open accountability contract if they are not the referee", async () => {
+  describe('errors', () => {
+    describe('user', () => {
+      it('creator cannot complete an open accountability contract if they are not the referee', async () => {
         try {
           await accountabilityContractFactory.methods
             .createAccountabilityContract(
               referee,
-              "Drink water",
-              "Everyday I must drink water",
+              'Drink water',
+              'Everyday I must drink water',
               manager
             )
             .send({
               from: accounts[1],
               gas: 1000000,
-              value: amount,
+              value: amount
             });
           await accountabilityContractFactory.methods
             .completeOpenAccountabilityContract(accounts[1], 0)
             .send({ from: accounts[1], gas: 1000000 });
         } catch (err: any) {
-          expect(err.message.includes("Only referee can complete a contract"));
+          expect(err.message.includes('Only referee can complete a contract'));
         }
       });
-      it("user who is not referee or creator cannot fail an open accountability contract", async () => {
+      it('user who is not referee or creator cannot fail an open accountability contract', async () => {
         try {
           const openAccountabilityContractAddresses =
             await accountabilityContractFactory.methods
@@ -322,11 +322,11 @@ describe("Accountability contract factory", () => {
             .send({ from: accounts[2], gas: 1000000 });
         } catch (err: any) {
           expect(
-            err.message.includes("Only referee or creator can fail contract")
+            err.message.includes('Only referee or creator can fail contract')
           );
         }
       });
-      it("non referee cannot complete an open accountability contract", async () => {
+      it('non referee cannot complete an open accountability contract', async () => {
         try {
           const openAccountabilityContractAddresses =
             await accountabilityContractFactory.methods
@@ -356,8 +356,8 @@ describe("Accountability contract factory", () => {
           expect(err);
         }
       });
-      describe("request referee completes contract", () => {
-        it("user cannot request a referee completes a contract for a contract that is closed", async () => {
+      describe('request referee completes contract', () => {
+        it('user cannot request a referee completes a contract for a contract that is closed', async () => {
           try {
             const openAccountabilityContractAddresses =
               await accountabilityContractFactory.methods
@@ -375,10 +375,10 @@ describe("Accountability contract factory", () => {
               .send({ from: manager, gas: 1000000 });
             await accountabilityContractFactory.methods;
           } catch (err: any) {
-            expect(err.message.includes("Contract status must be open"));
+            expect(err.message.includes('Contract status must be open'));
           }
         });
-        it("user cannot request a referee completes a contract where they are not the referee", async () => {
+        it('user cannot request a referee completes a contract where they are not the referee', async () => {
           try {
             const openAccountabilityContractAddresses =
               await accountabilityContractFactory.methods
@@ -393,12 +393,12 @@ describe("Accountability contract factory", () => {
           } catch (err: any) {
             expect(
               err.message.includes(
-                "Contract referee must equal requested referee"
+                'Contract referee must equal requested referee'
               )
             );
           }
         });
-        it("user cannot request a referee completes a contract where they are not the creator", async () => {
+        it('user cannot request a referee completes a contract where they are not the creator', async () => {
           try {
             const openAccountabilityContractAddresses =
               await accountabilityContractFactory.methods
@@ -413,7 +413,7 @@ describe("Accountability contract factory", () => {
           } catch (err: any) {
             expect(
               err.message.includes(
-                "Only creator of contract can request completion"
+                'Only creator of contract can request completion'
               )
             );
           }
@@ -421,8 +421,8 @@ describe("Accountability contract factory", () => {
       });
     });
 
-    describe("referee", () => {
-      it("referee cannot complete an accountability contract with a success status", async () => {
+    describe('referee', () => {
+      it('referee cannot complete an accountability contract with a success status', async () => {
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForUser(manager)
@@ -442,7 +442,7 @@ describe("Accountability contract factory", () => {
           expect(err);
         }
       });
-      it("referee cannot fail an accountability contract with a success status", async () => {
+      it('referee cannot fail an accountability contract with a success status', async () => {
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForUser(manager)
@@ -462,7 +462,7 @@ describe("Accountability contract factory", () => {
           expect(err);
         }
       });
-      it("referee cannot complete an accountability contract with a success status", async () => {
+      it('referee cannot complete an accountability contract with a success status', async () => {
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForUser(manager)
@@ -483,7 +483,7 @@ describe("Accountability contract factory", () => {
         }
       });
 
-      it("referee cannot fail an accountability contract with a failure status", async () => {
+      it('referee cannot fail an accountability contract with a failure status', async () => {
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForUser(manager)
@@ -503,7 +503,7 @@ describe("Accountability contract factory", () => {
           expect(err);
         }
       });
-      it("referee cannot fail an accountability contract with a failure status", async () => {
+      it('referee cannot fail an accountability contract with a failure status', async () => {
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForUser(manager)

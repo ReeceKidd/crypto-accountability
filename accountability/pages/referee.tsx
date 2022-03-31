@@ -1,18 +1,102 @@
-import { useWeb3React } from "@web3-react/core";
-import type { NextPage } from "next";
-import Head from "next/head";
-import { useCallback, useEffect, useState } from "react";
-import { Segment } from "semantic-ui-react";
-import AccountabilityContracts from "../components/AccountabilityContracts/AccountabilityContracts";
-import ContractsTable from "../components/ContractsTable/ContractsTable";
-import Layout from "../components/Layout/Layout";
-import factory, { getAccountabilityContract } from "../factory";
-import { getContractStatus } from "../helpers/getContractStatus";
+import { useWeb3React } from '@web3-react/core';
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import { useCallback, useEffect, useState } from 'react';
+import { Segment } from 'semantic-ui-react';
+import AccountabilityContracts from '../components/AccountabilityContracts/AccountabilityContracts';
+import Layout from '../components/Layout/Layout';
+import factory, {
+  getAccountabilityContract,
+  getAccountabilityContractApprovalRequest
+} from '../factory';
 
-interface ContractsProps {}
+interface RefereeProps {}
 
-const Contracts: NextPage<ContractsProps> = () => {
+const Referee: NextPage<RefereeProps> = () => {
   const { account } = useWeb3React();
+  const getCompleteAccountabilityContractRequestAddressesForReferee =
+    useCallback(
+      async (
+        setCompleteAccountabilityContractRequestAddresses: (
+          addresses: string[]
+        ) => void
+      ) => {
+        if (account) {
+          const completeAccountabilityContractRequestAddresses =
+            await factory.methods
+              .getCompleteAccountabilityContractRequestsForReferee(account)
+              .call();
+          setCompleteAccountabilityContractRequestAddresses(
+            completeAccountabilityContractRequestAddresses
+          );
+        }
+      },
+      [account]
+    );
+  const [
+    loadingGetCompleteAccountabilityContractRequestAddressesForReferee,
+    setLoadingGetCompleteAccountabilityContractRequestAddressesForReferee
+  ] = useState(false);
+
+  const getCompleteAccountabilityContractRequests = useCallback(
+    async (
+      completeAccountabilityContractRequestAddresses: string[],
+      setCompleteAccountabilityContractRequests: (
+        completeAccountabilityContractRequests: {
+          address: string;
+          creator: string;
+          referee: string;
+          status: string;
+        }[]
+      ) => void
+    ) => {
+      const completeAccountabilityContractRequests = await Promise.all(
+        completeAccountabilityContractRequestAddresses.map(async (address) => {
+          const accountabilityContract =
+            getAccountabilityContractApprovalRequest(address! as string);
+          const [creator, referee, status] = await Promise.all([
+            accountabilityContract.methods.creator().call(),
+            accountabilityContract.methods.referee().call(),
+            accountabilityContract.methods.status().call()
+          ]);
+          return {
+            address,
+            creator,
+            referee,
+            status
+          };
+        })
+      );
+      setCompleteAccountabilityContractRequests(
+        completeAccountabilityContractRequests
+      );
+    },
+    []
+  );
+  const [
+    completeAccountabilityContractAddressRequests,
+    setCompleteAccountabilityContractRequestAddresses
+  ] = useState<string[]>([]);
+  useEffect(() => {
+    getCompleteAccountabilityContractRequestAddressesForReferee(
+      setCompleteAccountabilityContractRequestAddresses
+    );
+  }, [getCompleteAccountabilityContractRequestAddressesForReferee]);
+  const [
+    completeAccountabilityContractRequests,
+    setCompleteAcccountabilityContractRequests
+  ] = useState<
+    { address: string; creator: string; referee: string; status: string }[]
+  >([]);
+  useEffect(() => {
+    getCompleteAccountabilityContractRequests(
+      completeAccountabilityContractAddressRequests,
+      setCompleteAcccountabilityContractRequests
+    );
+  }, [
+    completeAccountabilityContractAddressRequests,
+    getCompleteAccountabilityContractRequests
+  ]);
   const getOpenAccountabillityContractAddresses = useCallback(
     async (
       setAccountabilityContractAddresses: (addresses: string[]) => void
@@ -28,11 +112,11 @@ const Contracts: NextPage<ContractsProps> = () => {
   );
   const [
     loadingGetOpenAccountabilityContractForReferees,
-    setLoadingGetOpenAccountabilityContractsForReferee,
+    setLoadingGetOpenAccountabilityContractsForReferee
   ] = useState(false);
   const [
     openAccountabilityContractAddresses,
-    setOpenAccountabilityContractAddresses,
+    setOpenAccountabilityContractAddresses
   ] = useState<string[]>([]);
   useEffect(() => {
     getOpenAccountabillityContractAddresses(
@@ -56,11 +140,11 @@ const Contracts: NextPage<ContractsProps> = () => {
   );
   const [
     loadingGetClosedAccountabilityContractForReferees,
-    setLoadingGetClosedAccountabilityContractsForReferee,
+    setLoadingGetClosedAccountabilityContractsForReferee
   ] = useState(false);
   const [
     closedAccountabilityContractAddresses,
-    setClosedAccountabilityContractAddresses,
+    setClosedAccountabilityContractAddresses
   ] = useState<string[]>([]);
   useEffect(() => {
     getClosedAccountabillityContractAddresses(
@@ -74,6 +158,14 @@ const Contracts: NextPage<ContractsProps> = () => {
         <title>Contracts you referee</title>
       </Head>
       <Layout>
+        <Segment>
+          <h2>
+            {`Approval requests: ${completeAccountabilityContractAddressRequests.length}`}
+          </h2>
+          {completeAccountabilityContractRequests.map(
+            (item) => `${item.status}`
+          )}
+        </Segment>
         <Segment loading={loadingGetOpenAccountabilityContractForReferees}>
           <h2>
             {`Open contracts you referee:
@@ -102,4 +194,4 @@ const Contracts: NextPage<ContractsProps> = () => {
   );
 };
 
-export default Contracts;
+export default Referee;

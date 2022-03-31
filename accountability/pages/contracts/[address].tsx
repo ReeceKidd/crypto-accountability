@@ -1,17 +1,19 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { useState } from "react";
-import { Button, Grid, Message } from "semantic-ui-react";
-import ContractsCards from "../../components/ContractCards/ContractCards";
-import Layout from "../../components/Layout/Layout";
-import { getAccountabilityContract } from "../../factory";
-import { useWeb3React } from "@web3-react/core";
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { Button, Grid, Message } from 'semantic-ui-react';
+import ContractsCards from '../../components/ContractCards/ContractCards';
+import Layout from '../../components/Layout/Layout';
+import crowdfundFactoryInstance, {
+  getAccountabilityContract
+} from '../../factory';
+import { useWeb3React } from '@web3-react/core';
 import {
   ContractStatus,
-  getContractStatus,
-} from "../../helpers/getContractStatus";
-import ContractStatusMessage from "../../components/ContractStatusMessage/ContractStatusMessage";
+  getContractStatus
+} from '../../helpers/getContractStatus';
+import ContractStatusMessage from '../../components/ContractStatusMessage/ContractStatusMessage';
 
 interface SpecificContractProps {
   creator: string;
@@ -30,7 +32,7 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
   description,
   failureRecipient,
   amount,
-  status,
+  status
 }) => {
   const router = useRouter();
   const { address } = router.query;
@@ -41,15 +43,25 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
   const completeContract = async () => {
     setCompleteContractLoading(true);
     await accountabilityContract.methods.completeContract().send({
-      from: account,
+      from: account
     });
+    setCompleteContractLoading(false);
+    router.reload();
+  };
+  const requestApproval = async (address: string) => {
+    setCompleteContractLoading(true);
+    await crowdfundFactoryInstance.methods
+      .requestRefereeCompletesContract(address)
+      .send({
+        from: account
+      });
     setCompleteContractLoading(false);
     router.reload();
   };
   const failContract = async () => {
     setFailContractLoading(true);
     await accountabilityContract.methods.completeContract().send({
-      from: account,
+      from: account
     });
     setFailContractLoading(false);
     router.reload();
@@ -92,6 +104,24 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
             </Button>
           </Grid.Column>
         )}
+        {account === creator && status === ContractStatus.OPEN && (
+          <Grid.Column width={6}>
+            <Button
+              positive
+              loading={completeContractLoading}
+              onClick={() => requestApproval(address! as string)}
+            >
+              Request approval
+            </Button>
+            <Button
+              negative
+              loading={failContractLoading}
+              onClick={() => failContract()}
+            >
+              Fail
+            </Button>
+          </Grid.Column>
+        )}
       </Grid>
     </Layout>
   );
@@ -107,7 +137,7 @@ SpecificContract.getInitialProps = async (ctx) => {
     description,
     failureRecipient,
     status,
-    amount,
+    amount
   ] = await Promise.all([
     accountabilityContract.methods.creator().call(),
     accountabilityContract.methods.referee().call(),
@@ -115,7 +145,7 @@ SpecificContract.getInitialProps = async (ctx) => {
     accountabilityContract.methods.description().call(),
     accountabilityContract.methods.failureRecipient().call(),
     accountabilityContract.methods.status().call(),
-    accountabilityContract.methods.amount().call(),
+    accountabilityContract.methods.amount().call()
   ]);
 
   return {
@@ -125,7 +155,7 @@ SpecificContract.getInitialProps = async (ctx) => {
     description,
     failureRecipient,
     status: getContractStatus(status),
-    amount,
+    amount
   };
 };
 

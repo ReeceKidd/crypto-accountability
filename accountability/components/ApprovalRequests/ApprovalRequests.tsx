@@ -1,23 +1,22 @@
-import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { getAccountabilityContract } from '../../factory';
 import { getContractStatus } from '../../helpers/getContractStatus';
 import ContractsTable from '../ContractsTable/ContractsTable';
 
-interface AccountabilityContractsProps {
+interface ApprovalRequestsProps {
   accountabilityContractAddresses: string[];
   setLoading: (loading: boolean) => void;
 }
 
-const AccountabilityContracts = ({
+const ApprovalRequests = ({
   accountabilityContractAddresses,
   setLoading
-}: AccountabilityContractsProps) => {
+}: ApprovalRequestsProps) => {
   const getOpenAccountabillityContracts = useCallback(
     async (
       accountabilityContractAddresses: string[],
-      setAccountabilityContracts: (
+      setApprovalRequests: (
         accountabilityContracts: {
           address: string;
           name: string;
@@ -26,7 +25,7 @@ const AccountabilityContracts = ({
         }[]
       ) => void
     ) => {
-      const openAccountabilityContracts = await Promise.all(
+      const openApprovalRequests = await Promise.all(
         accountabilityContractAddresses.map(async (address) => {
           const accountabilityContract = getAccountabilityContract(
             address! as string
@@ -45,16 +44,14 @@ const AccountabilityContracts = ({
           };
         })
       );
-      setAccountabilityContracts(openAccountabilityContracts);
+      setApprovalRequests(openApprovalRequests);
     },
     []
   );
-  const [
-    openAccountabilityContractsForUser,
-    setOpenAcccountabilityContractsForUser
-  ] = useState<
-    { address: string; name: string; status: string; amount: string }[]
-  >([]);
+  const [openApprovalRequestsForUser, setOpenAcccountabilityContractsForUser] =
+    useState<
+      { address: string; name: string; status: string; amount: string }[]
+    >([]);
   useEffect(() => {
     setLoading(true);
     getOpenAccountabillityContracts(
@@ -69,10 +66,10 @@ const AccountabilityContracts = ({
   ]);
   return (
     <>
-      <ContractsTable contracts={openAccountabilityContractsForUser} />
+      <ContractsTable contracts={openApprovalRequestsForUser} />
       <Link href={'/contracts'}>View all contracts</Link>
     </>
   );
 };
 
-export default AccountabilityContracts;
+export default ApprovalRequests;
