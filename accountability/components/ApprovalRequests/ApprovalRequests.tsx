@@ -1,71 +1,65 @@
-import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
-import { getAccountabilityContract } from '../../factory';
-import { getAccountabilityContractStatus } from '../../helpers/getAccountabilityContractStatus';
-import ContractsTable from '../ContractsTable/ContractsTable';
+import { getAccountabilityContract, getApprovalRequest } from '../../factory';
+import ApprovalRequestsTable, {
+  ApprovalRequest
+} from '../ApprovalRequestsTable/ApprovalRequestsTable';
 
 interface ApprovalRequestsProps {
-  accountabilityContractAddresses: string[];
+  approvalRequestAddresses: string[];
   setLoading: (loading: boolean) => void;
 }
 
 const ApprovalRequests = ({
-  accountabilityContractAddresses,
+  approvalRequestAddresses,
   setLoading
 }: ApprovalRequestsProps) => {
-  const getOpenAccountabillityContracts = useCallback(
+  const getApprovalRequests = useCallback(
     async (
-      accountabilityContractAddresses: string[],
-      setApprovalRequests: (
-        accountabilityContracts: {
-          address: string;
-          name: string;
-          status: string;
-          amount: string;
-        }[]
+      completeAccountabilityContractRequestAddresses: string[],
+      setCompleteAccountabilityContractRequests: (
+        completeAccountabilityContractRequests: ApprovalRequest[]
       ) => void
     ) => {
-      const openApprovalRequests = await Promise.all(
-        accountabilityContractAddresses.map(async (address) => {
-          const accountabilityContract = getAccountabilityContract(address);
-          const [name, status, amount] = await Promise.all([
-            accountabilityContract.methods.name().call(),
-            accountabilityContract.methods.status().call(),
-            accountabilityContract.methods.amount().call()
-          ]);
-
+      setLoading(true);
+      const completeAccountabilityContractRequests = await Promise.all(
+        completeAccountabilityContractRequestAddresses.map(async (address) => {
+          const approvalRequest = getApprovalRequest(address);
+          const [creator, status, accountabilityContractAddress] =
+            await Promise.all([
+              approvalRequest.methods.creator().call(),
+              approvalRequest.methods.status().call(),
+              approvalRequest.methods.accountabilityContractAddress().call()
+            ]);
+          const accountabilityContract = getAccountabilityContract(
+            accountabilityContractAddress
+          );
+          const accountabilityContractName =
+            await accountabilityContract.methods.name().call();
           return {
             address,
-            name,
-            status: getAccountabilityContractStatus(status),
-            amount
+            creator,
+            status,
+            accountabilityContractAddress,
+            accountabilityContractName
           };
         })
       );
-      setApprovalRequests(openApprovalRequests);
+      setCompleteAccountabilityContractRequests(
+        completeAccountabilityContractRequests
+      );
+      setLoading(false);
     },
+    [setLoading]
+  );
+  const [approvalRequests, setApprovalRequests] = useState<ApprovalRequest[]>(
     []
   );
-  const [openApprovalRequestsForUser, setOpenAcccountabilityContractsForUser] =
-    useState<
-      { address: string; name: string; status: string; amount: string }[]
-    >([]);
   useEffect(() => {
-    setLoading(true);
-    getOpenAccountabillityContracts(
-      accountabilityContractAddresses,
-      setOpenAcccountabilityContractsForUser
-    );
-    setLoading(false);
-  }, [
-    accountabilityContractAddresses,
-    getOpenAccountabillityContracts,
-    setLoading
-  ]);
+    getApprovalRequests(approvalRequestAddresses, setApprovalRequests);
+  }, [getApprovalRequests, approvalRequestAddresses, setApprovalRequests]);
   return (
     <>
-      <ContractsTable contracts={openApprovalRequestsForUser} />
-      <Link href={'/contracts'}>View all contracts</Link>
+      <ApprovalRequestsTable approvalRequests={approvalRequests} />
     </>
   );
 };

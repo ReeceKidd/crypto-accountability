@@ -14,7 +14,7 @@ export const getAccountabilityContract = (address: string) => {
   return new web3.eth.Contract(AccountabilityContract.abi as any, address);
 };
 
-export const getAccountabilityContractApprovalRequest = (address: string) => {
+export const getApprovalRequest = (address: string) => {
   return new web3.eth.Contract(
     AccountabilityContractApprovalRequest.abi as any,
     address
