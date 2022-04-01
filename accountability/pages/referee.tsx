@@ -7,9 +7,7 @@ import AccountabilityContracts from '../components/AccountabilityContracts/Accou
 import Layout from '../components/Layout/Layout';
 import factory, { getAccountabilityContractApprovalRequest } from '../factory';
 
-interface RefereeProps {}
-
-const Referee: NextPage<RefereeProps> = () => {
+const Referee: NextPage = () => {
   const { account } = useWeb3React();
   const getCompleteAccountabilityContractRequestAddressesForReferee =
     useCallback(
@@ -47,10 +45,13 @@ const Referee: NextPage<RefereeProps> = () => {
         }[]
       ) => void
     ) => {
+      setLoadingGetCompleteAccountabilityContractRequestAddressesForReferee(
+        true
+      );
       const completeAccountabilityContractRequests = await Promise.all(
         completeAccountabilityContractRequestAddresses.map(async (address) => {
           const accountabilityContract =
-            getAccountabilityContractApprovalRequest(address! as string);
+            getAccountabilityContractApprovalRequest(address);
           const [creator, referee, status] = await Promise.all([
             accountabilityContract.methods.creator().call(),
             accountabilityContract.methods.referee().call(),
@@ -66,6 +67,9 @@ const Referee: NextPage<RefereeProps> = () => {
       );
       setCompleteAccountabilityContractRequests(
         completeAccountabilityContractRequests
+      );
+      setLoadingGetCompleteAccountabilityContractRequestAddressesForReferee(
+        false
       );
     },
     []
@@ -155,7 +159,11 @@ const Referee: NextPage<RefereeProps> = () => {
         <title>Contracts you referee</title>
       </Head>
       <Layout>
-        <Segment>
+        <Segment
+          loading={
+            loadingGetCompleteAccountabilityContractRequestAddressesForReferee
+          }
+        >
           <h2>
             {`Approval requests: ${completeAccountabilityContractAddressRequests.length}`}
           </h2>

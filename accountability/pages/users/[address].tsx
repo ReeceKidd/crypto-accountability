@@ -1,4 +1,3 @@
-import { useWeb3React } from '@web3-react/core';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -16,9 +15,7 @@ import Layout from '../../components/Layout/Layout';
 import factory, { getAccountabilityContract } from '../../factory';
 import { getAccountabilityContractStatus } from '../../helpers/getAccountabilityContractStatus';
 
-interface SpecificUserProps {}
-
-const SpecificUser: NextPage<SpecificUserProps> = () => {
+const SpecificUser: NextPage = () => {
   const router = useRouter();
   const { address } = router.query;
   const [
@@ -54,9 +51,7 @@ const SpecificUser: NextPage<SpecificUserProps> = () => {
       setLoadingOpenAccountabilityContracts(true);
       const openAccountabilityContracts = await Promise.all(
         openAccountabilityContractAddresses.map(async (address) => {
-          const accountabilityContract = getAccountabilityContract(
-            address! as string
-          );
+          const accountabilityContract = getAccountabilityContract(address);
           const [name, status, amount] = await Promise.all([
             accountabilityContract.methods.name().call(),
             accountabilityContract.methods.status().call(),
@@ -156,7 +151,7 @@ const SpecificUser: NextPage<SpecificUserProps> = () => {
           <Button primary>View on etherscan</Button>
         </Link>
 
-        <Segment>
+        <Segment loading={loadingOpenAccountabilityContractsForUser}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <h2>
               Open contracts: {openAccountabilityContractAddresses.length}
@@ -165,7 +160,7 @@ const SpecificUser: NextPage<SpecificUserProps> = () => {
           <ContractsTable contracts={openAccountabilityContractsForUser} />
         </Segment>
         <br />
-        <Segment>
+        <Segment loading={loadingOpenAccountabilityContractsForReferee}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <h2>
               Contracts user referees:

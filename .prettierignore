@@ -1,5 +1,4 @@
 package.json
-package-lock.json
 yarn.lock
-dist
+.next
 node_modules

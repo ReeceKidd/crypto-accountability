@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 const path = require('path');
 const Web3 = require('web3');

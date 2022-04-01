@@ -1,4 +1,3 @@
-import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { getAccountabilityContract } from '../../factory';
@@ -28,9 +27,7 @@ const AccountabilityContracts = ({
     ) => {
       const openAccountabilityContracts = await Promise.all(
         accountabilityContractAddresses.map(async (address) => {
-          const accountabilityContract = getAccountabilityContract(
-            address! as string
-          );
+          const accountabilityContract = getAccountabilityContract(address);
           const [name, status, amount] = await Promise.all([
             accountabilityContract.methods.name().call(),
             accountabilityContract.methods.status().call(),

@@ -27,9 +27,7 @@ const ApprovalRequests = ({
     ) => {
       const openApprovalRequests = await Promise.all(
         accountabilityContractAddresses.map(async (address) => {
-          const accountabilityContract = getAccountabilityContract(
-            address! as string
-          );
+          const accountabilityContract = getAccountabilityContract(address);
           const [name, status, amount] = await Promise.all([
             accountabilityContract.methods.name().call(),
             accountabilityContract.methods.status().call(),

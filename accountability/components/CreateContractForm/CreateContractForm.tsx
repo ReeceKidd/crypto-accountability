@@ -41,14 +41,6 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
     event.preventDefault();
     try {
       setNetworkRequestMessage('Waiting on transaction success...');
-      const gas = await factory.methods
-        .createAccountabilityContract(
-          referee,
-          name,
-          description,
-          failureRecipient
-        )
-        .estimateGas();
       await factory.methods
         .createAccountabilityContract(
           referee,

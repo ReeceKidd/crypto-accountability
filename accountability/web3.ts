@@ -1,9 +1,11 @@
 import Web3 from 'web3';
+import { Web3Provider } from '@ethersproject/providers';
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ethereum: any;
-    web3: any;
+    web3: Web3Provider;
   }
 }
 

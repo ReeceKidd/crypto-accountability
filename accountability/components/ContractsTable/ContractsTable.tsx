@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Button, Dimmer, Loader, Segment, Table } from 'semantic-ui-react';
+import { Table } from 'semantic-ui-react';
 import web3 from '../../web3';
 
 export interface AccountabilityContract {

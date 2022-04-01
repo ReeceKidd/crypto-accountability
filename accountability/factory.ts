@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import web3 from './web3';
 import * as AccountabilityContractFactory from '../build/AccountabilityContractFactory.json';
 import * as AccountabilityContract from '../build/AccountabilityContract.json';

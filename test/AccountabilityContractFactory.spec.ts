@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const ganache = require('ganache-cli');
 import Web3 from 'web3';
 import * as AccountabilityContractFactory from '../build/AccountabilityContractFactory.json';

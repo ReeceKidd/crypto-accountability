@@ -35,8 +35,8 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
   status
 }) => {
   const router = useRouter();
-  const { address } = router.query;
-  const accountabilityContract = getAccountabilityContract(address! as string);
+  const address = router.query.address as string;
+  const accountabilityContract = getAccountabilityContract(address);
   const [completeContractLoading, setCompleteContractLoading] = useState(false);
   const [failContractLoading, setFailContractLoading] = useState(false);
   const { account } = useWeb3React();
@@ -109,7 +109,7 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
             <Button
               positive
               loading={completeContractLoading}
-              onClick={() => requestApproval(address! as string)}
+              onClick={() => requestApproval(address)}
             >
               Request approval
             </Button>
@@ -128,8 +128,8 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
 };
 
 SpecificContract.getInitialProps = async (ctx) => {
-  const { address } = ctx.query;
-  const accountabilityContract = getAccountabilityContract(address! as string);
+  const address = ctx.query.address as string;
+  const accountabilityContract = getAccountabilityContract(address);
   const [
     creator,
     referee,

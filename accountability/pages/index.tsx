@@ -1,10 +1,8 @@
 import { useWeb3React } from '@web3-react/core';
 import type { NextPage } from 'next';
-import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { Grid, Segment } from 'semantic-ui-react';
 import ContractsList from '../components/ContractsList/ContractsList';
-import ContractsTable from '../components/ContractsTable/ContractsTable';
 import Layout from '../components/Layout/Layout';
 import OpenAccountabilityContracts from '../components/AccountabilityContracts/AccountabilityContracts';
 import StatisticCards from '../components/StatisticCards/StatisticCards';
@@ -124,7 +122,7 @@ const Home: NextPage = () => {
         .call();
       const contractNames = await Promise.all(
         contractAddresses.map(async (address) => {
-          const accountabilityContract = getAccountabilityContract(address!);
+          const accountabilityContract = getAccountabilityContract(address);
           const title = await accountabilityContract.methods.name().call();
           return {
             address,
