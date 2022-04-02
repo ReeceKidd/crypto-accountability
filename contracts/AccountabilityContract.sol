@@ -22,7 +22,7 @@ contract AccountabilityContractFactory {
     uint managedContracts;
     address[] openAccountabilityContractAddresses;
     address[] closedAccountabilityContractAddresses;
-    address[] completeAccountabilityContractRequestsAddresses;
+    address[] approvalRequestsAddresses;
     }
 
     function createAccountabilityContract(address _referee, string memory _name, string memory _description, address payable _failureRecipient) public payable {
@@ -61,7 +61,7 @@ contract AccountabilityContractFactory {
     }
 
     function getCompleteAccountabilityContractRequestsForReferee(address referee) public view returns (address[] memory){
-        return referees[referee].completeAccountabilityContractRequestsAddresses;
+        return referees[referee].approvalRequestsAddresses;
     }
 
     function failOpenAccountabilityContract(address contractAddress) public {
@@ -78,15 +78,15 @@ contract AccountabilityContractFactory {
       moveOpenContractToClosedContractsForReferee(accountabilityContract.referee(), contractAddress);
     }
 
-    function requestRefereeCompletesContract(address contractAddress) public {
+    function requestApproval(address contractAddress) public {
         AccountabilityContract accountabilityContract = AccountabilityContract(contractAddress);
         require(accountabilityContract.status() == AccountabilityContract.Status.OPEN, "Contract status must be open");
         require(tx.origin == accountabilityContract.creator(), "Only creator of contract can request completion");
         AccountabilityContractApprovalRequest newApprovalRequest = new AccountabilityContractApprovalRequest(contractAddress);
-        referees[accountabilityContract.referee()].completeAccountabilityContractRequestsAddresses.push(address(newApprovalRequest));
+        referees[accountabilityContract.referee()].approvalRequestsAddresses.push(address(newApprovalRequest));
     }
 
-    function approveRequestForCompletion(address completionRequestContractAddress) public {
+    function approveRequest(address completionRequestContractAddress) public {
         AccountabilityContractApprovalRequest approvalRequest = AccountabilityContractApprovalRequest(completionRequestContractAddress);
         AccountabilityContract accountabilityContract = AccountabilityContract(approvalRequest.accountabilityContractAddress());
         require(accountabilityContract.referee() == approvalRequest.referee(), "Only contract referee can approve request for completion");
@@ -96,7 +96,7 @@ contract AccountabilityContractFactory {
         moveOpenContractToClosedContractsForReferee(accountabilityContract.referee(), approvalRequest.accountabilityContractAddress());
     }
 
-    function rejectRequestForCompletion(address completionRequestContractAddress, string memory response) public {
+    function rejectRequest(address completionRequestContractAddress, string memory response) public {
         AccountabilityContractApprovalRequest approvalRequest = AccountabilityContractApprovalRequest(completionRequestContractAddress);
         approvalRequest.denyRequest(response);
     }

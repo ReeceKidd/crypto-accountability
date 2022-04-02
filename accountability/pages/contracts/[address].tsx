@@ -50,11 +50,9 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
   };
   const requestApproval = async (address: string) => {
     setCompleteContractLoading(true);
-    await crowdfundFactoryInstance.methods
-      .requestRefereeCompletesContract(address)
-      .send({
-        from: account
-      });
+    await crowdfundFactoryInstance.methods.requestApproval(address).send({
+      from: account
+    });
     setCompleteContractLoading(false);
     router.reload();
   };

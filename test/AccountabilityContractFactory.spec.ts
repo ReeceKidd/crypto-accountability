@@ -150,9 +150,7 @@ describe('Accountability contract factory', () => {
             .getOpenAccountabilityContractAddressesForUser(manager)
             .call();
         await accountabilityContractFactory.methods
-          .requestRefereeCompletesContract(
-            openAccountabilityContractAddresses[0]
-          )
+          .requestApproval(openAccountabilityContractAddresses[0])
           .send({ from: manager, gas: 1000000 });
       });
     });
@@ -190,9 +188,7 @@ describe('Accountability contract factory', () => {
             .getOpenAccountabilityContractAddressesForReferee(manager)
             .call();
         await accountabilityContractFactory.methods
-          .requestRefereeCompletesContract(
-            openAccountabilityContractAddresses[0]
-          )
+          .requestApproval(openAccountabilityContractAddresses[0])
           .send({ from: manager, gas: 1000000 });
         const completeAccountabilityContractRequestAddresses =
           await accountabilityContractFactory.methods
@@ -273,15 +269,13 @@ describe('Accountability contract factory', () => {
             .getOpenAccountabilityContractAddressesForReferee(manager)
             .call();
         await accountabilityContractFactory.methods
-          .requestRefereeCompletesContract(
-            openAccountabilityContractAddresses[0]
-          )
+          .requestApproval(openAccountabilityContractAddresses[0])
           .send({ from: manager, gas: 1000000 });
         const completeAccountabilityContractRequestAddresses =
           await accountabilityContractFactory.methods
             .getCompleteAccountabilityContractRequestsForReferee(manager)
             .call();
-        await accountabilityContractFactory.methods.approveRequestForCompletion(
+        await accountabilityContractFactory.methods.approveRequest(
           completeAccountabilityContractRequestAddresses[0]
         );
       });
@@ -366,9 +360,7 @@ describe('Accountability contract factory', () => {
                 .getOpenAccountabilityContractAddressesForUser(manager)
                 .call();
             await accountabilityContractFactory.methods
-              .requestRefereeCompletesContract(
-                openAccountabilityContractAddresses[0]
-              )
+              .requestApproval(openAccountabilityContractAddresses[0])
               .send({ from: manager, gas: 1000000 });
             await accountabilityContractFactory.methods
               .completeOpenAccountabilityContract(

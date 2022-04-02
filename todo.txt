@@ -1,7 +1,7 @@
 
--Display requests for referee that need approved. 
--Referee can reject request that needs approved. 
+-Referee can deny request that needs approved. 
 -Referee can accept request that needs approved. 
+-Change name to acceptRequests
 -Redirect user to contracts page after they complete it. 
 -Check why contract is being moved to closed when user completes it. 
 -When users fail task task is automatically failed. 
