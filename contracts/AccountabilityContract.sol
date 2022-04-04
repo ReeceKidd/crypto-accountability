@@ -60,7 +60,7 @@ contract AccountabilityContractFactory {
         return referees[referee].closedAccountabilityContractAddresses;
     }
 
-    function getCompleteAccountabilityContractRequestsForReferee(address referee) public view returns (address[] memory){
+    function getApprovalRequests(address referee) public view returns (address[] memory){
         return referees[referee].approvalRequestsAddresses;
     }
 
@@ -82,6 +82,7 @@ contract AccountabilityContractFactory {
         AccountabilityContract accountabilityContract = AccountabilityContract(contractAddress);
         require(accountabilityContract.status() == AccountabilityContract.Status.OPEN, "Contract status must be open");
         require(tx.origin == accountabilityContract.creator(), "Only creator of contract can request completion");
+        require(accountabilityContract.creator() != accountabilityContract.referee(), "Cannot request approval when creator is referee");
         AccountabilityContractApprovalRequest newApprovalRequest = new AccountabilityContractApprovalRequest(contractAddress);
         referees[accountabilityContract.referee()].approvalRequestsAddresses.push(address(newApprovalRequest));
     }

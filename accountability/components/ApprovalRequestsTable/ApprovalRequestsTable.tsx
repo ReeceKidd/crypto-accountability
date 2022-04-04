@@ -1,4 +1,5 @@
 import { Button, Table } from 'semantic-ui-react';
+import crowdfundFactoryInstance from '../../factory';
 
 export interface ApprovalRequest {
   address: string;
@@ -12,13 +13,20 @@ interface RequestsTableProps {
 }
 
 const ApprovalRequestsTable = ({ approvalRequests }: RequestsTableProps) => {
+  const approveRequest = async (contractAddress: string) => {
+    await crowdfundFactoryInstance.methods.approveRequest(contractAddress);
+  };
   const tableCells = approvalRequests.map(
     ({ accountabilityContractAddress, accountabilityContractName }, index) => (
       <Table.Row key={index}>
         <Table.Cell>{accountabilityContractName}</Table.Cell>
         <Table.Cell>{accountabilityContractAddress}</Table.Cell>
         <Table.Cell>
-          <Button color="green" content="Approve" />
+          <Button
+            color="green"
+            content="Approve"
+            onClick={() => approveRequest(accountabilityContractAddress)}
+          />
         </Table.Cell>
         <Table.Cell>
           <Button color="red" content="Deny" />
