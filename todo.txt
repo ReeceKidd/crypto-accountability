@@ -1,6 +1,7 @@
 
 -Referee can deny request that needs approved. 
 -Referee can accept request that needs approved. 
+-Abstract functions that are deleting addresses from arrays as they are all doing the same thing.
 -Change name to acceptRequests
 -Redirect user to contracts page after they complete it. 
 -Check why contract is being moved to closed when user completes it. 

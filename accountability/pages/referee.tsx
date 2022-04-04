@@ -20,9 +20,7 @@ const Referee: NextPage = () => {
     ) => {
       if (account) {
         const completeAccountabilityContractRequestAddresses =
-          await factory.methods
-            .getCompleteAccountabilityContractRequestsForReferee(account)
-            .call();
+          await factory.methods.getApprovalRequests(account).call();
         setCompleteAccountabilityContractRequestAddresses(
           completeAccountabilityContractRequestAddresses
         );

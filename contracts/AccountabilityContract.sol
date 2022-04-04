@@ -87,19 +87,20 @@ contract AccountabilityContractFactory {
         referees[accountabilityContract.referee()].approvalRequestsAddresses.push(address(newApprovalRequest));
     }
 
-    function approveRequest(address completionRequestContractAddress) public {
-        AccountabilityContractApprovalRequest approvalRequest = AccountabilityContractApprovalRequest(completionRequestContractAddress);
+    function approveRequest(address approvalRequestAddress) public {
+        AccountabilityContractApprovalRequest approvalRequest = AccountabilityContractApprovalRequest(approvalRequestAddress);
         AccountabilityContract accountabilityContract = AccountabilityContract(approvalRequest.accountabilityContractAddress());
         require(accountabilityContract.referee() == approvalRequest.referee(), "Only contract referee can approve request for completion");
         approvalRequest.approveRequest();
         accountabilityContract.completeContract();
         moveOpenContractToClosedContractsForUser(accountabilityContract.creator(), approvalRequest.accountabilityContractAddress());
         moveOpenContractToClosedContractsForReferee(accountabilityContract.referee(), approvalRequest.accountabilityContractAddress());
+        deleteApprovalRequestForReferee(accountabilityContract.referee(), approvalRequestAddress);
     }
 
-    function rejectRequest(address completionRequestContractAddress, string memory response) public {
-        AccountabilityContractApprovalRequest approvalRequest = AccountabilityContractApprovalRequest(completionRequestContractAddress);
-        approvalRequest.denyRequest(response);
+    function rejectRequest(address approvalRequestAddress, string memory response) public {
+        AccountabilityContractApprovalRequest approvalRequest = AccountabilityContractApprovalRequest(approvalRequestAddress);
+        approvalRequest.rejectRequest(response);
     }
 
     function getContractIndexForUser(address user, address contractAddress) view private returns (uint){
@@ -126,7 +127,7 @@ contract AccountabilityContractFactory {
         uint contractIndex;
         for (uint i = 0; i<=referees[referee].openAccountabilityContractAddresses.length-1; i++){
             if(referees[referee].openAccountabilityContractAddresses[i] == contractAddress){
-                contractIndex = i;
+                 contractIndex = i;
             }
         }
         return contractIndex;
@@ -139,6 +140,21 @@ contract AccountabilityContractFactory {
         }
         referees[referee].closedAccountabilityContractAddresses.push(referees[referee].openAccountabilityContractAddresses[referees[referee].openAccountabilityContractAddresses.length-1]);
         referees[referee].openAccountabilityContractAddresses.pop();
+    }
+
+    function deleteApprovalRequestForReferee(address referee, address approvalRequestAddress) private {
+        uint contractIndex;
+        for (uint i = 0; i<=referees[referee].approvalRequestsAddresses.length-1; i++){
+            if(referees[referee].approvalRequestsAddresses[i] == approvalRequestAddress){
+                contractIndex = i;
+                break;
+            }
+        }
+        for (uint i = contractIndex; i<referees[referee].approvalRequestsAddresses.length-1; i++){
+            referees[referee].approvalRequestsAddresses[i] = referees[referee].approvalRequestsAddresses[i+1];
+        }
+        referees[referee].approvalRequestsAddresses.pop();
+
     }
 
     function getUserAddresses(uint startIndex, uint endIndex) public view returns (address[] memory) {
@@ -184,8 +200,8 @@ contract AccountabilityContractApprovalRequest {
         return this;
     } 
 
-    function denyRequest(string memory _response) public  returns (AccountabilityContractApprovalRequest) {
-        require(tx.origin == referee, "Only referee can deny approval request");
+    function rejectRequest(string memory _response) public  returns (AccountabilityContractApprovalRequest) {
+        require(tx.origin == referee, "Only referee can rject approval request");
         status = Status.DENIED;
         response = _response;
         return this;

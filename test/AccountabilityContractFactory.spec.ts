@@ -285,7 +285,7 @@ describe('Accountability contract factory', () => {
         );
         expect(closedAcccountabilityContractBalance).toEqual('0');
       });
-      it('referee can approve request for completion', async () => {
+      it('referee can approve request', async () => {
         await accountabilityContractFactory.methods
           .createAccountabilityContract(
             accounts[1],
@@ -307,11 +307,44 @@ describe('Accountability contract factory', () => {
           .send({ from: accounts[0], gas: 1000000 });
         const approvalRequestAddresses =
           await accountabilityContractFactory.methods
-            .getApprovalRequests(manager)
+            .getApprovalRequests(accounts[1])
             .call();
-        await accountabilityContractFactory.methods.approveRequest(
-          approvalRequestAddresses[0]
-        );
+        await accountabilityContractFactory.methods
+          .approveRequest(approvalRequestAddresses[0])
+          .send({ from: accounts[1], gas: 1000000 });
+        const updatedApprovalRequestAddresses =
+          await accountabilityContractFactory.methods
+            .getApprovalRequests(accounts[1])
+            .call();
+        expect(updatedApprovalRequestAddresses.length).toEqual(0);
+      });
+      it('referee can reject request', async () => {
+        await accountabilityContractFactory.methods
+          .createAccountabilityContract(
+            accounts[1],
+            'Drink water',
+            'Everyday I must drink water',
+            manager
+          )
+          .send({
+            from: accounts[0],
+            gas: 1000000,
+            value: amount
+          });
+        const openAccountabilityContractAddresses =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForReferee(accounts[1])
+            .call();
+        await accountabilityContractFactory.methods
+          .requestApproval(openAccountabilityContractAddresses[0])
+          .send({ from: accounts[0], gas: 1000000 });
+        const approvalRequestAddresses =
+          await accountabilityContractFactory.methods
+            .getApprovalRequests(accounts[1])
+            .call();
+        await accountabilityContractFactory.methods
+          .rejectRequest(approvalRequestAddresses[0], 'Did not complete task')
+          .send({ from: accounts[1], gas: 1000000 });
       });
     });
   });
