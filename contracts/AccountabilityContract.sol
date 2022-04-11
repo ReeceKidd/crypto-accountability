@@ -90,17 +90,17 @@ contract AccountabilityContractFactory {
     function approveRequest(address approvalRequestAddress) public {
         AccountabilityContractApprovalRequest approvalRequest = AccountabilityContractApprovalRequest(approvalRequestAddress);
         AccountabilityContract accountabilityContract = AccountabilityContract(approvalRequest.accountabilityContractAddress());
-        require(accountabilityContract.referee() == approvalRequest.referee(), "Only contract referee can approve request for completion");
         approvalRequest.approveRequest();
-        accountabilityContract.completeContract();
-        moveOpenContractToClosedContractsForUser(accountabilityContract.creator(), approvalRequest.accountabilityContractAddress());
-        moveOpenContractToClosedContractsForReferee(accountabilityContract.referee(), approvalRequest.accountabilityContractAddress());
+        completeOpenAccountabilityContract(address(accountabilityContract));
         deleteApprovalRequestForReferee(accountabilityContract.referee(), approvalRequestAddress);
     }
 
     function rejectRequest(address approvalRequestAddress, string memory response) public {
         AccountabilityContractApprovalRequest approvalRequest = AccountabilityContractApprovalRequest(approvalRequestAddress);
+        AccountabilityContract accountabilityContract = AccountabilityContract(approvalRequest.accountabilityContractAddress());
         approvalRequest.rejectRequest(response);
+        failOpenAccountabilityContract(address(accountabilityContract));
+        deleteApprovalRequestForReferee(accountabilityContract.referee(), approvalRequestAddress);
     }
 
     function getContractIndexForUser(address user, address contractAddress) view private returns (uint){
@@ -201,7 +201,7 @@ contract AccountabilityContractApprovalRequest {
     } 
 
     function rejectRequest(string memory _response) public  returns (AccountabilityContractApprovalRequest) {
-        require(tx.origin == referee, "Only referee can rject approval request");
+        require(tx.origin == referee, "Only referee can reject approval request");
         status = Status.DENIED;
         response = _response;
         return this;

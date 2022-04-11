@@ -286,65 +286,156 @@ describe('Accountability contract factory', () => {
         expect(closedAcccountabilityContractBalance).toEqual('0');
       });
       it('referee can approve request', async () => {
+        const referee = accounts[1];
+        const user = accounts[0];
         await accountabilityContractFactory.methods
           .createAccountabilityContract(
-            accounts[1],
+            referee,
             'Drink water',
             'Everyday I must drink water',
             manager
           )
           .send({
-            from: accounts[0],
+            from: user,
             gas: 1000000,
             value: amount
           });
-        const openAccountabilityContractAddresses =
+        const openAccountabilityContractAddressesUser =
           await accountabilityContractFactory.methods
-            .getOpenAccountabilityContractAddressesForReferee(accounts[1])
+            .getOpenAccountabilityContractAddressesForUser(user)
+            .call();
+        const closedAccountabilityContractAddressesUser =
+          await accountabilityContractFactory.methods
+            .getClosedAccountabilityContractAddressesForUser(user)
+            .call();
+        const openAccountabilityContractAddressesReferee =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForReferee(referee)
+            .call();
+        const closedAccountabilityContractAddressesReferee =
+          await accountabilityContractFactory.methods
+            .getClosedAccountabilityContractAddressesForReferee(referee)
             .call();
         await accountabilityContractFactory.methods
-          .requestApproval(openAccountabilityContractAddresses[0])
-          .send({ from: accounts[0], gas: 1000000 });
+          .requestApproval(openAccountabilityContractAddressesReferee[0])
+          .send({ from: user, gas: 1000000 });
         const approvalRequestAddresses =
           await accountabilityContractFactory.methods
-            .getApprovalRequests(accounts[1])
+            .getApprovalRequests(referee)
             .call();
         await accountabilityContractFactory.methods
           .approveRequest(approvalRequestAddresses[0])
-          .send({ from: accounts[1], gas: 1000000 });
+          .send({ from: referee, gas: 1000000 });
         const updatedApprovalRequestAddresses =
           await accountabilityContractFactory.methods
-            .getApprovalRequests(accounts[1])
+            .getApprovalRequests(referee)
             .call();
         expect(updatedApprovalRequestAddresses.length).toEqual(0);
+        const updatedOpenAccountabilityContractAddressesReferee =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForReferee(referee)
+            .call();
+        expect(
+          updatedOpenAccountabilityContractAddressesReferee.length
+        ).toEqual(openAccountabilityContractAddressesReferee.length - 1);
+        const updatedOpenAccountabilityContractAddressesUser =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForUser(user)
+            .call();
+        expect(updatedOpenAccountabilityContractAddressesUser.length).toEqual(
+          openAccountabilityContractAddressesUser.length - 1
+        );
+        const updatedClosedAccountabilityContractAddressesUser =
+          await accountabilityContractFactory.methods
+            .getClosedAccountabilityContractAddressesForUser(user)
+            .call();
+        expect(updatedClosedAccountabilityContractAddressesUser.length).toEqual(
+          closedAccountabilityContractAddressesUser.length + 1
+        );
+        const updatedClosedAccountabilityContractAddressesReferee =
+          await accountabilityContractFactory.methods
+            .getClosedAccountabilityContractAddressesForReferee(referee)
+            .call();
+        expect(
+          updatedClosedAccountabilityContractAddressesReferee.length
+        ).toEqual(closedAccountabilityContractAddressesReferee.length + 1);
       });
       it('referee can reject request', async () => {
+        const referee = accounts[1];
+        const user = accounts[0];
         await accountabilityContractFactory.methods
           .createAccountabilityContract(
-            accounts[1],
+            referee,
             'Drink water',
             'Everyday I must drink water',
             manager
           )
           .send({
-            from: accounts[0],
+            from: user,
             gas: 1000000,
             value: amount
           });
-        const openAccountabilityContractAddresses =
+        const openAccountabilityContractAddressesUser =
           await accountabilityContractFactory.methods
-            .getOpenAccountabilityContractAddressesForReferee(accounts[1])
+            .getOpenAccountabilityContractAddressesForUser(user)
+            .call();
+        const closedAccountabilityContractAddressesUser =
+          await accountabilityContractFactory.methods
+            .getClosedAccountabilityContractAddressesForUser(user)
+            .call();
+        const openAccountabilityContractAddressesReferee =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForReferee(referee)
+            .call();
+        const closedAccountabilityContractAddressesReferee =
+          await accountabilityContractFactory.methods
+            .getClosedAccountabilityContractAddressesForReferee(referee)
             .call();
         await accountabilityContractFactory.methods
-          .requestApproval(openAccountabilityContractAddresses[0])
-          .send({ from: accounts[0], gas: 1000000 });
+          .requestApproval(openAccountabilityContractAddressesReferee[0])
+          .send({ from: user, gas: 1000000 });
         const approvalRequestAddresses =
           await accountabilityContractFactory.methods
-            .getApprovalRequests(accounts[1])
+            .getApprovalRequests(referee)
             .call();
         await accountabilityContractFactory.methods
           .rejectRequest(approvalRequestAddresses[0], 'Did not complete task')
-          .send({ from: accounts[1], gas: 1000000 });
+          .send({ from: referee, gas: 1000000 });
+        const updatedOpenAccountabilityContractAddressesReferee =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForReferee(referee)
+            .call();
+        expect(
+          updatedOpenAccountabilityContractAddressesReferee.length
+        ).toEqual(openAccountabilityContractAddressesReferee.length - 1);
+        const updatedApprovalRequestAddresses =
+          await accountabilityContractFactory.methods
+            .getApprovalRequests(referee)
+            .call();
+        expect(updatedApprovalRequestAddresses.length).toEqual(
+          approvalRequestAddresses.length - 1
+        );
+        const updatedOpenAccountabilityContractAddressesUser =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForUser(user)
+            .call();
+        expect(updatedOpenAccountabilityContractAddressesUser.length).toEqual(
+          openAccountabilityContractAddressesUser.length - 1
+        );
+        const updatedClosedAccountabilityContractAddressesUser =
+          await accountabilityContractFactory.methods
+            .getClosedAccountabilityContractAddressesForUser(user)
+            .call();
+        expect(updatedClosedAccountabilityContractAddressesUser.length).toEqual(
+          closedAccountabilityContractAddressesUser.length + 1
+        );
+        const updatedClosedAccountabilityContractAddressesReferee =
+          await accountabilityContractFactory.methods
+            .getClosedAccountabilityContractAddressesForReferee(referee)
+            .call();
+        expect(
+          updatedClosedAccountabilityContractAddressesReferee.length
+        ).toEqual(closedAccountabilityContractAddressesReferee.length + 1);
       });
     });
   });
@@ -431,7 +522,6 @@ describe('Accountability contract factory', () => {
           await accountabilityContractFactory.methods
             .approveRequest(openAccountabilityContractAddresses[0])
             .send({ from: manager, gas: 1000000 });
-          await accountabilityContractFactory.methods;
         } catch (err: any) {
           expect(
             err.message.includes(
@@ -440,66 +530,129 @@ describe('Accountability contract factory', () => {
           );
         }
       });
-      describe('request referee completes contract', () => {
-        it('user cannot request a referee completes a contract for a contract that is closed', async () => {
-          try {
-            const openAccountabilityContractAddresses =
-              await accountabilityContractFactory.methods
-                .getOpenAccountabilityContractAddressesForUser(manager)
-                .call();
+      it('user cannot request a referee completes a contract for a contract that is closed', async () => {
+        try {
+          const openAccountabilityContractAddresses =
             await accountabilityContractFactory.methods
-              .requestApproval(openAccountabilityContractAddresses[0])
-              .send({ from: manager, gas: 1000000 });
+              .getOpenAccountabilityContractAddressesForUser(manager)
+              .call();
+          await accountabilityContractFactory.methods
+            .requestApproval(openAccountabilityContractAddresses[0])
+            .send({ from: manager, gas: 1000000 });
+          await accountabilityContractFactory.methods
+            .completeOpenAccountabilityContract(
+              openAccountabilityContractAddresses[0]
+            )
+            .send({ from: manager, gas: 1000000 });
+        } catch (err: any) {
+          expect(err.message.includes('Contract status must be open'));
+        }
+      });
+      it('user cannot request a referee completes a contract where they are not the referee', async () => {
+        try {
+          const openAccountabilityContractAddresses =
             await accountabilityContractFactory.methods
-              .completeOpenAccountabilityContract(
-                openAccountabilityContractAddresses[0]
-              )
-              .send({ from: manager, gas: 1000000 });
-            await accountabilityContractFactory.methods;
-          } catch (err: any) {
-            expect(err.message.includes('Contract status must be open'));
-          }
-        });
-        it('user cannot request a referee completes a contract where they are not the referee', async () => {
-          try {
-            const openAccountabilityContractAddresses =
-              await accountabilityContractFactory.methods
-                .getOpenAccountabilityContractAddressesForUser(manager)
-                .call();
+              .getOpenAccountabilityContractAddressesForUser(manager)
+              .call();
+          await accountabilityContractFactory.methods
+            .completeOpenAccountabilityContract(
+              openAccountabilityContractAddresses[0]
+            )
+            .send({ from: manager, gas: 1000000 });
+        } catch (err: any) {
+          expect(
+            err.message.includes(
+              'Contract referee must equal requested referee'
+            )
+          );
+        }
+      });
+      it('user cannot request a referee completes a contract where they are not the creator', async () => {
+        try {
+          const openAccountabilityContractAddresses =
             await accountabilityContractFactory.methods
-              .completeOpenAccountabilityContract(
-                openAccountabilityContractAddresses[0]
-              )
-              .send({ from: manager, gas: 1000000 });
-            await accountabilityContractFactory.methods;
-          } catch (err: any) {
-            expect(
-              err.message.includes(
-                'Contract referee must equal requested referee'
-              )
-            );
-          }
-        });
-        it('user cannot request a referee completes a contract where they are not the creator', async () => {
-          try {
-            const openAccountabilityContractAddresses =
-              await accountabilityContractFactory.methods
-                .getOpenAccountabilityContractAddressesForUser(manager)
-                .call();
-            await accountabilityContractFactory.methods
-              .completeOpenAccountabilityContract(
-                openAccountabilityContractAddresses[0]
-              )
-              .send({ from: accounts[1], gas: 1000000 });
-            await accountabilityContractFactory.methods;
-          } catch (err: any) {
-            expect(
-              err.message.includes(
-                'Only creator of contract can request completion'
-              )
-            );
-          }
-        });
+              .getOpenAccountabilityContractAddressesForUser(manager)
+              .call();
+          await accountabilityContractFactory.methods
+            .completeOpenAccountabilityContract(
+              openAccountabilityContractAddresses[0]
+            )
+            .send({ from: accounts[1], gas: 1000000 });
+        } catch (err: any) {
+          expect(
+            err.message.includes(
+              'Only creator of contract can request completion'
+            )
+          );
+        }
+      });
+      it('user cannot approve request if they are not the contracts referee', async () => {
+        const referee = accounts[1];
+        const user = accounts[0];
+        await accountabilityContractFactory.methods
+          .createAccountabilityContract(
+            referee,
+            'Drink water',
+            'Everyday I must drink water',
+            manager
+          )
+          .send({
+            from: user,
+            gas: 1000000,
+            value: amount
+          });
+        const openAccountabilityContractAddressesReferee =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForReferee(referee)
+            .call();
+        await accountabilityContractFactory.methods
+          .requestApproval(openAccountabilityContractAddressesReferee[0])
+          .send({ from: accounts[0], gas: 1000000 });
+        const approvalRequestAddresses =
+          await accountabilityContractFactory.methods
+            .getApprovalRequests(referee)
+            .call();
+        await expect(
+          accountabilityContractFactory.methods
+            .approveRequest(approvalRequestAddresses[0])
+            .send({ from: accounts[2], gas: 1000000 })
+        ).rejects.toThrow(
+          'VM Exception while processing transaction: revert Only referee can approve approval request'
+        );
+      });
+      it('user cannot reject request if they are not the contracts referee', async () => {
+        const referee = accounts[1];
+        const user = accounts[0];
+        await accountabilityContractFactory.methods
+          .createAccountabilityContract(
+            referee,
+            'Drink water',
+            'Everyday I must drink water',
+            manager
+          )
+          .send({
+            from: user,
+            gas: 1000000,
+            value: amount
+          });
+        const openAccountabilityContractAddressesReferee =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForReferee(referee)
+            .call();
+        await accountabilityContractFactory.methods
+          .requestApproval(openAccountabilityContractAddressesReferee[0])
+          .send({ from: accounts[0], gas: 1000000 });
+        const approvalRequestAddresses =
+          await accountabilityContractFactory.methods
+            .getApprovalRequests(referee)
+            .call();
+        await expect(
+          accountabilityContractFactory.methods
+            .rejectRequest(approvalRequestAddresses[0], 'Did not complete task')
+            .send({ from: accounts[2], gas: 1000000 })
+        ).rejects.toThrow(
+          'VM Exception while processing transaction: revert Only referee can reject approval request'
+        );
       });
     });
 
