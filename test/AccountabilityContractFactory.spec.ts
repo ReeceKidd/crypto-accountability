@@ -688,15 +688,16 @@ describe('Accountability contract factory', () => {
             openAccountabilityContractAddresses[0]
           )
           .send({ from: manager, gas: 1000000 });
-        try {
-          await accountabilityContractFactory.methods
+
+        await expect(
+          accountabilityContractFactory.methods
             .completeOpenAccountabilityContract(
               openAccountabilityContractAddresses[0]
             )
-            .send({ from: manager, gas: 1000000 });
-        } catch (err) {
-          expect(err);
-        }
+            .send({ from: manager, gas: 1000000 })
+        ).rejects.toThrow(
+          'VM Exception while processing transaction: revert Contract status is not equal to open'
+        );
       });
       it('referee cannot fail an accountability contract with a success status', async () => {
         await createAccountabilityContract();
@@ -709,79 +710,16 @@ describe('Accountability contract factory', () => {
             openAccountabilityContractAddresses[0]
           )
           .send({ from: manager, gas: 1000000 });
-        try {
-          await accountabilityContractFactory.methods
-            .failOpenAccountabilityContract(
-              openAccountabilityContractAddresses[0]
-            )
-            .send({ from: manager, gas: 1000000 });
-        } catch (err) {
-          expect(err);
-        }
-      });
-      it('referee cannot complete an accountability contract with a success status', async () => {
-        await createAccountabilityContract();
-        const openAccountabilityContractAddresses =
-          await accountabilityContractFactory.methods
-            .getOpenAccountabilityContractAddressesForUser(manager)
-            .call();
-        await accountabilityContractFactory.methods
-          .completeOpenAccountabilityContract(
-            openAccountabilityContractAddresses[0]
-          )
-          .send({ from: manager, gas: 1000000 });
-        try {
-          await accountabilityContractFactory.methods
-            .completeOpenAccountabilityContract(
-              openAccountabilityContractAddresses[0]
-            )
-            .send({ from: manager, gas: 1000000 });
-        } catch (err) {
-          expect(err);
-        }
-      });
 
-      it('referee cannot fail an accountability contract with a failure status', async () => {
-        await createAccountabilityContract();
-        const openAccountabilityContractAddresses =
-          await accountabilityContractFactory.methods
-            .getOpenAccountabilityContractAddressesForUser(manager)
-            .call();
-        await accountabilityContractFactory.methods
-          .completeOpenAccountabilityContract(
-            openAccountabilityContractAddresses[0]
-          )
-          .send({ from: manager, gas: 1000000 });
-        try {
-          await accountabilityContractFactory.methods
+        await expect(
+          accountabilityContractFactory.methods
             .failOpenAccountabilityContract(
               openAccountabilityContractAddresses[0]
             )
-            .send({ from: manager, gas: 1000000 });
-        } catch (err) {
-          expect(err);
-        }
-      });
-      it('referee cannot fail an accountability contract with a failure status', async () => {
-        await createAccountabilityContract();
-        const openAccountabilityContractAddresses =
-          await accountabilityContractFactory.methods
-            .getOpenAccountabilityContractAddressesForUser(manager)
-            .call();
-        await accountabilityContractFactory.methods
-          .failOpenAccountabilityContract(
-            openAccountabilityContractAddresses[0]
-          )
-          .send({ from: manager, gas: 1000000 });
-        try {
-          await accountabilityContractFactory.methods
-            .completeOpenAccountabilityContract(
-              openAccountabilityContractAddresses[0]
-            )
-            .send({ from: manager, gas: 1000000 });
-        } catch (err) {
-          expect(err);
-        }
+            .send({ from: manager, gas: 1000000 })
+        ).rejects.toThrow(
+          'VM Exception while processing transaction: revert Contract status is not equal to open'
+        );
       });
     });
   });
