@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Button, Table } from 'semantic-ui-react';
-import crowdfundFactoryInstance from '../../factory';
+import accountabilityContractFactoryInstance from '../../factory';
 
 export interface ApprovalRequest {
   address: string;
@@ -22,7 +22,7 @@ const ApprovalRequestsTable = ({ approvalRequests }: RequestsTableProps) => {
   const approveRequest = async (contractAddress: string) => {
     setApproveRequestLoading(true);
     try {
-      await crowdfundFactoryInstance.methods
+      await accountabilityContractFactoryInstance.methods
         .approveRequest(contractAddress)
         .send({
           from: account,
@@ -36,10 +36,12 @@ const ApprovalRequestsTable = ({ approvalRequests }: RequestsTableProps) => {
   const [rejectRequestLoading, setRejectRequestLoading] = useState(false);
   const rejectRequest = async (contractAddress: string) => {
     setRejectRequestLoading(true);
-    await crowdfundFactoryInstance.methods.rejectRequest(contractAddress).send({
-      from: account,
-      gas: 3000000
-    });
+    await accountabilityContractFactoryInstance.methods
+      .rejectRequest(contractAddress)
+      .send({
+        from: account,
+        gas: 3000000
+      });
     setRejectRequestLoading(false);
   };
   const tableCells = approvalRequests.map(

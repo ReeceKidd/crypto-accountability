@@ -5,7 +5,7 @@ import * as AccountabilityContract from '../build/AccountabilityContract.json';
 import * as AccountabilityContractApprovalRequest from '../build/AccountabilityContractApprovalRequest.json';
 import * as AccountabilityContractFactoryAddress from '../address.json';
 
-const crowdfundFactoryInstance = new web3.eth.Contract(
+const accountabilityContractFactoryInstance = new web3.eth.Contract(
   AccountabilityContractFactory.abi as any,
   AccountabilityContractFactoryAddress.address
 );
@@ -21,4 +21,4 @@ export const getApprovalRequest = (address: string) => {
   );
 };
 
-export default crowdfundFactoryInstance;
+export default accountabilityContractFactoryInstance;

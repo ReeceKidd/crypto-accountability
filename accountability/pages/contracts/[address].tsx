@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Button, Grid } from 'semantic-ui-react';
 import ContractsCards from '../../components/ContractCards/ContractCards';
 import Layout from '../../components/Layout/Layout';
-import crowdfundFactoryInstance, {
+import accountabilityContractFactoryInstance, {
   getAccountabilityContract
 } from '../../factory';
 import { useWeb3React } from '@web3-react/core';
@@ -36,31 +36,32 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
 }) => {
   const router = useRouter();
   const address = router.query.address as string;
-  const accountabilityContract = getAccountabilityContract(address);
   const [completeContractLoading, setCompleteContractLoading] = useState(false);
   const [failContractLoading, setFailContractLoading] = useState(false);
   const { account } = useWeb3React();
   const completeContract = async () => {
     setCompleteContractLoading(true);
-    await accountabilityContract.methods.completeContract().send({
-      from: account
-    });
+    await accountabilityContractFactoryInstance.methods
+      .completeOpenAccountabilityContract(address)
+      .send({ from: account });
     setCompleteContractLoading(false);
     router.reload();
   };
   const requestApproval = async (address: string) => {
     setCompleteContractLoading(true);
-    await crowdfundFactoryInstance.methods.requestApproval(address).send({
-      from: account
-    });
+    await accountabilityContractFactoryInstance.methods
+      .requestApproval(address)
+      .send({
+        from: account
+      });
     setCompleteContractLoading(false);
     router.reload();
   };
   const failContract = async () => {
     setFailContractLoading(true);
-    await accountabilityContract.methods.completeContract().send({
-      from: account
-    });
+    await accountabilityContractFactoryInstance.methods
+      .failOpenAccountabilityContract(address)
+      .send({ from: account });
     setFailContractLoading(false);
     router.reload();
   };

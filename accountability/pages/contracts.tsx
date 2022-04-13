@@ -13,6 +13,10 @@ const Contracts: NextPage = () => {
     loadingGetOpenAccountabilityContractAddresses,
     setLoadingGetOpenAccountabilityContractAddresses
   ] = useState(false);
+  const [
+    openAccountabilityContractAddresses,
+    setOpenAccountabilityContractAddresses
+  ] = useState<string[]>([]);
   const getOpenAccountabillityContractAddresses = useCallback(
     async (
       setAccountabilityContractAddresses: (addresses: string[]) => void
@@ -28,10 +32,6 @@ const Contracts: NextPage = () => {
     },
     [account]
   );
-  const [
-    openAccountabilityContractAddresses,
-    setOpenAccountabilityContractAddresses
-  ] = useState<string[]>([]);
   useEffect(() => {
     getOpenAccountabillityContractAddresses(
       setOpenAccountabilityContractAddresses
