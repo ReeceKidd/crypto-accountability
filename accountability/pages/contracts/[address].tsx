@@ -102,24 +102,26 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
             </Button>
           </Grid.Column>
         )}
-        {account === creator && status === ContractStatus.OPEN && (
-          <Grid.Column width={6}>
-            <Button
-              positive
-              loading={completeContractLoading}
-              onClick={() => requestApproval(address)}
-            >
-              Request approval
-            </Button>
-            <Button
-              negative
-              loading={failContractLoading}
-              onClick={() => failContract()}
-            >
-              Fail
-            </Button>
-          </Grid.Column>
-        )}
+        {account === creator &&
+          account !== referee &&
+          status === ContractStatus.OPEN && (
+            <Grid.Column width={6}>
+              <Button
+                positive
+                loading={completeContractLoading}
+                onClick={() => requestApproval(address)}
+              >
+                Request approval
+              </Button>
+              <Button
+                negative
+                loading={failContractLoading}
+                onClick={() => failContract()}
+              >
+                Fail
+              </Button>
+            </Grid.Column>
+          )}
       </Grid>
     </Layout>
   );

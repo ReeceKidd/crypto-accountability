@@ -1,6 +1,5 @@
-
--Fix error tests so they use the expect and rejects throw error because they currently don't work.
--Fix all tests by making sure they include whether or not they need a contract created in the await 
+-Fix tests for completing your own contract. 
+-Fix tests for rejecting your own contract.
 -Referee can deny request that needs approved. 
 -Referee can accept request that needs approved. 
 -Redirect user to contracts page after they complete it. 
