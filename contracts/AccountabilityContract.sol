@@ -85,6 +85,7 @@ contract AccountabilityContractFactory {
         require(accountabilityContract.creator() != accountabilityContract.referee(), "Cannot request approval when creator is referee");
         AccountabilityContractApprovalRequest newApprovalRequest = new AccountabilityContractApprovalRequest(contractAddress);
         referees[accountabilityContract.referee()].approvalRequestsAddresses.push(address(newApprovalRequest));
+        accountabilityContract.setStatusToAwaitingApproval();
     }
 
     function approveRequest(address approvalRequestAddress) public {
@@ -99,8 +100,8 @@ contract AccountabilityContractFactory {
         AccountabilityContractApprovalRequest approvalRequest = AccountabilityContractApprovalRequest(approvalRequestAddress);
         AccountabilityContract accountabilityContract = AccountabilityContract(approvalRequest.accountabilityContractAddress());
         approvalRequest.rejectRequest(response);
-        failOpenAccountabilityContract(address(accountabilityContract));
         deleteApprovalRequestForReferee(accountabilityContract.referee(), approvalRequestAddress);
+        accountabilityContract.setStatusToOpen();
     }
 
     function getContractIndexForUser(address user, address contractAddress) view private returns (uint){
@@ -200,7 +201,7 @@ contract AccountabilityContractApprovalRequest {
         return this;
     } 
 
-    function rejectRequest(string memory _response) public  returns (AccountabilityContractApprovalRequest) {
+    function rejectRequest(string memory _response) public returns (AccountabilityContractApprovalRequest) {
         require(tx.origin == referee, "Only referee can reject approval request");
         status = Status.DENIED;
         response = _response;
@@ -209,7 +210,7 @@ contract AccountabilityContractApprovalRequest {
 }
 
 contract AccountabilityContract {
-    enum Status{ OPEN, SUCCESS, FAILURE }
+    enum Status{ OPEN, AWAITING_APPROVAL, SUCCESS, FAILURE }
     address public creator;
     address public referee;
     string public name;
@@ -228,22 +229,29 @@ contract AccountabilityContract {
         status = Status.OPEN;
     }
 
-    modifier restricted() {
-        require(status == Status.OPEN, "Contract status is not equal to open");
-        _;
-    }
+    function setStatusToOpen()  public {
+        require(status == Status.AWAITING_APPROVAL, "Contract status must be awaiting approval");
+        require(tx.origin == referee, "Only referee can set status to open");
+        status = Status.OPEN;
+    } 
 
-    function failContract() public payable restricted returns (AccountabilityContract) {
+    function setStatusToAwaitingApproval()  public {
+        require(status == Status.OPEN, "Contract status must be open");
+        require(tx.origin == creator, "Only creator can change approval status");
+        status = Status.AWAITING_APPROVAL;
+    } 
+
+    function failContract() public payable {
+        require(status == Status.OPEN || status == Status.AWAITING_APPROVAL, "Contract status must be open or awaiting approval");
         require(tx.origin == referee || tx.origin == creator, "Only referee or creator can fail contract");
         payable(failureRecipient).transfer(address(this).balance);
         status = Status.FAILURE;
-        return this;
     } 
 
-    function completeContract() public payable restricted returns (AccountabilityContract) {
+    function completeContract() public payable {
+        require(status == Status.OPEN || status == Status.AWAITING_APPROVAL, "Contract status must be open or awaiting approval");
         require(tx.origin == referee, "Only referee can complete a contract");
         payable(creator).transfer(address(this).balance);
         status = Status.SUCCESS;
-        return this;
     }
 }

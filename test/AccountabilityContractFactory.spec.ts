@@ -206,11 +206,10 @@ describe('Accountability contract factory', () => {
           .requestApproval(openAccountabilityContractAddresses[0])
           .send({ from: user, gas: 1000000 });
       });
-      it('can complete contract', async () => {
+      it('can complete contract where they are the referee', async () => {
         const user = accounts[0];
-        const referee = accounts[1];
         await createAccountabilityContract({
-          referee,
+          referee: user,
           failureRecipient: accounts[2],
           user
         });
@@ -222,7 +221,7 @@ describe('Accountability contract factory', () => {
           .completeOpenAccountabilityContract(
             openAccountabilityContractAddressesUser[0]
           )
-          .send({ from: referee, gas: 1000000 });
+          .send({ from: user, gas: 1000000 });
         const updatedOpenAccountabilityContractAddressesUser =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForUser(user)
@@ -238,6 +237,72 @@ describe('Accountability contract factory', () => {
         expect(closedAccountabilityContractAddressesUser[0]).toEqual(
           openAccountabilityContractAddressesUser[0]
         );
+        const openAccountabilityContractAddressesReferee =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForReferee(user)
+            .call();
+        expect(openAccountabilityContractAddressesReferee.length).toEqual(0);
+        const closedAccountabilityContractAddressesReferee =
+          await accountabilityContractFactory.methods
+            .getClosedAccountabilityContractAddressesForReferee(user)
+            .call();
+        expect(closedAccountabilityContractAddressesReferee.length).toEqual(1);
+        const closedAccountabilityContract = await new web3.eth.Contract(
+          AccountabilityContract.abi as any,
+          closedAccountabilityContractAddressesUser[0]
+        );
+        const closedAccountabilityContractStatus =
+          await closedAccountabilityContract.methods.status().call();
+        expect(closedAccountabilityContractStatus).toEqual('2');
+      });
+      it('can fail contract where they are the referee', async () => {
+        const user = accounts[0];
+        await createAccountabilityContract({
+          referee: user,
+          failureRecipient: accounts[2],
+          user
+        });
+        const openAccountabilityContractAddressesUser =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForUser(user)
+            .call();
+        await accountabilityContractFactory.methods
+          .failOpenAccountabilityContract(
+            openAccountabilityContractAddressesUser[0]
+          )
+          .send({ from: user, gas: 1000000 });
+        const updatedOpenAccountabilityContractAddressesUser =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForUser(user)
+            .call();
+        expect(updatedOpenAccountabilityContractAddressesUser.length).toEqual(
+          openAccountabilityContractAddressesUser.length - 1
+        );
+        const closedAccountabilityContractAddressesUser =
+          await accountabilityContractFactory.methods
+            .getClosedAccountabilityContractAddressesForUser(user)
+            .call();
+        expect(closedAccountabilityContractAddressesUser.length).toEqual(1);
+        expect(closedAccountabilityContractAddressesUser[0]).toEqual(
+          openAccountabilityContractAddressesUser[0]
+        );
+        const openAccountabilityContractAddressesReferee =
+          await accountabilityContractFactory.methods
+            .getOpenAccountabilityContractAddressesForReferee(user)
+            .call();
+        expect(openAccountabilityContractAddressesReferee.length).toEqual(0);
+        const closedAccountabilityContractAddressesReferee =
+          await accountabilityContractFactory.methods
+            .getClosedAccountabilityContractAddressesForReferee(user)
+            .call();
+        expect(closedAccountabilityContractAddressesReferee.length).toEqual(1);
+        const closedAccountabilityContract = await new web3.eth.Contract(
+          AccountabilityContract.abi as any,
+          closedAccountabilityContractAddressesUser[0]
+        );
+        const closedAccountabilityContractStatus =
+          await closedAccountabilityContract.methods.status().call();
+        expect(closedAccountabilityContractStatus).toEqual('3');
       });
     });
     describe('referee', () => {
@@ -337,7 +402,7 @@ describe('Accountability contract factory', () => {
         );
         const closedAccountabilityContractStatus =
           await closedAccountabilityContract.methods.status().call();
-        expect(closedAccountabilityContractStatus).toEqual('2');
+        expect(closedAccountabilityContractStatus).toEqual('3');
         const closedAcccountabilityContractBalance = await web3.eth.getBalance(
           closedAccountabilityContractAddressesUser[0]
         );
@@ -376,7 +441,7 @@ describe('Accountability contract factory', () => {
         );
         const closedAccountabilityContractStatus =
           await closedAccountabilityContract.methods.status().call();
-        expect(closedAccountabilityContractStatus).toEqual('1');
+        expect(closedAccountabilityContractStatus).toEqual('2');
         const closedAcccountabilityContractBalance = await web3.eth.getBalance(
           closedAccountabilityContractAddresses[0]
         );
@@ -409,6 +474,12 @@ describe('Accountability contract factory', () => {
         await accountabilityContractFactory.methods
           .requestApproval(openAccountabilityContractAddressesReferee[0])
           .send({ from: user, gas: 1000000 });
+        const accountabilityContract = await new web3.eth.Contract(
+          AccountabilityContract.abi as any,
+          openAccountabilityContractAddressesReferee[0]
+        );
+        const status = await accountabilityContract.methods.status().call();
+        expect(status).toEqual('1');
         const approvalRequestAddresses =
           await accountabilityContractFactory.methods
             .getApprovalRequests(referee)
@@ -450,7 +521,8 @@ describe('Accountability contract factory', () => {
           updatedClosedAccountabilityContractAddressesReferee.length
         ).toEqual(closedAccountabilityContractAddressesReferee.length + 1);
       });
-      it('referee can reject request', async () => {
+      it('referee can reject approval request', async () => {
+        expect.assertions(2);
         const user = accounts[0];
         const referee = accounts[1];
         await createAccountabilityContract({
@@ -458,25 +530,19 @@ describe('Accountability contract factory', () => {
           failureRecipient: accounts[2],
           user
         });
-        const openAccountabilityContractAddressesUser =
-          await accountabilityContractFactory.methods
-            .getOpenAccountabilityContractAddressesForUser(user)
-            .call();
-        const closedAccountabilityContractAddressesUser =
-          await accountabilityContractFactory.methods
-            .getClosedAccountabilityContractAddressesForUser(user)
-            .call();
         const openAccountabilityContractAddressesReferee =
           await accountabilityContractFactory.methods
             .getOpenAccountabilityContractAddressesForReferee(referee)
             .call();
-        const closedAccountabilityContractAddressesReferee =
-          await accountabilityContractFactory.methods
-            .getClosedAccountabilityContractAddressesForReferee(referee)
-            .call();
         await accountabilityContractFactory.methods
           .requestApproval(openAccountabilityContractAddressesReferee[0])
           .send({ from: user, gas: 1000000 });
+        const accountabilityContract = await new web3.eth.Contract(
+          AccountabilityContract.abi as any,
+          openAccountabilityContractAddressesReferee[0]
+        );
+        const status = await accountabilityContract.methods.status().call();
+        expect(status).toEqual('1');
         const approvalRequestAddresses =
           await accountabilityContractFactory.methods
             .getApprovalRequests(referee)
@@ -484,13 +550,6 @@ describe('Accountability contract factory', () => {
         await accountabilityContractFactory.methods
           .rejectRequest(approvalRequestAddresses[0], 'Did not complete task')
           .send({ from: referee, gas: 1000000 });
-        const updatedOpenAccountabilityContractAddressesReferee =
-          await accountabilityContractFactory.methods
-            .getOpenAccountabilityContractAddressesForReferee(referee)
-            .call();
-        expect(
-          updatedOpenAccountabilityContractAddressesReferee.length
-        ).toEqual(openAccountabilityContractAddressesReferee.length - 1);
         const updatedApprovalRequestAddresses =
           await accountabilityContractFactory.methods
             .getApprovalRequests(referee)
@@ -498,27 +557,6 @@ describe('Accountability contract factory', () => {
         expect(updatedApprovalRequestAddresses.length).toEqual(
           approvalRequestAddresses.length - 1
         );
-        const updatedOpenAccountabilityContractAddressesUser =
-          await accountabilityContractFactory.methods
-            .getOpenAccountabilityContractAddressesForUser(user)
-            .call();
-        expect(updatedOpenAccountabilityContractAddressesUser.length).toEqual(
-          openAccountabilityContractAddressesUser.length - 1
-        );
-        const updatedClosedAccountabilityContractAddressesUser =
-          await accountabilityContractFactory.methods
-            .getClosedAccountabilityContractAddressesForUser(user)
-            .call();
-        expect(updatedClosedAccountabilityContractAddressesUser.length).toEqual(
-          closedAccountabilityContractAddressesUser.length + 1
-        );
-        const updatedClosedAccountabilityContractAddressesReferee =
-          await accountabilityContractFactory.methods
-            .getClosedAccountabilityContractAddressesForReferee(referee)
-            .call();
-        expect(
-          updatedClosedAccountabilityContractAddressesReferee.length
-        ).toEqual(closedAccountabilityContractAddressesReferee.length + 1);
       });
     });
   });
@@ -542,7 +580,7 @@ describe('Accountability contract factory', () => {
             .completeOpenAccountabilityContract(
               openAccountabilityContractAddresses[0]
             )
-            .send({ from: user, gas: 100000 })
+            .send({ from: user, gas: 1000000 })
         ).rejects.toThrow(
           'VM Exception while processing transaction: revert Only referee can complete a contract'
         );
@@ -746,7 +784,7 @@ describe('Accountability contract factory', () => {
             )
             .send({ from: referee, gas: 1000000 })
         ).rejects.toThrow(
-          'VM Exception while processing transaction: revert Contract status is not equal to open'
+          'VM Exception while processing transaction: revert Contract status must be open or awaiting approval'
         );
       });
       it('referee cannot fail an accountability contract with a success status', async () => {
@@ -774,7 +812,7 @@ describe('Accountability contract factory', () => {
             )
             .send({ from: user, gas: 1000000 })
         ).rejects.toThrow(
-          'VM Exception while processing transaction: revert Contract status is not equal to open'
+          'VM Exception while processing transaction: revert Contract status must be open or awaiting approval'
         );
       });
     });

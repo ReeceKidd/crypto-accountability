@@ -1,15 +1,7 @@
--Fix tests for completing your own contract. 
--Fix tests for rejecting your own contract.
--Referee can deny request that needs approved. 
--Referee can accept request that needs approved. 
--Redirect user to contracts page after they complete it. 
--Check why contract is being moved to closed when user completes it. 
--When users fail task task is automatically failed. 
--When referees fail task task is automatically failed. 
--When referee approves contract it is automatically approved. 
-
-
-
+-Can referee deny request that needs approved. 
+-Can referee accept request that needs approved. 
+-When user sends request status is set to awaiting approval. 
+-When referee rejects request status is set back to open
 -Create a landing page similar to Uniswap. 
 -Create multi step form. 
 -Add the ability to select charities
