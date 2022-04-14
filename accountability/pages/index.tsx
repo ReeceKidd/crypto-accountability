@@ -150,7 +150,7 @@ const Home: NextPage = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <h2>
               Your open contracts:
-              {openAccountabilityContractAddressesReferee.length}
+              {openAccountabilityContractAddressesUser.length}
             </h2>
           </div>
           <OpenAccountabilityContracts

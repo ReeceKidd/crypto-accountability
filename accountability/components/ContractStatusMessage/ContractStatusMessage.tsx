@@ -16,6 +16,16 @@ const ContractStatusMessage = ({ status }: ContractStatusMessageProps) => {
       />
     );
   }
+  if (status === ContractStatus.AWAITING_APPROVAL) {
+    return (
+      <Message
+        color="blue"
+        icon="clock"
+        header="Awaiting approval"
+        content="This contract is waiting to be approved by referee."
+      />
+    );
+  }
   if (status === ContractStatus.FAILURE) {
     return (
       <Message
