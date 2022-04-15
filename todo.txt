@@ -4,6 +4,7 @@
 -When referee rejects request status is set back to open
 -Create a landing page similar to Uniswap. 
 -Create multi step form. 
+-Fix screen for looking at other users. 
 -Add the ability to select charities
 -Add the ability to select antichairties
 -Add the ability to select enemeies
