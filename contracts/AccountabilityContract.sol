@@ -96,10 +96,10 @@ contract AccountabilityContractFactory {
         deleteApprovalRequestForReferee(accountabilityContract.referee(), approvalRequestAddress);
     }
 
-    function rejectRequest(address approvalRequestAddress, string memory response) public {
+    function rejectRequest(address approvalRequestAddress) public {
         AccountabilityContractApprovalRequest approvalRequest = AccountabilityContractApprovalRequest(approvalRequestAddress);
         AccountabilityContract accountabilityContract = AccountabilityContract(approvalRequest.accountabilityContractAddress());
-        approvalRequest.rejectRequest(response);
+        approvalRequest.rejectRequest();
         deleteApprovalRequestForReferee(accountabilityContract.referee(), approvalRequestAddress);
         accountabilityContract.setStatusToOpen();
     }
@@ -185,7 +185,6 @@ contract AccountabilityContractApprovalRequest {
     address public accountabilityContractAddress;
     enum Status{ OPEN, APPROVED, DENIED }
     Status public status;
-    string public response;
     
     constructor(address _accountabilityContractAddress) {
         AccountabilityContract accountabilityContract = AccountabilityContract(_accountabilityContractAddress);
@@ -201,10 +200,9 @@ contract AccountabilityContractApprovalRequest {
         return this;
     } 
 
-    function rejectRequest(string memory _response) public returns (AccountabilityContractApprovalRequest) {
+    function rejectRequest() public returns (AccountabilityContractApprovalRequest) {
         require(tx.origin == referee, "Only referee can reject approval request");
         status = Status.DENIED;
-        response = _response;
         return this;
     } 
 }

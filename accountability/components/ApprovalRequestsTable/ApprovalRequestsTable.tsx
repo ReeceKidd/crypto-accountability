@@ -1,5 +1,6 @@
 import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Button, Table } from 'semantic-ui-react';
 import accountabilityContractFactoryInstance from '../../factory';
@@ -17,21 +18,18 @@ interface RequestsTableProps {
 
 const ApprovalRequestsTable = ({ approvalRequests }: RequestsTableProps) => {
   const { account } = useWeb3React();
+  const router = useRouter();
   const [approveRequestLoading, setApproveRequestLoading] = useState(false);
-  console.log(approveRequestLoading);
   const approveRequest = async (contractAddress: string) => {
     setApproveRequestLoading(true);
-    try {
-      await accountabilityContractFactoryInstance.methods
-        .approveRequest(contractAddress)
-        .send({
-          from: account,
-          gas: 1000000
-        });
-    } catch (err) {
-      console.log('Error', err);
-    }
+    await accountabilityContractFactoryInstance.methods
+      .approveRequest(contractAddress)
+      .send({
+        from: account,
+        gas: 1000000
+      });
     setApproveRequestLoading(false);
+    router.reload();
   };
   const [rejectRequestLoading, setRejectRequestLoading] = useState(false);
   const rejectRequest = async (contractAddress: string) => {
@@ -43,6 +41,7 @@ const ApprovalRequestsTable = ({ approvalRequests }: RequestsTableProps) => {
         gas: 3000000
       });
     setRejectRequestLoading(false);
+    router.reload();
   };
   const tableCells = approvalRequests.map(
     (
@@ -66,7 +65,7 @@ const ApprovalRequestsTable = ({ approvalRequests }: RequestsTableProps) => {
         <Table.Cell>
           <Button
             color="red"
-            content="Deny"
+            content="Reject"
             loading={rejectRequestLoading}
             onClick={() => rejectRequest(address)}
           />
@@ -83,7 +82,7 @@ const ApprovalRequestsTable = ({ approvalRequests }: RequestsTableProps) => {
             <Table.Row>
               <Table.HeaderCell>Name</Table.HeaderCell>
               <Table.HeaderCell>Approve</Table.HeaderCell>
-              <Table.HeaderCell>Deny</Table.HeaderCell>
+              <Table.HeaderCell>Reject</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>{tableCells}</Table.Body>

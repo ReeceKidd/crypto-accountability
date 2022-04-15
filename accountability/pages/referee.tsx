@@ -116,7 +116,7 @@ const Referee: NextPage = () => {
         </Segment>
         <Segment loading={loadingGetClosedAccountabilityContractForReferees}>
           <h2>
-            {`Closed contracts you referee: ${closedAccountabilityContractAddresses.length}`}
+            {`Past contracts you refereed: ${closedAccountabilityContractAddresses.length}`}
           </h2>
           <AccountabilityContracts
             setLoading={setLoadingGetClosedAccountabilityContractsForReferee}

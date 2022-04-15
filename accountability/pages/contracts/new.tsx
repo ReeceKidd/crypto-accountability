@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useState } from 'react';
 import { Grid, GridColumn } from 'semantic-ui-react';
-import CreateContractForm from '../../components/CreateContractForm/CreateContractForm';
+import CreateContractForm from '../../components/Forms/CreateContractForm/CreateContractForm';
 import Layout from '../../components/Layout/Layout';
 
 const NewContract: NextPage = () => {

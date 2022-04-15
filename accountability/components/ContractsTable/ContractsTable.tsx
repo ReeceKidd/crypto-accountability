@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { Table } from 'semantic-ui-react';
+import { ContractStatus } from '../../helpers/getAccountabilityContractStatus';
 import web3 from '../../web3';
+import ContractStatusCell from '../ContractStatusCell/ContractStatusCell';
 
 export interface AccountabilityContract {
   address: string;
@@ -21,7 +23,7 @@ const ContractsTable = ({ contracts }: RequestsTableProps) => {
           <Link href={`/contracts/${address}`}>{name}</Link>
         </Table.Cell>
         <Table.Cell>{web3.utils.fromWei(amount)}</Table.Cell>
-        <Table.Cell>{status}</Table.Cell>
+        <ContractStatusCell status={status as ContractStatus} />
       </Table.Row>
     )
   );

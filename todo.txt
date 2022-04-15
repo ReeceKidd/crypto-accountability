@@ -1,9 +1,5 @@
--Can referee deny request that needs approved. 
--Can referee accept request that needs approved. 
--When user sends request status is set to awaiting approval. 
--When referee rejects request status is set back to open
--Create a landing page similar to Uniswap. 
 -Create multi step form. 
+-Create a landing page similar to Uniswap. 
 -Fix screen for looking at other users. 
 -Add the ability to select charities
 -Add the ability to select antichairties
@@ -11,3 +7,9 @@
 -Add the ability to select friends
 -Retreive charities from my own crypto charities website. 
 -Retreive charities from crypto charity website. 
+-Store users wins
+-Store user losses
+-Store user total amount gambled
+-Store user total amount won
+-Store user total amount lost
+-Store total number of contracts for referee

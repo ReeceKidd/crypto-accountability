@@ -22,7 +22,7 @@ const ContractStatusMessage = ({ status }: ContractStatusMessageProps) => {
         color="blue"
         icon="clock"
         header="Awaiting approval"
-        content="This contract is waiting to be approved by referee."
+        content="Contact the referee to get their approval"
       />
     );
   }

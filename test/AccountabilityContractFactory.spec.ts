@@ -548,7 +548,7 @@ describe('Accountability contract factory', () => {
             .getApprovalRequests(referee)
             .call();
         await accountabilityContractFactory.methods
-          .rejectRequest(approvalRequestAddresses[0], 'Did not complete task')
+          .rejectRequest(approvalRequestAddresses[0])
           .send({ from: referee, gas: 1000000 });
         const updatedApprovalRequestAddresses =
           await accountabilityContractFactory.methods
@@ -750,7 +750,7 @@ describe('Accountability contract factory', () => {
             .call();
         await expect(
           accountabilityContractFactory.methods
-            .rejectRequest(approvalRequestAddresses[0], 'Did not complete task')
+            .rejectRequest(approvalRequestAddresses[0])
             .send({ from: accounts[2], gas: 1000000 })
         ).rejects.toThrow(
           'VM Exception while processing transaction: revert Only referee can reject approval request'
