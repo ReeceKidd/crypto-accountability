@@ -1,9 +1,8 @@
 import Router from 'next/router';
 import { FC, FormEvent, useState } from 'react';
-import { Button, Input, Message, TextArea } from 'semantic-ui-react';
+import { Button, Input, Message, TextArea, Form } from 'semantic-ui-react';
 import factory from '../../../factory';
 import web3 from '../../../web3';
-import { Formik, Form, Field } from 'formik';
 
 interface CreateContractFormProps {
   web3Account: string;
@@ -18,22 +17,6 @@ interface CreateContractFormProps {
   failureRecipient: string;
   setFailureRecipient: (input: string) => void;
 }
-
-interface CreateContractFormValues {
-  referee: string;
-  amount: string;
-  name: string;
-  description: string;
-  failureRecipient: string;
-}
-
-const initialValues: CreateContractFormValues = {
-  referee: '',
-  amount: '',
-  name: '',
-  description: '',
-  failureRecipient: ''
-};
 
 const CreateContractForm: FC<CreateContractFormProps> = ({
   web3Account,
@@ -61,9 +44,10 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
   const [networkRequestMessage, setNetworkRequestMessage] = useState('');
   const [networkErrorMessage, setNetworkErrorMessage] = useState('');
 
-  const onSubmit = async () => {
+  const onSubmit = async (event: FormEvent) => {
     setNetworkErrorMessage('');
     setSubmitRequestLoading(true);
+    event.preventDefault();
     try {
       setNetworkRequestMessage('Waiting on transaction success...');
       await factory.methods
@@ -88,79 +72,64 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
   };
   return (
     <>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={async (values, actions) => {
-          console.log({ values, actions });
-          alert(JSON.stringify(values, null, 2));
-          actions.setSubmitting(false);
-          await onSubmit();
-        }}
-      >
-        <Form>
-          <Field>
-            <label>
-              Referee:
-              <Input
-                label={
-                  <Button
-                    primary
-                    content="Use my address"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      setReferee(web3Account);
-                    }}
-                  />
-                }
-                labelPosition="right"
-                value={referee}
-                onChange={(event) => setReferee(event.target.value)}
+      <Form onSubmit={(event) => onSubmit(event)}>
+        <label>
+          Referee:
+          <Input
+            label={
+              <Button
+                primary
+                content="Use my address"
+                onClick={(event) => {
+                  event.preventDefault();
+                  setReferee(web3Account);
+                }}
               />
-            </label>
-          </Field>
-          <Field>
-            <label>
-              Amount:
-              <Input
-                label="eth"
-                labelPosition="right"
-                value={amount}
-                onChange={(event) => setAmount(event.target.value)}
-              />
-            </label>
-          </Field>
-          <Field>
-            <label>
-              Contract name:
-              <Input
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-              />
-            </label>
-          </Field>
-          <Field>
-            <label>
-              Contract description:
-              <TextArea
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-              />
-            </label>
-          </Field>
-          <Field>
-            <label>
-              Failure recipient:
-              <Input
-                value={failureRecipient}
-                onChange={(event) => setFailureRecipient(event.target.value)}
-              />
-            </label>
-          </Field>
-          <Button primary loading={submitRequestLoading} type="submit">
-            Enter
-          </Button>
-        </Form>
-      </Formik>
+            }
+            labelPosition="right"
+            value={referee}
+            onChange={(event) => setReferee(event.target.value)}
+          />
+        </label>
+
+        <label>
+          Amount:
+          <Input
+            label="eth"
+            labelPosition="right"
+            value={amount}
+            onChange={(event) => setAmount(event.target.value)}
+          />
+        </label>
+
+        <label>
+          Contract name:
+          <Input
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+          />
+        </label>
+
+        <label>
+          Contract description:
+          <TextArea
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+          />
+        </label>
+
+        <label>
+          Failure recipient:
+          <Input
+            value={failureRecipient}
+            onChange={(event) => setFailureRecipient(event.target.value)}
+          />
+        </label>
+
+        <Button primary loading={submitRequestLoading} type="submit">
+          Enter
+        </Button>
+      </Form>
 
       {networkRequestMessage && (
         <Message
