@@ -3,11 +3,11 @@ import { FC, FormEvent, useState } from 'react';
 import { Message, Form } from 'semantic-ui-react';
 import factory from '../../../factory';
 import web3 from '../../../web3';
-import AmountForm from '../AmountForm/AmountForm';
-import ContractDescriptionForm from '../ContractDescriptionForm/ContractDescriptionForm';
-import ContractNameForm from '../ContractNameForm/ContractNameForm';
-import FailureRecipientForm from '../FailureRecipientForm/FailureRecipientForm';
-import RefereeForm from '../RefereeForm/RefereeForm';
+import AmountStep from '../AmountStep/AmountStep';
+import ContractDescriptionStep from '../ContractDescriptionStep/ContractDescriptionStep';
+import ContractNameStep from '../ContractNameStep/ContractNameStep';
+import FailureRecipientStep from '../FailureRecipientStep/FailureRecipientStep';
+import RefereeStep from '../RefereeStep/RefereeStep';
 
 interface CreateContractFormProps {
   web3Account: string;
@@ -45,36 +45,40 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
   };
   const [submitRequestLoading, setSubmitRequestLoading] = useState(false);
   const steps = [
-    <RefereeForm
+    <RefereeStep
       key={0}
       web3Account={web3Account}
       referee={referee}
+      isFinalStep={false}
       setReferee={setReferee}
       handleNextStep={handleNextStep}
       handlePreviousStep={handlePreviousStep}
     />,
-    <AmountForm
+    <AmountStep
       key={1}
       amount={amount}
+      isFinalStep={false}
       setAmount={setAmount}
       handleNextStep={handleNextStep}
       handlePreviousStep={handlePreviousStep}
     />,
-    <ContractNameForm
+    <ContractNameStep
       key={2}
       name={name}
+      isFinalStep={false}
       setName={setName}
       handleNextStep={handleNextStep}
       handlePreviousStep={handlePreviousStep}
     />,
-    <ContractDescriptionForm
+    <ContractDescriptionStep
       key={3}
       description={description}
+      isFinalStep={false}
       setDescription={setDescription}
       handleNextStep={handleNextStep}
       handlePreviousStep={handlePreviousStep}
     />,
-    <FailureRecipientForm
+    <FailureRecipientStep
       key={4}
       failureRecipient={failureRecipient}
       setFailureRecipient={setFailureRecipient}
