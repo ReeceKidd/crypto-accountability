@@ -1,5 +1,5 @@
 import { TextArea } from 'semantic-ui-react';
-import FormStep from '../FormStep/FormStep';
+import FormStep from '../../../FormStep/FormStep';
 
 interface ContractDescriptionStepProps {
   description: string;

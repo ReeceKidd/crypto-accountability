@@ -3,11 +3,11 @@ import { FC, FormEvent, useState } from 'react';
 import { Message, Form } from 'semantic-ui-react';
 import factory from '../../../factory';
 import web3 from '../../../web3';
-import AmountStep from '../AmountStep/AmountStep';
-import ContractDescriptionStep from '../ContractDescriptionStep/ContractDescriptionStep';
-import ContractNameStep from '../ContractNameStep/ContractNameStep';
-import FailureRecipientStep from '../FailureRecipientStep/FailureRecipientStep';
-import RefereeStep from '../RefereeStep/RefereeStep';
+import AmountStep from './Steps/AmountStep/AmountStep';
+import ContractDescriptionStep from './Steps/ContractDescriptionStep/ContractDescriptionStep';
+import ContractNameStep from './Steps/ContractNameStep/ContractNameStep';
+import FailureRecipientStep from './Steps/FailureRecipientStep/FailureRecipientStep';
+import RefereeStep from './Steps/RefereeStep/RefereeStep';
 
 interface CreateContractFormProps {
   web3Account: string;

@@ -1,5 +1,5 @@
 import { Input } from 'semantic-ui-react';
-import FormStep from '../FormStep/FormStep';
+import FormStep from '../../../FormStep/FormStep';
 
 interface AmountStepProps {
   amount: string;

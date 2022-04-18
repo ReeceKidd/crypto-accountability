@@ -1,5 +1,5 @@
 import { Button, Input } from 'semantic-ui-react';
-import FormStep from '../FormStep/FormStep';
+import FormStep from '../../../FormStep/FormStep';
 
 interface RefereeStepProps {
   web3Account: string;
