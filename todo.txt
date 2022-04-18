@@ -1,4 +1,4 @@
--Create multi step form. 
+-Create multi step form. https://www.youtube.com/watch?v=xAjbUJfpoz0 - Revert form to just semantic ui. 
 -Create a landing page similar to Uniswap. 
 -Fix screen for looking at other users. 
 -Add the ability to select charities

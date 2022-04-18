@@ -1,12 +1,17 @@
 import Router from 'next/router';
 import { FC, FormEvent, useState } from 'react';
-import { Button, Input, Message, TextArea, Form } from 'semantic-ui-react';
+import { Message, Form } from 'semantic-ui-react';
 import factory from '../../../factory';
 import web3 from '../../../web3';
+import AmountForm from '../AmountForm/AmountForm';
+import ContractDescriptionForm from '../ContractDescriptionForm/ContractDescriptionForm';
+import ContractNameForm from '../ContractNameForm/ContractNameForm';
+import FailureRecipientForm from '../FailureRecipientForm/FailureRecipientForm';
+import RefereeForm from '../RefereeForm/RefereeForm';
 
 interface CreateContractFormProps {
   web3Account: string;
-  referee: string | null | undefined;
+  referee: string;
   setReferee: (input: string) => void;
   amount: string;
   setAmount: (input: string) => void;
@@ -31,16 +36,54 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
   failureRecipient,
   setFailureRecipient
 }) => {
-  const steps = [
-    'Referee',
-    'Amount',
-    'Name',
-    'Description',
-    'Failure recipient'
-  ];
   const [activeStep, setActiveStep] = useState(0);
-  const isLastStep = activeStep === steps.length - 1;
+  const handleNextStep = () => {
+    setActiveStep(activeStep + 1);
+  };
+  const handlePreviousStep = () => {
+    setActiveStep(activeStep - 1);
+  };
   const [submitRequestLoading, setSubmitRequestLoading] = useState(false);
+  const steps = [
+    <RefereeForm
+      key={0}
+      web3Account={web3Account}
+      referee={referee}
+      setReferee={setReferee}
+      handleNextStep={handleNextStep}
+      handlePreviousStep={handlePreviousStep}
+    />,
+    <AmountForm
+      key={1}
+      amount={amount}
+      setAmount={setAmount}
+      handleNextStep={handleNextStep}
+      handlePreviousStep={handlePreviousStep}
+    />,
+    <ContractNameForm
+      key={2}
+      name={name}
+      setName={setName}
+      handleNextStep={handleNextStep}
+      handlePreviousStep={handlePreviousStep}
+    />,
+    <ContractDescriptionForm
+      key={3}
+      description={description}
+      setDescription={setDescription}
+      handleNextStep={handleNextStep}
+      handlePreviousStep={handlePreviousStep}
+    />,
+    <FailureRecipientForm
+      key={4}
+      failureRecipient={failureRecipient}
+      setFailureRecipient={setFailureRecipient}
+      handlePreviousStep={handlePreviousStep}
+      isFinalStep={true}
+      submitRequestLoading={submitRequestLoading}
+    />
+  ];
+
   const [networkRequestMessage, setNetworkRequestMessage] = useState('');
   const [networkErrorMessage, setNetworkErrorMessage] = useState('');
 
@@ -72,65 +115,7 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
   };
   return (
     <>
-      <Form onSubmit={(event) => onSubmit(event)}>
-        <label>
-          Referee:
-          <Input
-            label={
-              <Button
-                primary
-                content="Use my address"
-                onClick={(event) => {
-                  event.preventDefault();
-                  setReferee(web3Account);
-                }}
-              />
-            }
-            labelPosition="right"
-            value={referee}
-            onChange={(event) => setReferee(event.target.value)}
-          />
-        </label>
-
-        <label>
-          Amount:
-          <Input
-            label="eth"
-            labelPosition="right"
-            value={amount}
-            onChange={(event) => setAmount(event.target.value)}
-          />
-        </label>
-
-        <label>
-          Contract name:
-          <Input
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-          />
-        </label>
-
-        <label>
-          Contract description:
-          <TextArea
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-          />
-        </label>
-
-        <label>
-          Failure recipient:
-          <Input
-            value={failureRecipient}
-            onChange={(event) => setFailureRecipient(event.target.value)}
-          />
-        </label>
-
-        <Button primary loading={submitRequestLoading} type="submit">
-          Enter
-        </Button>
-      </Form>
-
+      <Form onSubmit={(event) => onSubmit(event)}>{steps[activeStep]}</Form>
       {networkRequestMessage && (
         <Message
           content={networkRequestMessage}
