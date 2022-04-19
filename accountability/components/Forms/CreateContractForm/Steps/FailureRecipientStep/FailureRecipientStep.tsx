@@ -22,6 +22,7 @@ export const FailureRecipientStep = ({
       input={
         <Input
           value={failureRecipient}
+          fluid
           onChange={(event) => setFailureRecipient(event.target.value)}
         />
       }

@@ -20,7 +20,11 @@ export const ContractDescriptionStep = ({
     <FormStep
       label="Contract name"
       input={
-        <Input value={name} onChange={(event) => setName(event.target.value)} />
+        <Input
+          value={name}
+          fluid
+          onChange={(event) => setName(event.target.value)}
+        />
       }
       isFinalStep={isFinalStep}
       handleNextStep={handleNextStep}

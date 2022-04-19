@@ -7,7 +7,6 @@ interface RefereeStepProps {
   isFinalStep: boolean;
   setReferee: (input: string) => void;
   handleNextStep: () => void;
-  handlePreviousStep: () => void;
 }
 
 export const RefereeStep = ({
@@ -15,14 +14,14 @@ export const RefereeStep = ({
   referee,
   isFinalStep,
   setReferee,
-  handleNextStep,
-  handlePreviousStep
+  handleNextStep
 }: RefereeStepProps) => {
   return (
     <FormStep
       label="Referee"
       input={
         <Input
+          fluid
           label={
             <Button
               primary
@@ -39,7 +38,6 @@ export const RefereeStep = ({
       }
       isFinalStep={isFinalStep}
       handleNextStep={handleNextStep}
-      handlePreviousStep={handlePreviousStep}
     />
   );
 };

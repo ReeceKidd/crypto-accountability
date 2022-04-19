@@ -22,6 +22,7 @@ export const AmountStep = ({
       input={
         <Input
           label="eth"
+          fluid
           labelPosition="right"
           value={amount}
           onChange={(event) => setAmount(event.target.value)}

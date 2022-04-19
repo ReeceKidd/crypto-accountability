@@ -1,6 +1,6 @@
 import Router from 'next/router';
-import { FC, FormEvent, useState } from 'react';
-import { Message, Form } from 'semantic-ui-react';
+import { FC, FormEvent, useEffect, useState } from 'react';
+import { Message, Form, Progress } from 'semantic-ui-react';
 import factory from '../../../factory';
 import web3 from '../../../web3';
 import AmountStep from './Steps/AmountStep/AmountStep';
@@ -52,7 +52,6 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
       isFinalStep={false}
       setReferee={setReferee}
       handleNextStep={handleNextStep}
-      handlePreviousStep={handlePreviousStep}
     />,
     <AmountStep
       key={1}
@@ -87,7 +86,10 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
       submitRequestLoading={submitRequestLoading}
     />
   ];
-
+  const [percent, setPercent] = useState(0);
+  useEffect(() => {
+    setPercent(activeStep === 0 ? 0 : (activeStep / steps.length) * 100);
+  }, [activeStep, steps.length]);
   const [networkRequestMessage, setNetworkRequestMessage] = useState('');
   const [networkErrorMessage, setNetworkErrorMessage] = useState('');
 
@@ -119,6 +121,7 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
   };
   return (
     <>
+      <Progress percent={percent} indicating />
       <Form onSubmit={(event) => onSubmit(event)}>{steps[activeStep]}</Form>
       {networkRequestMessage && (
         <Message

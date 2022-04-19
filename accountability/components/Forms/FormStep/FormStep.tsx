@@ -1,4 +1,4 @@
-import { Button, Grid, Segment } from 'semantic-ui-react';
+import { Button, Grid } from 'semantic-ui-react';
 
 interface FormStepProps {
   label: string;
@@ -18,32 +18,38 @@ export const FormStep = ({
   handlePreviousStep
 }: FormStepProps) => {
   return (
-    <Grid style={{ height: '100vh' }}>
-      <Grid.Column>
-        <Segment>
+    <Grid style={{ height: '25vh' }}>
+      <Grid.Row>
+        <Grid.Column>
           <p>{label}</p>
           {input}
-          <br />
-          <br />
-          {handlePreviousStep && (
+        </Grid.Column>
+      </Grid.Row>
+      <Grid.Row columns={2}>
+        {handlePreviousStep && (
+          <Grid.Column>
             <Button fluid primary onClick={() => handlePreviousStep()}>
               Previous
             </Button>
-          )}
-          <br />
-          {handleNextStep && (
+          </Grid.Column>
+        )}
+        <br />
+        {handleNextStep && (
+          <Grid.Column>
             <Button fluid primary onClick={() => handleNextStep()}>
               Next
             </Button>
-          )}
-          <br />
-          {isFinalStep && (
+          </Grid.Column>
+        )}
+        <br />
+        {isFinalStep && (
+          <Grid.Column>
             <Button fluid primary loading={submitRequestLoading} type="submit">
               Submit
             </Button>
-          )}
-        </Segment>
-      </Grid.Column>
+          </Grid.Column>
+        )}
+      </Grid.Row>
     </Grid>
   );
 };

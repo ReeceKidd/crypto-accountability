@@ -2,7 +2,6 @@ import { useWeb3React } from '@web3-react/core';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useState } from 'react';
-import { Grid, GridColumn } from 'semantic-ui-react';
 import CreateContractForm from '../../components/Forms/CreateContractForm/CreateContractForm';
 import Layout from '../../components/Layout/Layout';
 
@@ -17,28 +16,25 @@ const NewContract: NextPage = () => {
   return (
     <Layout>
       <Head>
-        <title>Create contract</title>
+        <title>Create accountability contract</title>
       </Head>
-      <h1>Create contract</h1>
-      <Grid>
-        <GridColumn width={8}>
-          {account && (
-            <CreateContractForm
-              web3Account={account}
-              referee={referee}
-              setReferee={setReferee}
-              amount={amount}
-              setAmount={setAmount}
-              name={name}
-              setName={setName}
-              description={description}
-              setDescription={setDescription}
-              failureRecipient={failureRecipient}
-              setFailureRecipient={setFailureRecipient}
-            />
-          )}
-        </GridColumn>
-      </Grid>
+      <h1 style={{ textAlign: 'center' }}>Create accountability contract</h1>
+
+      {account && (
+        <CreateContractForm
+          web3Account={account}
+          referee={referee}
+          setReferee={setReferee}
+          amount={amount}
+          setAmount={setAmount}
+          name={name}
+          setName={setName}
+          description={description}
+          setDescription={setDescription}
+          failureRecipient={failureRecipient}
+          setFailureRecipient={setFailureRecipient}
+        />
+      )}
     </Layout>
   );
 };
