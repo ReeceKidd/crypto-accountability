@@ -1,38 +1,38 @@
-import { Input } from 'semantic-ui-react';
-import FormStep from '../../../FormStep/FormStep';
+import React from 'react';
+import { Button, Form } from 'semantic-ui-react';
+import { Field, FormikProps, withFormik } from 'formik';
+import { SemanticFormikInputField } from '../../../../SemanticUIFormikField/SemanticUIFormikField';
 
-interface AmountStepProps {
+interface AmountFormProps {
   amount: string;
-  isFinalStep: boolean;
-  setAmount: (input: string) => void;
-  handleNextStep: () => void;
-  handlePreviousStep: () => void;
+  setAmount: (amount: string) => void;
 }
 
-export const AmountStep = ({
-  amount,
-  isFinalStep,
-  setAmount,
-  handleNextStep,
-  handlePreviousStep
-}: AmountStepProps) => {
+interface AmountFormValues {
+  amount: string;
+}
+
+const AmountForm = (props: AmountFormProps & FormikProps<AmountFormValues>) => {
+  const { handleSubmit } = props;
+
   return (
-    <FormStep
-      label="Amount"
-      input={
-        <Input
-          label="eth"
-          fluid
-          labelPosition="right"
-          value={amount}
-          onChange={(event) => setAmount(event.target.value)}
-        />
-      }
-      isFinalStep={isFinalStep}
-      handleNextStep={handleNextStep}
-      handlePreviousStep={handlePreviousStep}
-    />
+    <Form onSubmit={handleSubmit}>
+      <Field
+        name="amount"
+        label="Amount"
+        component={SemanticFormikInputField}
+      />
+      <Button type="submit" color="blue" content="Next" />
+    </Form>
   );
 };
 
-export default AmountStep;
+export default withFormik<AmountFormProps, AmountFormValues>({
+  mapPropsToValues: ({ amount }) => ({
+    amount
+  }),
+  handleSubmit: async ({ amount }, { props: { setAmount } }) => {
+    console.log('Set amount');
+    setAmount(amount);
+  }
+})(AmountForm);
