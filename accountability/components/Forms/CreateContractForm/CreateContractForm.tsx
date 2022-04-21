@@ -1,41 +1,24 @@
 import Router from 'next/router';
-import { FC, FormEvent, useEffect, useState } from 'react';
-import { Message, Form, Progress } from 'semantic-ui-react';
+import { FC, useEffect, useState } from 'react';
+import { Message, Progress } from 'semantic-ui-react';
 import factory from '../../../factory';
 import web3 from '../../../web3';
-import AmountStep from './Steps/AmountStep/AmountStep';
-import ContractDescriptionStep from './Steps/ContractDescriptionStep/ContractDescriptionStep';
-import ContractNameStep from './Steps/ContractNameStep/ContractNameStep';
-import FailureRecipientStep from './Steps/FailureRecipientStep/FailureRecipientStep';
-import RefereeStep from './Steps/RefereeStep/RefereeStep';
+import AmountForm from './Steps/AmountForm/AmountForm';
+import ContractDescriptionForm from './Steps/ContractDescriptionForm/ContractDescriptionForm';
+import ContractNameForm from './Steps/ContractNameForm/ContractNameForm';
+import FailureRecipientForm from './Steps/FailureRecipientForm/FailureRecipientForm';
+import RefereeForm from './Steps/RefereeForm/RefereeForm';
 
 interface CreateContractFormProps {
   web3Account: string;
-  referee: string;
-  setReferee: (input: string) => void;
-  amount: string;
-  setAmount: (input: string) => void;
-  name: string;
-  setName: (input: string) => void;
-  description: string;
-  setDescription: (input: string) => void;
-  failureRecipient: string;
-  setFailureRecipient: (input: string) => void;
 }
 
-const CreateContractForm: FC<CreateContractFormProps> = ({
-  web3Account,
-  referee,
-  setReferee,
-  amount,
-  setAmount,
-  name,
-  setName,
-  description,
-  setDescription,
-  failureRecipient,
-  setFailureRecipient
-}) => {
+const CreateContractForm: FC<CreateContractFormProps> = ({ web3Account }) => {
+  const [referee, setReferee] = useState('');
+  const [amount, setAmount] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [failureRecipient, setFailureRecipient] = useState('');
   const [activeStep, setActiveStep] = useState(0);
   const handleNextStep = () => {
     setActiveStep(activeStep + 1);
@@ -43,60 +26,23 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
   const handlePreviousStep = () => {
     setActiveStep(activeStep - 1);
   };
-  const [submitRequestLoading, setSubmitRequestLoading] = useState(false);
-  const steps = [
-    <RefereeStep
-      key={0}
-      web3Account={web3Account}
-      referee={referee}
-      isFinalStep={false}
-      setReferee={setReferee}
-      handleNextStep={handleNextStep}
-    />,
-    <AmountStep
-      key={1}
-      amount={amount}
-      isFinalStep={false}
-      setAmount={setAmount}
-      handleNextStep={handleNextStep}
-      handlePreviousStep={handlePreviousStep}
-    />,
-    <ContractNameStep
-      key={2}
-      name={name}
-      isFinalStep={false}
-      setName={setName}
-      handleNextStep={handleNextStep}
-      handlePreviousStep={handlePreviousStep}
-    />,
-    <ContractDescriptionStep
-      key={3}
-      description={description}
-      isFinalStep={false}
-      setDescription={setDescription}
-      handleNextStep={handleNextStep}
-      handlePreviousStep={handlePreviousStep}
-    />,
-    <FailureRecipientStep
-      key={4}
-      failureRecipient={failureRecipient}
-      setFailureRecipient={setFailureRecipient}
-      handlePreviousStep={handlePreviousStep}
-      isFinalStep={true}
-      submitRequestLoading={submitRequestLoading}
-    />
-  ];
-  const [percent, setPercent] = useState(0);
-  useEffect(() => {
-    setPercent(activeStep === 0 ? 0 : (activeStep / steps.length) * 100);
-  }, [activeStep, steps.length]);
+  const [onSubmitLoading, setOnSubmitLoading] = useState(false);
   const [networkRequestMessage, setNetworkRequestMessage] = useState('');
   const [networkErrorMessage, setNetworkErrorMessage] = useState('');
 
-  const onSubmit = async (event: FormEvent) => {
+  const onSubmit = async ({
+    referee,
+    name,
+    description,
+    failureRecipient
+  }: {
+    referee: string;
+    name: string;
+    description: string;
+    failureRecipient: string;
+  }) => {
     setNetworkErrorMessage('');
-    setSubmitRequestLoading(true);
-    event.preventDefault();
+    setOnSubmitLoading(true);
     try {
       setNetworkRequestMessage('Waiting on transaction success...');
       await factory.methods
@@ -117,12 +63,57 @@ const CreateContractForm: FC<CreateContractFormProps> = ({
       setNetworkRequestMessage('');
       setNetworkErrorMessage((err as Error).message);
     }
-    setSubmitRequestLoading(false);
+    setOnSubmitLoading(false);
   };
+  const steps = [
+    <RefereeForm
+      key={0}
+      referee={referee}
+      setReferee={setReferee}
+      handleNextStep={handleNextStep}
+    />,
+    <AmountForm
+      key={1}
+      amount={amount}
+      setAmount={setAmount}
+      handlePreviousStep={handlePreviousStep}
+      handleNextStep={handleNextStep}
+    />,
+    <ContractNameForm
+      key={2}
+      name={name}
+      setName={setName}
+      handlePreviousStep={handlePreviousStep}
+      handleNextStep={handleNextStep}
+    />,
+    <ContractDescriptionForm
+      key={3}
+      description={description}
+      setDescription={setDescription}
+      handlePreviousStep={handlePreviousStep}
+      handleNextStep={handleNextStep}
+    />,
+    <FailureRecipientForm
+      key={4}
+      name={name}
+      description={description}
+      referee={referee}
+      failureRecipient={failureRecipient}
+      setFailureRecipient={setFailureRecipient}
+      handlePreviousStep={handlePreviousStep}
+      onSubmit={onSubmit}
+      onSumbitLoading={onSubmitLoading}
+    />
+  ];
+  const [percent, setPercent] = useState(0);
+  useEffect(() => {
+    setPercent(activeStep === 0 ? 0 : (activeStep / steps.length) * 100);
+  }, [activeStep, steps.length]);
+
   return (
     <>
       <Progress percent={percent} indicating />
-      <Form onSubmit={(event) => onSubmit(event)}>{steps[activeStep]}</Form>
+      {steps[activeStep]}
       {networkRequestMessage && (
         <Message
           content={networkRequestMessage}

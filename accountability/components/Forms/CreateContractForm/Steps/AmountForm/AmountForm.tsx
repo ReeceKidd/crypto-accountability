@@ -6,6 +6,8 @@ import { SemanticFormikInputField } from '../../../../SemanticUIFormikField/Sema
 interface AmountFormProps {
   amount: string;
   setAmount: (amount: string) => void;
+  handlePreviousStep: () => void;
+  handleNextStep: () => void;
 }
 
 interface AmountFormValues {
@@ -13,7 +15,7 @@ interface AmountFormValues {
 }
 
 const AmountForm = (props: AmountFormProps & FormikProps<AmountFormValues>) => {
-  const { handleSubmit } = props;
+  const { handlePreviousStep, handleSubmit } = props;
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -21,6 +23,11 @@ const AmountForm = (props: AmountFormProps & FormikProps<AmountFormValues>) => {
         name="amount"
         label="Amount"
         component={SemanticFormikInputField}
+      />
+      <Button
+        color="blue"
+        content="Previous"
+        onClick={() => handlePreviousStep}
       />
       <Button type="submit" color="blue" content="Next" />
     </Form>
@@ -31,8 +38,11 @@ export default withFormik<AmountFormProps, AmountFormValues>({
   mapPropsToValues: ({ amount }) => ({
     amount
   }),
-  handleSubmit: async ({ amount }, { props: { setAmount } }) => {
-    console.log('Set amount');
+  handleSubmit: async (
+    { amount },
+    { props: { setAmount, handleNextStep } }
+  ) => {
     setAmount(amount);
+    handleNextStep();
   }
 })(AmountForm);
