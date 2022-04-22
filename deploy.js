@@ -4,6 +4,7 @@ const HDWalletProvider = require('@truffle/hdwallet-provider');
 const path = require('path');
 const Web3 = require('web3');
 const fs = require('fs-extra');
+const secretPhrase = require('./secret-phrase.json').secretPhrase;
 
 const accountabilityContractFactoryPath = path.resolve(
   __dirname,
@@ -15,7 +16,7 @@ const accountabilityContractFactory = fs.readJSONSync(
 );
 
 const provider = new HDWalletProvider(
-  'tortoise spy bridge maximum plug physical trouble clean humble define debris upset',
+  secretPhrase,
   'https://rinkeby.infura.io/v3/236c8e8dd77b46e1b5fb499a334cfdb8'
 );
 
