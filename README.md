@@ -6,3 +6,4 @@ To deploy the crypto accountability contract add a secret-phrase.json file with 
 {
 "secretPhrase": "your secret phrase goes here"
 }
+Then run compile.js followed by deploy.js
