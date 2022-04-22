@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Form } from 'semantic-ui-react';
 import { Field, FormikProps, withFormik } from 'formik';
 import { SemanticFormikInputField } from '../../../../SemanticUIFormikField/SemanticUIFormikField';
+import * as Yup from 'yup';
 
 interface AmountFormProps {
   amount: string;
@@ -13,6 +14,10 @@ interface AmountFormProps {
 interface AmountFormValues {
   amount: string;
 }
+
+const AmountFormValidationSchema = Yup.object({
+  amount: Yup.number().required().label('Amount')
+});
 
 const AmountForm = (props: AmountFormProps & FormikProps<AmountFormValues>) => {
   const { handlePreviousStep, handleSubmit } = props;
@@ -38,6 +43,7 @@ export default withFormik<AmountFormProps, AmountFormValues>({
   mapPropsToValues: ({ amount }) => ({
     amount
   }),
+  validationSchema: AmountFormValidationSchema,
   handleSubmit: async (
     { amount },
     { props: { setAmount, handleNextStep } }

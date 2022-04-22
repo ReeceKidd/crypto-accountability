@@ -1,4 +1,7 @@
--Update all steps to be like amount step
+-Remove semantic ui react for form styling as it is too difficult to work with
+-Readd the eth button to the amount formik
+-Readd the use own account for referee address
+-Charge a commission for each contract creation
 -Create a landing page similar to Uniswap. 
 -Fix screen for looking at other users. 
 -Add the ability to select charities
