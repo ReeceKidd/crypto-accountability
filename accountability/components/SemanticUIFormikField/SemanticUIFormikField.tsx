@@ -11,13 +11,9 @@ export const SemanticFormikInputField = (props: {
 }) => {
   const {
     field: { name },
-    form: {
-      setFieldValue,
-      errors: { amount }
-    },
+    form: { setFieldValue },
     label
   } = props;
-  console.log('Props', props);
 
   return (
     <Form.Field>

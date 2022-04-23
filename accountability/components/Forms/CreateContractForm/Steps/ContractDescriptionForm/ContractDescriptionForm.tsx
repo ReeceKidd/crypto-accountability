@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button, Form } from 'semantic-ui-react';
-import { Field, FormikProps, withFormik } from 'formik';
-import { SemanticFormikInputField } from '../../../../SemanticUIFormikField/SemanticUIFormikField';
+import { Button, Message } from 'semantic-ui-react';
+import { Form, Field, FormikProps, withFormik } from 'formik';
+import * as Yup from 'yup';
 
 interface ContractDescriptionFormProps {
   description: string;
@@ -14,26 +14,35 @@ interface ContractDescriptionFormValues {
   description: string;
 }
 
+const ContractDescriptionValidationSchema = Yup.object({
+  description: Yup.string().required('Description is required')
+});
+
 const ContractDescriptionForm = (
   props: ContractDescriptionFormProps &
     FormikProps<ContractDescriptionFormValues>
 ) => {
-  const { handlePreviousStep, handleSubmit } = props;
+  const { handlePreviousStep, handleSubmit, errors } = props;
+  const descriptionError = errors.description;
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Field
-        name="description"
-        label="Description"
-        component={SemanticFormikInputField}
-      />
-      <Button
-        color="blue"
-        content="Previous"
-        onClick={() => handlePreviousStep}
-      />
-      <Button type="submit" color="blue" content="Next" />
-    </Form>
+    <>
+      <Form onSubmit={handleSubmit}>
+        <Field name="description" label="Description" />
+        <Button
+          color="blue"
+          content="Previous"
+          onClick={() => handlePreviousStep()}
+        />
+        <Button type="submit" color="blue" content="Next" />
+      </Form>
+      {descriptionError && (
+        <Message negative>
+          <Message.Header>Form error</Message.Header>
+          <p>{descriptionError}</p>
+        </Message>
+      )}
+    </>
   );
 };
 
@@ -44,6 +53,7 @@ export default withFormik<
   mapPropsToValues: ({ description }) => ({
     description
   }),
+  validationSchema: ContractDescriptionValidationSchema,
   handleSubmit: async (
     { description },
     { props: { setDescription, handleNextStep } }

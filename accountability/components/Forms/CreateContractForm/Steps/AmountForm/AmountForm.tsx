@@ -1,7 +1,6 @@
 import React from 'react';
-import { Button, Form } from 'semantic-ui-react';
-import { Field, FormikProps, withFormik } from 'formik';
-import { SemanticFormikInputField } from '../../../../SemanticUIFormikField/SemanticUIFormikField';
+import { Button, Message } from 'semantic-ui-react';
+import { Form, Field, FormikProps, withFormik } from 'formik';
 import * as Yup from 'yup';
 
 interface AmountFormProps {
@@ -16,26 +15,33 @@ interface AmountFormValues {
 }
 
 const AmountFormValidationSchema = Yup.object({
-  amount: Yup.number().required().label('Amount')
+  amount: Yup.number()
+    .required('Amount is required')
+    .typeError('Amount must be a number')
 });
 
 const AmountForm = (props: AmountFormProps & FormikProps<AmountFormValues>) => {
-  const { handlePreviousStep, handleSubmit } = props;
+  const { handlePreviousStep, handleSubmit, errors } = props;
+  const amountError = errors.amount;
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Field
-        name="amount"
-        label="Amount"
-        component={SemanticFormikInputField}
-      />
-      <Button
-        color="blue"
-        content="Previous"
-        onClick={() => handlePreviousStep}
-      />
-      <Button type="submit" color="blue" content="Next" />
-    </Form>
+    <>
+      <Form onSubmit={handleSubmit}>
+        <Field name="amount" label="Amount" />
+        <Button
+          color="blue"
+          content="Previous"
+          onClick={() => handlePreviousStep()}
+        />
+        <Button type="submit" color="blue" content="Next" />
+      </Form>
+      {amountError && (
+        <Message negative>
+          <Message.Header>Form error</Message.Header>
+          <p>{amountError}</p>
+        </Message>
+      )}
+    </>
   );
 };
 

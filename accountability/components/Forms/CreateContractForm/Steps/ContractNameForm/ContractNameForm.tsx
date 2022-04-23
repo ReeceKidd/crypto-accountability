@@ -1,7 +1,6 @@
 import React from 'react';
-import { Button, Form } from 'semantic-ui-react';
-import { Field, FormikProps, withFormik } from 'formik';
-import { SemanticFormikInputField } from '../../../../SemanticUIFormikField/SemanticUIFormikField';
+import { Button, Message } from 'semantic-ui-react';
+import { Form, Field, FormikProps, withFormik } from 'formik';
 
 interface ContractNameFormProps {
   name: string;
@@ -17,18 +16,27 @@ interface ContractNameFormValues {
 const ContractNameForm = (
   props: ContractNameFormProps & FormikProps<ContractNameFormValues>
 ) => {
-  const { handlePreviousStep, handleSubmit } = props;
+  const { handlePreviousStep, handleSubmit, errors } = props;
+  const nameError = errors.name;
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Field name="name" label="Name" component={SemanticFormikInputField} />
-      <Button
-        color="blue"
-        content="Previous"
-        onClick={() => handlePreviousStep}
-      />
-      <Button type="submit" color="blue" content="Next" />
-    </Form>
+    <>
+      <Form onSubmit={handleSubmit}>
+        <Field name="name" label="Name" />
+        <Button
+          color="blue"
+          content="Previous"
+          onClick={() => handlePreviousStep()}
+        />
+        <Button type="submit" color="blue" content="Next" />
+      </Form>
+      {nameError && (
+        <Message negative>
+          <Message.Header>Form error</Message.Header>
+          <p>{nameError}</p>
+        </Message>
+      )}
+    </>
   );
 };
 

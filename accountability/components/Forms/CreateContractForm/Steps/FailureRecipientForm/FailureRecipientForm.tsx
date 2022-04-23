@@ -1,7 +1,6 @@
 import React from 'react';
-import { Button, Form } from 'semantic-ui-react';
-import { Field, FormikProps, withFormik } from 'formik';
-import { SemanticFormikInputField } from '../../../../SemanticUIFormikField/SemanticUIFormikField';
+import { Button, Message } from 'semantic-ui-react';
+import { Form, Field, FormikProps, withFormik } from 'formik';
 
 interface FailureRecipientFormProps {
   referee: string;
@@ -31,27 +30,32 @@ interface FailureRecipientFormValues {
 const FailureRecipientForm = (
   props: FailureRecipientFormProps & FormikProps<FailureRecipientFormValues>
 ) => {
-  const { handlePreviousStep, handleSubmit, onSumbitLoading } = props;
+  const { handlePreviousStep, handleSubmit, onSumbitLoading, errors } = props;
+  const failureRecipientError = errors.failureRecipient;
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Field
-        name="failureRecipient"
-        label="Failure Recipient"
-        component={SemanticFormikInputField}
-      />
-      <Button
-        color="blue"
-        content="Previous"
-        onClick={() => handlePreviousStep}
-      />
-      <Button
-        loading={onSumbitLoading}
-        type="submit"
-        color="blue"
-        content="Next"
-      />
-    </Form>
+    <>
+      <Form onSubmit={handleSubmit}>
+        <Field name="failureRecipient" label="Failure Recipient" />
+        <Button
+          color="blue"
+          content="Previous"
+          onClick={() => handlePreviousStep()}
+        />
+        <Button
+          loading={onSumbitLoading}
+          type="submit"
+          color="blue"
+          content="Next"
+        />
+      </Form>
+      {failureRecipientError && (
+        <Message negative>
+          <Message.Header>Form error</Message.Header>
+          <p>{failureRecipientError}</p>
+        </Message>
+      )}
+    </>
   );
 };
 
