@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button, Message } from 'semantic-ui-react';
+import { Message } from 'semantic-ui-react';
 import { Form, Field, FormikProps, withFormik } from 'formik';
+import FormNavigationButtons from '../../../../FormNavigationButtons/FormNavigationButtons';
 
 interface FailureRecipientFormProps {
   referee: string;
@@ -35,18 +36,20 @@ const FailureRecipientForm = (
 
   return (
     <>
-      <Form onSubmit={handleSubmit}>
+      <h2>Failure recipient</h2>
+      <Form
+        onSubmit={handleSubmit}
+        onKeyDown={(e) => {
+          e.preventDefault();
+          if (e.key === 'Enter') {
+            handleSubmit();
+          }
+        }}
+      >
         <Field name="failureRecipient" label="Failure Recipient" />
-        <Button
-          color="blue"
-          content="Previous"
-          onClick={() => handlePreviousStep()}
-        />
-        <Button
-          loading={onSumbitLoading}
-          type="submit"
-          color="blue"
-          content="Next"
+        <FormNavigationButtons
+          handlePreviousStep={handlePreviousStep}
+          onSubmitLoading={onSumbitLoading}
         />
       </Form>
       {failureRecipientError && (

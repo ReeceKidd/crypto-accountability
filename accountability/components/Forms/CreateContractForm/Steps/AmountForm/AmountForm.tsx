@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, Message } from 'semantic-ui-react';
+import { Message } from 'semantic-ui-react';
 import { Form, Field, FormikProps, withFormik } from 'formik';
 import * as Yup from 'yup';
+import FormNavigationButtons from '../../../../FormNavigationButtons/FormNavigationButtons';
 
 interface AmountFormProps {
   amount: string;
@@ -26,14 +27,17 @@ const AmountForm = (props: AmountFormProps & FormikProps<AmountFormValues>) => {
 
   return (
     <>
-      <Form onSubmit={handleSubmit}>
+      <h2> Amount</h2>
+      <Form
+        onSubmit={handleSubmit}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleSubmit();
+          }
+        }}
+      >
         <Field name="amount" label="Amount" />
-        <Button
-          color="blue"
-          content="Previous"
-          onClick={() => handlePreviousStep()}
-        />
-        <Button type="submit" color="blue" content="Next" />
+        <FormNavigationButtons handlePreviousStep={handlePreviousStep} />
       </Form>
       {amountError && (
         <Message negative>

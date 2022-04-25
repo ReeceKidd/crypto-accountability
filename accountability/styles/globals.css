@@ -19,38 +19,36 @@ a {
 }
 
 form {
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 form input {
-	width: 100%;
-	padding: 16px;
-	background-color: #edf2f7;
-	border: none;
-	margin-bottom: 16px;
-	font-size: 14px;
-	border: 2px solid #a0aec0;
-	box-sizing: border-box;
+  padding: 16px;
+  background-color: #edf2f7;
+  border: none;
+  margin-bottom: 16px;
+  font-size: 14px;
+  border: 2px solid #a0aec0;
+  box-sizing: border-box;
 }
 
 form textarea {
-	width: 100%;
-	padding: 16px;
-	background-color: #edf2f7;
-	border: none;
-	margin-bottom: 16px;
-	font-size: 14px;
-	border: 2px solid #a0aec0;
-	box-sizing: border-box;
-	height: 150px;
+  padding: 16px;
+  background-color: #edf2f7;
+  border: none;
+  margin-bottom: 16px;
+  font-size: 14px;
+  border: 2px solid #a0aec0;
+  box-sizing: border-box;
+  height: 150px;
 }
 
 form button {
-	background-color: #48bb78;
-	color: #ffffff;
-	font-size: 14px;
-	border: none;
-	padding: 16px;
-	width: 50%;
+  border: 2px solid #a0aec0;
+  background-color: #48bb78;
+  color: #ffffff;
+  font-size: 14px;
+  border: none;
+  padding: 18px;
 }

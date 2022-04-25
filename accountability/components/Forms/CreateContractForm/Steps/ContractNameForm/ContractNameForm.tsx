@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button, Message } from 'semantic-ui-react';
+import { Message } from 'semantic-ui-react';
 import { Form, Field, FormikProps, withFormik } from 'formik';
+import FormNavigationButtons from '../../../../FormNavigationButtons/FormNavigationButtons';
 
 interface ContractNameFormProps {
   name: string;
@@ -21,14 +22,17 @@ const ContractNameForm = (
 
   return (
     <>
-      <Form onSubmit={handleSubmit}>
+      <h2>Contract name</h2>
+      <Form
+        onSubmit={handleSubmit}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleSubmit();
+          }
+        }}
+      >
         <Field name="name" label="Name" />
-        <Button
-          color="blue"
-          content="Previous"
-          onClick={() => handlePreviousStep()}
-        />
-        <Button type="submit" color="blue" content="Next" />
+        <FormNavigationButtons handlePreviousStep={handlePreviousStep} />
       </Form>
       {nameError && (
         <Message negative>

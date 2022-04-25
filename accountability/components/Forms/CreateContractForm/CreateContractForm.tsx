@@ -68,6 +68,7 @@ const CreateContractForm: FC<CreateContractFormProps> = ({ web3Account }) => {
   const steps = [
     <RefereeForm
       key={0}
+      web3Account={web3Account}
       referee={referee}
       setReferee={setReferee}
       handleNextStep={handleNextStep}
