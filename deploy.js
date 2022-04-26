@@ -27,11 +27,11 @@ const deploy = async () => {
   const accounts = await web3.eth.getAccounts();
   console.log('Balance', await web3.eth.getBalance(accounts[0]));
   const gasPrice = await new web3.eth.Contract(abi)
-    .deploy({ data: bytecode })
+    .deploy({ arguments: [accounts[3]], data: bytecode })
     .estimateGas();
   console.log('Gas price', gasPrice);
   const contract = await new web3.eth.Contract(abi)
-    .deploy({ data: bytecode })
+    .deploy({ arguments: [accounts[3]], data: bytecode })
     .send({ from: accounts[0], gas: gasPrice });
   console.log('Contract', contract);
   console.log(accountabilityContractFactory.abi);

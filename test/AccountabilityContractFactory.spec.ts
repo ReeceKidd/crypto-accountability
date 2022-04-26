@@ -9,19 +9,22 @@ const web3 = new Web3(ganache.provider());
 
 let accountabilityContractFactory: any;
 let accounts: string[];
+let commissionWalletAddress: string;
+let amount: string;
 
 const createAccountabilityContract = async ({
   referee,
   failureRecipient,
-  user
+  user,
+  amount
 }: {
   referee: string;
   failureRecipient: string;
   user: string;
+  amount: string;
 }) => {
   const name = 'Drink water everyday';
   const description = 'I must drink three litres of water everyday';
-  const amount = web3.utils.toWei('0.00001', 'ether');
   await accountabilityContractFactory.methods
     .createAccountabilityContract(referee, name, description, failureRecipient)
     .send({
@@ -33,15 +36,18 @@ const createAccountabilityContract = async ({
 
 beforeEach(async () => {
   accounts = await web3.eth.getAccounts();
+  commissionWalletAddress = accounts[3];
+  amount = web3.utils.toWei('0.00001', 'ether');
   const abi = AccountabilityContractFactory.abi;
   const bytecode = AccountabilityContractFactory.evm.bytecode.object;
   const gas = await new web3.eth.Contract(abi as any)
-    .deploy({ data: bytecode })
+    .deploy({ arguments: [commissionWalletAddress], data: bytecode })
     .estimateGas();
   accountabilityContractFactory = await new web3.eth.Contract(
     AccountabilityContractFactory.abi as any
   )
     .deploy({
+      arguments: [commissionWalletAddress],
       data: bytecode
     })
     .send({ from: accounts[0], gas });
@@ -53,7 +59,8 @@ describe('Accountability contract factory', () => {
       await createAccountabilityContract({
         referee: accounts[1],
         failureRecipient: accounts[2],
-        user: accounts[0]
+        user: accounts[0],
+        amount
       });
       expect(accountabilityContractFactory.options.address).toBeDefined();
     });
@@ -62,7 +69,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee: accounts[1],
           failureRecipient: accounts[2],
-          user: accounts[0]
+          user: accounts[0],
+          amount
         });
         const numberOfUsers = await accountabilityContractFactory.methods
           .numberOfUsers()
@@ -73,7 +81,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee: accounts[1],
           failureRecipient: accounts[2],
-          user: accounts[0]
+          user: accounts[0],
+          amount
         });
         const numberOfContracts = await accountabilityContractFactory.methods
           .numberOfAccountabilityContracts()
@@ -84,7 +93,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee: accounts[1],
           failureRecipient: accounts[2],
-          user: accounts[0]
+          user: accounts[0],
+          amount
         });
         const totalEthInContracts = await accountabilityContractFactory.methods
           .totalEthInContracts()
@@ -95,12 +105,14 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee: accounts[0],
           failureRecipient: accounts[2],
-          user: accounts[0]
+          user: accounts[0],
+          amount
         });
         await createAccountabilityContract({
           referee: accounts[0],
           failureRecipient: accounts[2],
-          user: accounts[2]
+          user: accounts[2],
+          amount
         });
         const numberOfUsers = await accountabilityContractFactory.methods
           .numberOfUsers()
@@ -111,7 +123,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee: accounts[1],
           failureRecipient: accounts[2],
-          user: accounts[0]
+          user: accounts[0],
+          amount
         });
         const userAddresses = await accountabilityContractFactory.methods
           .getUserAddresses(0, 1)
@@ -122,7 +135,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee: accounts[1],
           failureRecipient: accounts[2],
-          user: accounts[0]
+          user: accounts[0],
+          amount
         });
         const accountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -138,7 +152,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -153,7 +168,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -177,12 +193,14 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user: accounts[0]
+          user: accounts[0],
+          amount
         });
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -190,13 +208,34 @@ describe('Accountability contract factory', () => {
             .call();
         expect(openAccountabilityContractAddresses.length).toEqual(2);
       });
+      it('user pays one percent commission to the commissin wallet address with every created contract', async () => {
+        const user = accounts[0];
+        const referee = accounts[1];
+        const commissionWalletInitialBalance = await web3.eth.getBalance(
+          commissionWalletAddress
+        );
+        await createAccountabilityContract({
+          referee,
+          failureRecipient: accounts[2],
+          user,
+          amount
+        });
+        const commissionWalletUpdatedBalance = await web3.eth.getBalance(
+          commissionWalletAddress
+        );
+        const commissionPaid =
+          Number(commissionWalletUpdatedBalance) -
+          Number(commissionWalletInitialBalance);
+        expect(commissionPaid).toBeGreaterThan(Number(amount) * 0.01);
+      });
       it('can request that referee approves contract', async () => {
         const user = accounts[0];
         const referee = accounts[1];
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -211,7 +250,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee: user,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddressesUser =
           await accountabilityContractFactory.methods
@@ -260,7 +300,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee: user,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddressesUser =
           await accountabilityContractFactory.methods
@@ -312,7 +353,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -327,7 +369,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -353,7 +396,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
 
         const openAccountabilityContractAddresses =
@@ -375,7 +419,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const initialOpenAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -414,7 +459,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee: accounts[1],
           failureRecipient: accounts[2],
-          user: accounts[0]
+          user: accounts[0],
+          amount
         });
         const initialOpenAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -453,7 +499,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee: accounts[1],
           failureRecipient: accounts[2],
-          user: accounts[0]
+          user: accounts[0],
+          amount
         });
         const openAccountabilityContractAddressesUser =
           await accountabilityContractFactory.methods
@@ -528,7 +575,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddressesReferee =
           await accountabilityContractFactory.methods
@@ -569,7 +617,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -592,7 +641,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -615,7 +665,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -638,7 +689,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -660,7 +712,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -685,7 +738,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user: accounts[2]
+          user: accounts[2],
+          amount
         });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -706,7 +760,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
 
         const openAccountabilityContractAddressesReferee =
@@ -735,7 +790,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddressesReferee =
           await accountabilityContractFactory.methods
@@ -765,7 +821,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods
@@ -793,7 +850,8 @@ describe('Accountability contract factory', () => {
         await createAccountabilityContract({
           referee,
           failureRecipient: accounts[2],
-          user
+          user,
+          amount
         });
         const openAccountabilityContractAddresses =
           await accountabilityContractFactory.methods

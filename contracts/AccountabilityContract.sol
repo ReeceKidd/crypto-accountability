@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 contract AccountabilityContractFactory {
+  address public commissionWalletAddress;
   mapping(address => User) public users;
   address[] public userAddresses;
   uint public numberOfUsers;
@@ -25,6 +26,10 @@ contract AccountabilityContractFactory {
     address[] approvalRequestsAddresses;
     }
 
+    constructor(address _commissionWalletAddress) {
+       commissionWalletAddress = _commissionWalletAddress;
+    }
+
     function createAccountabilityContract(address _referee, string memory _name, string memory _description, address payable _failureRecipient) public payable {
         if(users[msg.sender].createdContracts == 0){
             numberOfUsers++;
@@ -34,7 +39,8 @@ contract AccountabilityContractFactory {
             numberOfReferees++;
             refereeAddresses.push(_referee);
         }
-        AccountabilityContract newContract = (new AccountabilityContract){value: msg.value}(msg.sender, _referee, _name, _description, _failureRecipient, msg.value);
+        uint commission = msg.value / 100;
+        AccountabilityContract newContract = (new AccountabilityContract){value: msg.value-commission}(msg.sender, _referee, _name, _description, _failureRecipient, msg.value);
         numberOfAccountabilityContracts++;
         accountabilityContractAddresses.push(address(newContract));
         totalEthInContracts+=msg.value;
@@ -42,6 +48,7 @@ contract AccountabilityContractFactory {
         users[msg.sender].openAccountabilityContractAddresses.push(address(newContract));
         referees[_referee].managedContracts++;
         referees[_referee].openAccountabilityContractAddresses.push(address(newContract));
+        payable(commissionWalletAddress).transfer(commission);
     }
 
     function getOpenAccountabilityContractAddressesForUser(address user) public view returns (address[] memory){

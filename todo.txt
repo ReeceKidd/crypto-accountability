@@ -1,13 +1,14 @@
--Remove semantic ui react for form styling as it is too difficult to work with
--Readd the eth button to the amount formik
--Readd the use own account for referee address
+
 -Charge a commission for each contract creation
+-Add text to each form stage describing what it is. 
+-Add the eth description to the amount form
 -Create a landing page similar to Uniswap. 
 -Fix screen for looking at other users. 
 -Add the ability to select charities
 -Add the ability to select antichairties
 -Add the ability to select enemeies
 -Add the ability to select friends
+-Autofocus next form when you click enter on the previous form
 -Retreive charities from my own crypto charities website. 
 -Retreive charities from crypto charity website. 
 -Store users wins
