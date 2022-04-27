@@ -31,6 +31,7 @@ contract AccountabilityContractFactory {
     }
 
     function createAccountabilityContract(address _referee, string memory _name, string memory _description, address payable _failureRecipient) public payable {
+        require(msg.value > 0, "Value must be a positive number");
         if(users[msg.sender].createdContracts == 0){
             numberOfUsers++;
             userAddresses.push(msg.sender);

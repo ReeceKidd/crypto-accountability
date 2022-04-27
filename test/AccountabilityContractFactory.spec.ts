@@ -610,6 +610,32 @@ describe('Accountability contract factory', () => {
 
   describe('errors', () => {
     describe('user', () => {
+      it('cannot create a contract where the value is less than 0', async () => {
+        const user = accounts[0];
+        const referee = accounts[1];
+        await expect(
+          createAccountabilityContract({
+            referee,
+            failureRecipient: accounts[2],
+            user,
+            amount: '-1'
+          })
+        ).rejects.toThrowError();
+      });
+      it('cannot create a contract where the value is equal to 0', async () => {
+        const user = accounts[0];
+        const referee = accounts[1];
+        await expect(
+          createAccountabilityContract({
+            referee,
+            failureRecipient: accounts[2],
+            user,
+            amount: '0'
+          })
+        ).rejects.toThrow(
+          'VM Exception while processing transaction: revert Value must be a positive number'
+        );
+      });
       it('creator cannot complete an open accountability contract if they are not the referee', async () => {
         const user = accounts[0];
         const referee = accounts[1];
