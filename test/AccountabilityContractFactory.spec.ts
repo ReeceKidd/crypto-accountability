@@ -208,7 +208,7 @@ describe('Accountability contract factory', () => {
             .call();
         expect(openAccountabilityContractAddresses.length).toEqual(2);
       });
-      it('user pays one percent commission to the commissin wallet address with every created contract', async () => {
+      it('user pays commission to the commission wallet address with every created contract', async () => {
         const user = accounts[0];
         const referee = accounts[1];
         const commissionWalletInitialBalance = await web3.eth.getBalance(
@@ -223,10 +223,9 @@ describe('Accountability contract factory', () => {
         const commissionWalletUpdatedBalance = await web3.eth.getBalance(
           commissionWalletAddress
         );
-        const commissionPaid =
-          Number(commissionWalletUpdatedBalance) -
-          Number(commissionWalletInitialBalance);
-        expect(commissionPaid).toBeGreaterThan(Number(amount) * 0.01);
+        expect(Number(commissionWalletUpdatedBalance)).toBeGreaterThan(
+          Number(commissionWalletInitialBalance)
+        );
       });
       it('can request that referee approves contract', async () => {
         const user = accounts[0];

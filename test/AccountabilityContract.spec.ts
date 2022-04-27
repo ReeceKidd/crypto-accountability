@@ -20,16 +20,17 @@ let failureRecipient: string;
 
 beforeEach(async () => {
   accounts = await web3.eth.getAccounts();
+  const commissionWalletAddress = accounts[3];
   creator = accounts[0];
   referee = accounts[0];
   const abi = AccountabilityContractFactory.abi;
   const bytecode = AccountabilityContractFactory.evm.bytecode.object;
   const gas = await new web3.eth.Contract(abi as any)
-    .deploy({ data: bytecode })
+    .deploy({ arguments: [commissionWalletAddress], data: bytecode })
     .estimateGas();
   amount = web3.utils.toWei('0.001', 'ether');
   accountabilityContractFactory = await new web3.eth.Contract(abi as any)
-    .deploy({ data: bytecode })
+    .deploy({ arguments: [commissionWalletAddress], data: bytecode })
     .send({ from: creator, gas });
   name = 'Drink water everyday';
   description = 'I must drink three litres of water everyday';
@@ -88,11 +89,14 @@ describe('Accountability Contract', () => {
         const status = await accountabilityContract.methods.status().call();
         expect(status).toEqual('0');
       });
-      it('has initial balance of value sent', async () => {
+      it('has initial balance of value sent minus commission', async () => {
         const initialBalance = await web3.eth.getBalance(
           accountabilityContractAddress
         );
-        expect(initialBalance).toEqual(amount);
+        const amountDecimal = Number(amount.slice(0, 3));
+        const initialBalanceDecimal = Number(initialBalance.slice(0, 2));
+        const commission = amountDecimal * 0.01;
+        expect(initialBalanceDecimal).toEqual(amountDecimal - commission);
       });
     });
   });

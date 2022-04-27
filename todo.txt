@@ -1,5 +1,5 @@
 
--Charge a commission for each contract creation
+-Don't allow user to submit 0 as the amount in the contract. 
 -Add text to each form stage describing what it is. 
 -Add the eth description to the amount form
 -Create a landing page similar to Uniswap. 
