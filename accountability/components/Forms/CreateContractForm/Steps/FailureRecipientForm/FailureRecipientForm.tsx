@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Message } from 'semantic-ui-react';
 import { Form, Field, FormikProps, withFormik } from 'formik';
 import FormNavigationButtons from '../../../../FormNavigationButtons/FormNavigationButtons';
+import FailureRecipientSelector, {
+  FailureRecipientOption
+} from '../../../../FailureRecipientSelector/FailureRecipientSelector';
 
 interface FailureRecipientFormProps {
   referee: string;
@@ -28,15 +31,44 @@ interface FailureRecipientFormValues {
   failureRecipient: string;
 }
 
+export enum FailureRecipientOptions {
+  friendOrEnemy = 'friendOrEnemy',
+  cryptoAccountability = 'cryptoAccountability'
+}
+
+const failureRecipients: {
+  [key: string]: FailureRecipientOption;
+} = {
+  [FailureRecipientOptions.friendOrEnemy]: {
+    title: 'Friend or enemy',
+    description: 'If you fail we will send this person the money'
+  },
+  [FailureRecipientOptions.cryptoAccountability]: {
+    title: 'Crypto accountability',
+    description:
+      'If you fail you will send the money to us. Thank you for the support'
+  }
+};
+
 const FailureRecipientForm = (
   props: FailureRecipientFormProps & FormikProps<FailureRecipientFormValues>
 ) => {
   const { handlePreviousStep, handleSubmit, onSumbitLoading, errors } = props;
   const failureRecipientError = errors.failureRecipient;
 
+  const [failureRecipient, setFailureRecipient] =
+    useState<FailureRecipientOptions>(FailureRecipientOptions.friendOrEnemy);
+
   return (
     <>
       <h2>Failure recipient</h2>
+      <h3>Where does the money go if you do not succeed?</h3>
+      <FailureRecipientSelector
+        failureRecipient={failureRecipient}
+        failureRecipients={failureRecipients}
+        setFailureRecipient={setFailureRecipient}
+      />
+      <br />
       <Form
         onSubmit={handleSubmit}
         onKeyDown={(e) => {
