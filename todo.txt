@@ -1,5 +1,5 @@
 
--Add text to each form stage describing what it is. 
+-Replace semantic ui with material ui 
 -Add the eth description to the amount form
 -Create a landing page similar to Uniswap. 
 -Fix screen for looking at other users. 
