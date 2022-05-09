@@ -4,18 +4,19 @@ import { FailureRecipientOptions } from '../Forms/CreateContractForm/Steps/Failu
 export interface FailureRecipientOption {
   title: string;
   description: string;
+  field?: JSX.Element;
 }
 
 interface FailureRecipientSelectorProps {
-  failureRecipient: FailureRecipientOptions;
+  failureRecipientOption: FailureRecipientOptions;
   failureRecipients: { [key: string]: FailureRecipientOption };
-  setFailureRecipient: (value: FailureRecipientOptions) => void;
+  setFailureRecipientOption: (value: FailureRecipientOptions) => void;
 }
 
 export const FailureRecipientSelector = ({
-  failureRecipient,
+  failureRecipientOption,
   failureRecipients,
-  setFailureRecipient
+  setFailureRecipientOption
 }: FailureRecipientSelectorProps) => {
   return (
     <Form>
@@ -25,14 +26,16 @@ export const FailureRecipientSelector = ({
             label={failureRecipients[failureRecipientKey].title}
             name="radioGroup"
             value={failureRecipientKey}
-            checked={failureRecipient === failureRecipientKey}
-            onChange={(_e, { value }) =>
-              setFailureRecipient(value as FailureRecipientOptions)
-            }
+            checked={failureRecipientOption === failureRecipientKey}
+            onChange={(_e, { value }) => {
+              setFailureRecipientOption(value as FailureRecipientOptions);
+            }}
           />
         </Form.Field>
       ))}
-      <Form.Field>{failureRecipients[failureRecipient].description}</Form.Field>
+      <Form.Field>
+        {failureRecipients[failureRecipientOption].description}
+      </Form.Field>
     </Form>
   );
 };

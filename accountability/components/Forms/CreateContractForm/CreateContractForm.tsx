@@ -6,7 +6,9 @@ import web3 from '../../../web3';
 import AmountForm from './Steps/AmountForm/AmountForm';
 import ContractDescriptionForm from './Steps/ContractDescriptionForm/ContractDescriptionForm';
 import ContractNameForm from './Steps/ContractNameForm/ContractNameForm';
-import FailureRecipientForm from './Steps/FailureRecipientForm/FailureRecipientForm';
+import FailureRecipientForm, {
+  FailureRecipientOptions
+} from './Steps/FailureRecipientForm/FailureRecipientForm';
 import RefereeForm from './Steps/RefereeForm/RefereeForm';
 
 interface CreateContractFormProps {
@@ -18,7 +20,6 @@ const CreateContractForm: FC<CreateContractFormProps> = ({ web3Account }) => {
   const [amount, setAmount] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [failureRecipient, setFailureRecipient] = useState('');
   const [activeStep, setActiveStep] = useState(0);
   const handleNextStep = () => {
     setActiveStep(activeStep + 1);
@@ -29,6 +30,8 @@ const CreateContractForm: FC<CreateContractFormProps> = ({ web3Account }) => {
   const [onSubmitLoading, setOnSubmitLoading] = useState(false);
   const [networkRequestMessage, setNetworkRequestMessage] = useState('');
   const [networkErrorMessage, setNetworkErrorMessage] = useState('');
+  const [failureRecipientOption, setFailureRecipientOption] =
+    useState<FailureRecipientOptions>(FailureRecipientOptions.friendOrEnemy);
 
   const onSubmit = async ({
     referee,
@@ -95,12 +98,13 @@ const CreateContractForm: FC<CreateContractFormProps> = ({ web3Account }) => {
       handleNextStep={handleNextStep}
     />,
     <FailureRecipientForm
+      cryptoAccountabilityAddress={'0xeF3F4cFb69974b5D9AE3a4D6Da747Ec7d1aD6587'}
       key={4}
       name={name}
       description={description}
       referee={referee}
-      failureRecipient={failureRecipient}
-      setFailureRecipient={setFailureRecipient}
+      failureRecipientOption={failureRecipientOption}
+      setFailureRecipientOption={setFailureRecipientOption}
       handlePreviousStep={handlePreviousStep}
       onSubmit={onSubmit}
       onSumbitLoading={onSubmitLoading}
