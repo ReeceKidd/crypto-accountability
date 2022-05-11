@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { List } from 'semantic-ui-react';
+import { List } from '@mui/material';
 
 interface UsersListProps {
   userAddresses: string[];

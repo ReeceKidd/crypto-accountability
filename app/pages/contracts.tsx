@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useCallback, useEffect, useState } from 'react';
-import { Segment } from 'semantic-ui-react';
+import { Segment } from '@mui/material';
 import AccountabilityContracts from '../components/AccountabilityContracts/AccountabilityContracts';
 import Layout from '../components/Layout/Layout';
 import factory from '../factory';

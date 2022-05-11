@@ -1,29 +1,23 @@
 import Link from 'next/link';
-import { List } from 'semantic-ui-react';
+import { List, ListItem, ListItemText } from '@mui/material';
 
+export interface ContractListItem {
+  address: string;
+  title: string;
+}
 interface ContractsListProps {
-  contracts: { address: string; title: string }[];
+  contracts: ContractListItem[];
 }
 
 const ContractsList = ({ contracts }: ContractsListProps) => {
   return (
     <List>
       {contracts.map(({ address, title }, index) => (
-        <List.Item key={index}>
-          <List.Content>
-            <Link href={`/contracts/${address}`} passHref={true}>
-              <List.Header
-                style={{
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
-                }}
-              >
-                {title}
-              </List.Header>
-            </Link>
-          </List.Content>
-        </List.Item>
+        <ListItem key={index}>
+          <Link href={`/contracts/${address}`} passHref={true}>
+            <ListItemText>{title}</ListItemText>
+          </Link>
+        </ListItem>
       ))}
     </List>
   );

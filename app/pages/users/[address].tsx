@@ -9,7 +9,7 @@ import {
   useEffect,
   useState
 } from 'react';
-import { Button, Segment } from 'semantic-ui-react';
+import { Button, Segment } from '@mui/material';
 import ContractsTable from '../../components/ContractsTable/ContractsTable';
 import Layout from '../../components/Layout/Layout';
 import factory, { getAccountabilityContract } from '../../factory';

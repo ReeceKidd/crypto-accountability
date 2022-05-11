@@ -1,6 +1,6 @@
 import Router from 'next/router';
 import { FC, useEffect, useState } from 'react';
-import { Message, Progress } from 'semantic-ui-react';
+import { Message, Progress } from '@mui/material';
 import factory from '../../../factory';
 import web3 from '../../../web3';
 import AmountForm from './Steps/AmountForm/AmountForm';

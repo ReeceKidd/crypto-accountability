@@ -2,7 +2,16 @@ import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { Button, Table } from 'semantic-ui-react';
+import {
+  TableContainer,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  Paper,
+  Table
+} from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import accountabilityContractFactoryInstance from '../../factory';
 
 export interface ApprovalRequest {
@@ -12,11 +21,11 @@ export interface ApprovalRequest {
   accountabilityContractName: string;
 }
 
-interface RequestsTableProps {
+interface Props {
   approvalRequests: ApprovalRequest[];
 }
 
-const ApprovalRequestsTable = ({ approvalRequests }: RequestsTableProps) => {
+const ApprovalRequestsTable = ({ approvalRequests }: Props) => {
   const { account } = useWeb3React();
   const router = useRouter();
   const [approveRequestLoading, setApproveRequestLoading] = useState(false);
@@ -48,47 +57,45 @@ const ApprovalRequestsTable = ({ approvalRequests }: RequestsTableProps) => {
       { accountabilityContractAddress, accountabilityContractName, address },
       index
     ) => (
-      <Table.Row key={index}>
-        <Table.Cell>
+      <TableRow key={index}>
+        <TableCell>
           <Link href={`/contracts/${accountabilityContractAddress}`}>
             {accountabilityContractName}
           </Link>
-        </Table.Cell>
-        <Table.Cell>
-          <Button
-            color="green"
-            content="Approve"
+        </TableCell>
+        <TableCell>
+          <LoadingButton
             loading={approveRequestLoading}
             onClick={() => approveRequest(address)}
-          />
-        </Table.Cell>
-        <Table.Cell>
-          <Button
-            color="red"
-            content="Reject"
+          >
+            Approve
+          </LoadingButton>
+        </TableCell>
+        <TableCell>
+          <LoadingButton
             loading={rejectRequestLoading}
             onClick={() => rejectRequest(address)}
-          />
-        </Table.Cell>
-      </Table.Row>
+          >
+            Reject
+          </LoadingButton>
+        </TableCell>
+      </TableRow>
     )
   );
 
   return (
-    <>
-      {tableCells.length > 0 && (
-        <Table celled>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Name</Table.HeaderCell>
-              <Table.HeaderCell>Approve</Table.HeaderCell>
-              <Table.HeaderCell>Reject</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>{tableCells}</Table.Body>
-        </Table>
-      )}
-    </>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>Approve</TableCell>
+            <TableCell>Reject</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>{tableCells}</TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

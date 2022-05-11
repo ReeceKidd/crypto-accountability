@@ -1,42 +1,42 @@
-import { Form, Radio } from 'semantic-ui-react';
+import {
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup
+} from '@mui/material';
 import { FailureRecipientOptions } from '../Forms/CreateContractForm/Steps/FailureRecipientForm/FailureRecipientForm';
 
 export interface FailureRecipientOption {
   title: string;
   description: string;
-  field?: JSX.Element;
 }
 
 interface FailureRecipientSelectorProps {
   failureRecipientOption: FailureRecipientOptions;
   failureRecipients: { [key: string]: FailureRecipientOption };
-  setFailureRecipientOption: (value: FailureRecipientOptions) => void;
 }
 
 export const FailureRecipientSelector = ({
   failureRecipientOption,
-  failureRecipients,
-  setFailureRecipientOption
+  failureRecipients
 }: FailureRecipientSelectorProps) => {
   return (
-    <Form>
-      {Object.keys(failureRecipients).map((failureRecipientKey, index) => (
-        <Form.Field key={index}>
-          <Radio
-            label={failureRecipients[failureRecipientKey].title}
-            name="radioGroup"
+    <FormControl>
+      <RadioGroup>
+        {Object.keys(failureRecipients).map((failureRecipientKey, index) => (
+          <FormControlLabel
+            key={index}
             value={failureRecipientKey}
-            checked={failureRecipientOption === failureRecipientKey}
-            onChange={(_e, { value }) => {
-              setFailureRecipientOption(value as FailureRecipientOptions);
-            }}
+            control={<Radio />}
+            label={failureRecipientKey}
           />
-        </Form.Field>
-      ))}
-      <Form.Field>
+        ))}
+      </RadioGroup>
+      <FormLabel>
         {failureRecipients[failureRecipientOption].description}
-      </Form.Field>
-    </Form>
+      </FormLabel>
+    </FormControl>
   );
 };
 

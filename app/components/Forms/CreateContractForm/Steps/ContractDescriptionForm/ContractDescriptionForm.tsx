@@ -1,5 +1,5 @@
 import React from 'react';
-import { Message } from 'semantic-ui-react';
+import { Message } from '@mui/material';
 import { Form, Field, FormikProps, withFormik } from 'formik';
 import * as Yup from 'yup';
 import FormNavigationButtons from '../../../../FormNavigationButtons/FormNavigationButtons';

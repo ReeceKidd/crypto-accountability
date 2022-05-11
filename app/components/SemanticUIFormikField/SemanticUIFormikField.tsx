@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input } from 'semantic-ui-react';
+import { Form, Input } from '@mui/material';
 
 export const SemanticFormikInputField = (props: {
   field: { name: string };

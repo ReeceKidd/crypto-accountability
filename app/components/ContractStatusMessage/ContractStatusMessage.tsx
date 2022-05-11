@@ -1,4 +1,4 @@
-import { Message } from 'semantic-ui-react';
+import { Card, Typography } from '@mui/material';
 import { ContractStatus } from '../../helpers/getAccountabilityContractStatus';
 
 interface ContractStatusMessageProps {
@@ -8,35 +8,39 @@ interface ContractStatusMessageProps {
 const ContractStatusMessage = ({ status }: ContractStatusMessageProps) => {
   if (status === ContractStatus.SUCCESS) {
     return (
-      <Message
-        color="green"
-        icon="check"
-        header="Completed"
-        content="This contract has been completed."
-      />
+      <Card variant="outlined">
+        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+          This contract has been completed
+        </Typography>
+      </Card>
     );
   }
+
   if (status === ContractStatus.AWAITING_APPROVAL) {
     return (
-      <Message
-        color="blue"
-        icon="clock"
-        header="Awaiting approval"
-        content="Contact the referee to get their approval"
-      />
+      <Card variant="outlined">
+        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+          Contact the referee to get their approval
+        </Typography>
+      </Card>
     );
   }
   if (status === ContractStatus.FAILURE) {
     return (
-      <Message
-        color="red"
-        icon="times circle"
-        header="Failed"
-        content="This contract was failed."
-      />
+      <Card variant="outlined">
+        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+          This contract has failed
+        </Typography>
+      </Card>
     );
   }
-  return <Message header="Open" content="This contract is open." />;
+  return (
+    <Card variant="outlined">
+      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+        This contract is open
+      </Typography>
+    </Card>
+  );
 };
 
 export default ContractStatusMessage;

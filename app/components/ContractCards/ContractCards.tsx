@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { Card } from 'semantic-ui-react';
-import web3 from '../../web3';
+import { Card, CardContent, Typography } from '@mui/material';
+import { Fragment } from 'react';
 
 interface ContractCardsProps {
   creator: string;
@@ -19,20 +19,16 @@ const ContractCards = ({
     {
       header: 'Creator',
       description: <Link href={`/users/${creator}`}>{creator}</Link>,
-      meta: 'Creator of the contract.',
-      raised: true,
-      style: { overflowWrap: 'break-word' }
+      meta: 'Creator of the contract.'
     },
     {
       header: 'Referee',
       description: <Link href={`/users/${referee}`}>{referee}</Link>,
-      meta: 'Referee of the contract.',
-      raised: true,
-      style: { overflowWrap: 'break-word' }
+      meta: 'Referee of the contract.'
     },
     {
       header: 'Amount',
-      description: web3.utils.fromWei(amount, 'ether')
+      description: amount
     },
     {
       header: 'Failure recipient',
@@ -41,18 +37,31 @@ const ContractCards = ({
           {failureRecipient}
         </Link>
       ),
-      meta: 'Where the money is sent if contract is failed.',
-      raised: true,
-      style: { overflowWrap: 'break-word' }
+      meta: 'Where the money is sent if contract is failed.'
     }
   ];
   return (
-    <Card.Group
-      items={cards.map((card, index) => ({
-        ...card,
-        key: index
-      }))}
-    />
+    <Fragment>
+      {cards.map(({ header, description, meta }) => {
+        <Card variant="outlined">
+          <CardContent>
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              {header}
+            </Typography>
+            <Typography variant="h5" component="div">
+              {description}
+            </Typography>
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              {meta}
+            </Typography>
+          </CardContent>
+        </Card>;
+      })}
+    </Fragment>
   );
 };
 

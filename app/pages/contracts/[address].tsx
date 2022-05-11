@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { Button, Grid } from 'semantic-ui-react';
+import { Button, Grid } from '@mui/material';
 import ContractsCards from '../../components/ContractCards/ContractCards';
 import Layout from '../../components/Layout/Layout';
 import accountabilityContractFactoryInstance, {

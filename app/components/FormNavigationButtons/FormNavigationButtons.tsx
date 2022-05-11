@@ -1,4 +1,5 @@
-import { Button, Icon } from 'semantic-ui-react';
+import { Button } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 
 interface FormNavigationButtonsProps {
   handlePreviousStep: () => void;
@@ -11,21 +12,14 @@ const FormNavigationButtons = ({
 }: FormNavigationButtonsProps) => {
   return (
     <div style={{ flexDirection: 'row' }}>
-      <Button
-        color="blue"
-        onClick={() => handlePreviousStep()}
-        style={{ width: '10%' }}
-      >
-        <Icon name="chevron left" />
+      <Button onClick={() => handlePreviousStep()} style={{ width: '10%' }}>
+        Left
       </Button>
-      <Button
+      <LoadingButton
         loading={onSubmitLoading}
         type="submit"
-        color="blue"
         style={{ width: '10%' }}
-      >
-        <Icon name="chevron right" />
-      </Button>
+      ></LoadingButton>
     </div>
   );
 };

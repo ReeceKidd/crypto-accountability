@@ -1,4 +1,4 @@
-import { Button, Grid } from 'semantic-ui-react';
+import { Button, Grid } from '@mui/material';
 
 interface FormStepProps {
   label: string;

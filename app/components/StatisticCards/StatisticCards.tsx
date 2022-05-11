@@ -1,4 +1,4 @@
-import { Card } from 'semantic-ui-react';
+import { Card } from '@mui/material';
 import web3 from '../../web3';
 
 interface StatisticCardsProps {

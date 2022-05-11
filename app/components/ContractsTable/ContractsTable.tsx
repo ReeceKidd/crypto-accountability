@@ -1,7 +1,12 @@
 import Link from 'next/link';
-import { Table } from 'semantic-ui-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow
+} from '@mui/material';
 import { ContractStatus } from '../../helpers/getAccountabilityContractStatus';
-import web3 from '../../web3';
 import ContractStatusCell from '../ContractStatusCell/ContractStatusCell';
 
 export interface AccountabilityContract {
@@ -18,28 +23,28 @@ interface RequestsTableProps {
 const ContractsTable = ({ contracts }: RequestsTableProps) => {
   const tableCells = contracts.map(
     ({ address, name, status, amount }, index) => (
-      <Table.Row key={index}>
-        <Table.Cell>
+      <TableRow key={index}>
+        <TableCell>
           <Link href={`/contracts/${address}`}>{name}</Link>
-        </Table.Cell>
-        <Table.Cell>{web3.utils.fromWei(amount)}</Table.Cell>
+        </TableCell>
+        <TableCell>{amount}</TableCell>
         <ContractStatusCell status={status as ContractStatus} />
-      </Table.Row>
+      </TableRow>
     )
   );
 
   return (
     <>
       {tableCells.length > 0 && (
-        <Table celled>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Name</Table.HeaderCell>
-              <Table.HeaderCell>Amount</Table.HeaderCell>
-              <Table.HeaderCell>Status</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>{tableCells}</Table.Body>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Amount</TableCell>
+              <TableCell>Status</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{tableCells}</TableBody>
         </Table>
       )}
     </>

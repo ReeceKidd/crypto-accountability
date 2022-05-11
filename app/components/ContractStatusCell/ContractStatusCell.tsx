@@ -1,4 +1,4 @@
-import { Icon, Table } from 'semantic-ui-react';
+import { TableCell } from '@mui/material';
 import { ContractStatus } from '../../helpers/getAccountabilityContractStatus';
 
 export interface ContractStatusCellProps {
@@ -7,30 +7,15 @@ export interface ContractStatusCellProps {
 
 export const ContractStatusCell = ({ status }: ContractStatusCellProps) => {
   if (status === ContractStatus.SUCCESS) {
-    return (
-      <Table.Cell>
-        <Icon color="green" name="check" size="large" />
-        {status}
-      </Table.Cell>
-    );
+    return <TableCell>{status}</TableCell>;
   }
   if (status === ContractStatus.AWAITING_APPROVAL) {
-    return (
-      <Table.Cell>
-        <Icon color="blue" name="clock" size="large" />
-        {status}
-      </Table.Cell>
-    );
+    return <TableCell>{status}</TableCell>;
   }
   if (status === ContractStatus.FAILURE) {
-    return (
-      <Table.Cell>
-        <Icon color="red" name="times circle" size="large" />
-        {status}
-      </Table.Cell>
-    );
+    return <TableCell>{status}</TableCell>;
   }
-  return <Table.Cell>{status}</Table.Cell>;
+  return <TableCell>{status}</TableCell>;
 };
 
 export default ContractStatusCell;

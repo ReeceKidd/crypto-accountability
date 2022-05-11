@@ -1,7 +1,7 @@
 import { useWeb3React } from '@web3-react/core';
 import type { NextPage } from 'next';
 import { useCallback, useEffect, useState } from 'react';
-import { Grid, Segment } from 'semantic-ui-react';
+import { Grid, Segment } from '@mui/material';
 import ContractsList from '../components/ContractsList/ContractsList';
 import Layout from '../components/Layout/Layout';
 import OpenAccountabilityContracts from '../components/AccountabilityContracts/AccountabilityContracts';
