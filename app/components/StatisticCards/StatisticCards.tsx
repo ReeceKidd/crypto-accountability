@@ -1,5 +1,4 @@
-import { Card } from '@mui/material';
-import web3 from '../../web3';
+import { Card, Typography } from '@mui/material';
 
 interface StatisticCardsProps {
   numberOfUsers: number;
@@ -15,27 +14,31 @@ const StatisticCards = ({
   const cards = [
     {
       header: 'Total Users',
-      description: numberOfUsers,
-      raised: true
+      description: numberOfUsers
     },
     {
       header: 'Total Contracts',
-      description: numberOfAccountabilityContracts,
-      raised: true
+      description: numberOfAccountabilityContracts
     },
     {
       header: 'Total Eth in contracts',
-      description: web3.utils.fromWei(totalEthInContracts),
-      raised: true
+      description: totalEthInContracts
     }
   ];
   return (
-    <Card.Group
-      items={cards.map((card, index) => ({
-        ...card,
-        key: index
-      }))}
-    />
+    <>
+      {cards.map(({ header, description }, index) => (
+        <Card variant="outlined" key={index}>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            {header}
+          </Typography>
+          <Typography variant="h5" component="div">
+            {description}
+          </Typography>
+        </Card>
+      ))}
+      ;
+    </>
   );
 };
 

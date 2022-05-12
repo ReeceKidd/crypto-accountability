@@ -1,8 +1,7 @@
-import { Button, Grid } from '@mui/material';
+import { Button } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 
 interface FormStepProps {
-  label: string;
-  input: JSX.Element;
   isFinalStep: boolean;
   submitRequestLoading?: boolean;
   handleNextStep?: () => void;
@@ -10,47 +9,25 @@ interface FormStepProps {
 }
 
 export const FormStep = ({
-  label,
-  input,
   isFinalStep,
   submitRequestLoading,
   handleNextStep,
   handlePreviousStep
 }: FormStepProps) => {
   return (
-    <Grid style={{ height: '25vh' }}>
-      <Grid.Row>
-        <Grid.Column>
-          <p>{label}</p>
-          {input}
-        </Grid.Column>
-      </Grid.Row>
-      <Grid.Row columns={2}>
-        {handlePreviousStep && (
-          <Grid.Column>
-            <Button fluid primary onClick={() => handlePreviousStep()}>
-              Previous
-            </Button>
-          </Grid.Column>
-        )}
-        <br />
-        {handleNextStep && (
-          <Grid.Column>
-            <Button fluid primary onClick={() => handleNextStep()}>
-              Next
-            </Button>
-          </Grid.Column>
-        )}
-        <br />
-        {isFinalStep && (
-          <Grid.Column>
-            <Button fluid primary loading={submitRequestLoading} type="submit">
-              Submit
-            </Button>
-          </Grid.Column>
-        )}
-      </Grid.Row>
-    </Grid>
+    <>
+      {handlePreviousStep && (
+        <Button onClick={() => handlePreviousStep()}>Previous</Button>
+      )}
+      <br />
+      {handleNextStep && <Button onClick={() => handleNextStep()}>Next</Button>}
+      <br />
+      {isFinalStep && (
+        <LoadingButton loading={submitRequestLoading} type="submit">
+          Submit
+        </LoadingButton>
+      )}
+    </>
   );
 };
 

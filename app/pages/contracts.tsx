@@ -2,9 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useCallback, useEffect, useState } from 'react';
-import { Segment } from '@mui/material';
 import AccountabilityContracts from '../components/AccountabilityContracts/AccountabilityContracts';
-import Layout from '../components/Layout/Layout';
 import factory from '../factory';
 
 const Contracts: NextPage = () => {
@@ -13,6 +11,7 @@ const Contracts: NextPage = () => {
     loadingGetOpenAccountabilityContractAddresses,
     setLoadingGetOpenAccountabilityContractAddresses
   ] = useState(false);
+  console.log(loadingGetOpenAccountabilityContractAddresses);
   const [
     openAccountabilityContractAddresses,
     setOpenAccountabilityContractAddresses
@@ -41,6 +40,7 @@ const Contracts: NextPage = () => {
     loadingGetClosedAccountabilityContractAddresses,
     setLoadingGetClosedAccountabilityContractAddresses
   ] = useState(false);
+  console.log(loadingGetClosedAccountabilityContractAddresses);
   const getClosedAccountabillityContractAddresses = useCallback(
     async (
       setClosedAccountabilityContractAddresses: (addresses: string[]) => void
@@ -71,28 +71,18 @@ const Contracts: NextPage = () => {
       <Head>
         <title>Contracts</title>
       </Head>
-      <Layout>
-        <Segment loading={loadingGetOpenAccountabilityContractAddresses}>
-          <h2>Open contracts: {openAccountabilityContractAddresses.length}</h2>
-          <AccountabilityContracts
-            setLoading={setLoadingGetOpenAccountabilityContractAddresses}
-            accountabilityContractAddresses={
-              openAccountabilityContractAddresses
-            }
-          />
-        </Segment>
-        <Segment loading={loadingGetClosedAccountabilityContractAddresses}>
-          <h2>
-            Closed contracts: {closedAccountabilityContractAddresses.length}
-          </h2>
-          <AccountabilityContracts
-            setLoading={setLoadingGetClosedAccountabilityContractAddresses}
-            accountabilityContractAddresses={
-              closedAccountabilityContractAddresses
-            }
-          />
-        </Segment>
-      </Layout>
+
+      <h2>Open contracts: {openAccountabilityContractAddresses.length}</h2>
+      <AccountabilityContracts
+        setLoading={setLoadingGetOpenAccountabilityContractAddresses}
+        accountabilityContractAddresses={openAccountabilityContractAddresses}
+      />
+
+      <h2>Closed contracts: {closedAccountabilityContractAddresses.length}</h2>
+      <AccountabilityContracts
+        setLoading={setLoadingGetClosedAccountabilityContractAddresses}
+        accountabilityContractAddresses={closedAccountabilityContractAddresses}
+      />
     </div>
   );
 };

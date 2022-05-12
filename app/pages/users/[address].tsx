@@ -9,9 +9,8 @@ import {
   useEffect,
   useState
 } from 'react';
-import { Button, Segment } from '@mui/material';
+import { Button } from '@mui/material';
 import ContractsTable from '../../components/ContractsTable/ContractsTable';
-import Layout from '../../components/Layout/Layout';
 import factory, { getAccountabilityContract } from '../../factory';
 import { getAccountabilityContractStatus } from '../../helpers/getAccountabilityContractStatus';
 
@@ -22,6 +21,7 @@ const SpecificUser: NextPage = () => {
     loadingOpenAccountabilityContractsForUser,
     setLoadingOpenAccountabilityContractsForUser
   ] = useState(false);
+  console.log(loadingOpenAccountabilityContractsForUser);
   const getOpenAccountabillityContractAddressesForUser = useCallback(
     async (
       setAccountabilityContractAddresses: (addresses: string[]) => void
@@ -97,6 +97,7 @@ const SpecificUser: NextPage = () => {
     loadingOpenAccountabilityContractsForReferee,
     setLoadingOpenAccountabilityContractsForReferee
   ] = useState(false);
+  console.log(loadingOpenAccountabilityContractsForReferee);
   const getOpenAccountabillityContractAddressesForReferee = useCallback(
     async (
       setAccountabilityContractAddressesForReferee: (
@@ -145,31 +146,25 @@ const SpecificUser: NextPage = () => {
       <Head>
         <title>{address}</title>
       </Head>
-      <Layout>
-        <h1>{`User: ${address}`}</h1>
-        <Link passHref href={`https://rinkeby.etherscan.io/address/${address}`}>
-          <Button primary>View on etherscan</Button>
-        </Link>
+      <h1>{`User: ${address}`}</h1>
+      <Link passHref href={`https://rinkeby.etherscan.io/address/${address}`}>
+        <Button>View on etherscan</Button>
+      </Link>
 
-        <Segment loading={loadingOpenAccountabilityContractsForUser}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h2>
-              Open contracts: {openAccountabilityContractAddresses.length}
-            </h2>
-          </div>
-          <ContractsTable contracts={openAccountabilityContractsForUser} />
-        </Segment>
-        <br />
-        <Segment loading={loadingOpenAccountabilityContractsForReferee}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h2>
-              Contracts user referees:
-              {openAccountabilityContractAddresses.length}
-            </h2>
-          </div>
-          <ContractsTable contracts={openAccountabilityContractsForReferee} />
-        </Segment>
-      </Layout>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <h2>Open contracts: {openAccountabilityContractAddresses.length}</h2>
+      </div>
+      <ContractsTable contracts={openAccountabilityContractsForUser} />
+
+      <br />
+
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <h2>
+          Contracts user referees:
+          {openAccountabilityContractAddresses.length}
+        </h2>
+      </div>
+      <ContractsTable contracts={openAccountabilityContractsForReferee} />
     </>
   );
 };

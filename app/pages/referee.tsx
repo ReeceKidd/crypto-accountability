@@ -2,16 +2,15 @@ import { useWeb3React } from '@web3-react/core';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useCallback, useEffect, useState } from 'react';
-import { Segment } from '@mui/material';
 import AccountabilityContracts from '../components/AccountabilityContracts/AccountabilityContracts';
 import ApprovalRequests from '../components/ApprovalRequests/ApprovalRequests';
-import Layout from '../components/Layout/Layout';
 import factory from '../factory';
 
 const Referee: NextPage = () => {
   const { account } = useWeb3React();
   const [loadingGetApprovalRequests, setLoadingGetApprovalRequests] =
     useState(false);
+  console.log(loadingGetApprovalRequests);
   const getApprovalRequestAddresses = useCallback(
     async (
       setCompleteAccountabilityContractRequestAddresses: (
@@ -51,6 +50,7 @@ const Referee: NextPage = () => {
     loadingGetOpenAccountabilityContractForReferees,
     setLoadingGetOpenAccountabilityContractsForReferee
   ] = useState(false);
+  console.log(loadingGetOpenAccountabilityContractForReferees);
   const [
     openAccountabilityContractAddresses,
     setOpenAccountabilityContractAddresses
@@ -79,6 +79,7 @@ const Referee: NextPage = () => {
     loadingGetClosedAccountabilityContractForReferees,
     setLoadingGetClosedAccountabilityContractsForReferee
   ] = useState(false);
+  console.log(loadingGetClosedAccountabilityContractForReferees);
   const [
     closedAccountabilityContractAddresses,
     setClosedAccountabilityContractAddresses
@@ -94,38 +95,29 @@ const Referee: NextPage = () => {
       <Head>
         <title>Contracts you referee</title>
       </Head>
-      <Layout>
-        <Segment loading={loadingGetApprovalRequests}>
-          <h2>{`Approval requests: ${approvalRequestAddresses.length}`}</h2>
-          <ApprovalRequests
-            setLoading={setLoadingGetApprovalRequests}
-            approvalRequestAddresses={approvalRequestAddresses}
-          />
-        </Segment>
-        <Segment loading={loadingGetOpenAccountabilityContractForReferees}>
-          <h2>
-            {`Open contracts you referee:
+
+      <h2>{`Approval requests: ${approvalRequestAddresses.length}`}</h2>
+      <ApprovalRequests
+        setLoading={setLoadingGetApprovalRequests}
+        approvalRequestAddresses={approvalRequestAddresses}
+      />
+
+      <h2>
+        {`Open contracts you referee:
             ${openAccountabilityContractAddresses.length}`}
-          </h2>
-          <AccountabilityContracts
-            setLoading={setLoadingGetOpenAccountabilityContractsForReferee}
-            accountabilityContractAddresses={
-              openAccountabilityContractAddresses
-            }
-          />
-        </Segment>
-        <Segment loading={loadingGetClosedAccountabilityContractForReferees}>
-          <h2>
-            {`Past contracts you refereed: ${closedAccountabilityContractAddresses.length}`}
-          </h2>
-          <AccountabilityContracts
-            setLoading={setLoadingGetClosedAccountabilityContractsForReferee}
-            accountabilityContractAddresses={
-              closedAccountabilityContractAddresses
-            }
-          />
-        </Segment>
-      </Layout>
+      </h2>
+      <AccountabilityContracts
+        setLoading={setLoadingGetOpenAccountabilityContractsForReferee}
+        accountabilityContractAddresses={openAccountabilityContractAddresses}
+      />
+
+      <h2>
+        {`Past contracts you refereed: ${closedAccountabilityContractAddresses.length}`}
+      </h2>
+      <AccountabilityContracts
+        setLoading={setLoadingGetClosedAccountabilityContractsForReferee}
+        accountabilityContractAddresses={closedAccountabilityContractAddresses}
+      />
     </div>
   );
 };

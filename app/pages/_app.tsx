@@ -9,6 +9,7 @@ import createEmotionCache from '../createEmotionCache';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider, ExternalProvider } from '@ethersproject/providers';
 import Web3ReactManager from '../components/Web3ReactManager/Web3ReactManager';
+import Header from '../components/Header/Header';
 
 function getLibrary(provider: ExternalProvider) {
   const library = new Web3Provider(provider);
@@ -33,6 +34,7 @@ export default function MyApp(props: MyAppProps) {
       <Web3ReactProvider getLibrary={getLibrary}>
         <Web3ReactManager>
           <ThemeProvider theme={theme}>
+            <Header />
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
             <Component {...pageProps} />

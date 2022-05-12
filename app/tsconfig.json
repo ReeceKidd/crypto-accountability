@@ -15,6 +15,14 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/Layout", "jest.config.js", "jest.config.js", "jest.config.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "components/Layout",
+    "jest.config.js",
+    "jest.config.js",
+    "jest.config.js"
+  ],
   "exclude": ["node_modules"]
 }

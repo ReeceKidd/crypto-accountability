@@ -1,9 +1,7 @@
 import { useWeb3React } from '@web3-react/core';
 import type { NextPage } from 'next';
 import { useCallback, useEffect, useState } from 'react';
-import { Grid, Segment } from '@mui/material';
 import ContractsList from '../components/ContractsList/ContractsList';
-import Layout from '../components/Layout/Layout';
 import OpenAccountabilityContracts from '../components/AccountabilityContracts/AccountabilityContracts';
 import StatisticCards from '../components/StatisticCards/StatisticCards';
 import UsersList from '../components/UsersList/UsersList';
@@ -15,6 +13,7 @@ const Home: NextPage = () => {
     loadingOpenAccountabilityContractsForUser,
     setLoadingOpenAccountabilityContractsForUser
   ] = useState(false);
+  console.log(loadingOpenAccountabilityContractsForUser);
   const [
     openAccountabilityContractAddressesUser,
     setOpenAccountabilityContractAddressesUser
@@ -41,6 +40,7 @@ const Home: NextPage = () => {
     loadingOpenAccountabilityContractsReferee,
     setLoadingOpenAccountabilityContractsReferee
   ] = useState(false);
+  console.log(loadingOpenAccountabilityContractsReferee);
   const [
     openAccountabilityContractAddressesReferee,
     setOpenAccountabilityContractAddressesReferee
@@ -145,62 +145,44 @@ const Home: NextPage = () => {
         name="description"
         content="Stay accountability by betting crypto"
       />
-      <Layout>
-        <Segment loading={loadingOpenAccountabilityContractsForUser}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h2>
-              Your open contracts:
-              {openAccountabilityContractAddressesUser.length}
-            </h2>
-          </div>
-          <OpenAccountabilityContracts
-            accountabilityContractAddresses={
-              openAccountabilityContractAddressesUser
-            }
-            setLoading={setLoadingOpenAccountabilityContractsForUser}
-          />
-        </Segment>
-        <Segment loading={loadingOpenAccountabilityContractsReferee}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h2>
-              Contracts you referee:
-              {openAccountabilityContractAddressesReferee.length}
-            </h2>
-          </div>
-          <OpenAccountabilityContracts
-            accountabilityContractAddresses={
-              openAccountabilityContractAddressesReferee
-            }
-            setLoading={setLoadingOpenAccountabilityContractsReferee}
-          />
-        </Segment>
-        <Grid>
-          <Grid.Column width={4}>
-            <Segment>
-              <h2>The numbers</h2>
-              <StatisticCards
-                numberOfUsers={numberOfUsers}
-                numberOfAccountabilityContracts={
-                  numberOfAccountabilityContracts
-                }
-                totalEthInContracts={totalEthInContracts}
-              />
-            </Segment>
-          </Grid.Column>
-          <Grid.Column width={4}>
-            <Segment>
-              <h2>New Users</h2>
-              <UsersList userAddresses={userAddresses} />
-            </Segment>
-          </Grid.Column>
-          <Grid.Column width={4}>
-            <Segment>
-              <h2>New Contracts</h2>
-              <ContractsList contracts={contracts} />
-            </Segment>
-          </Grid.Column>
-        </Grid>
-      </Layout>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <h2>
+          Your open contracts:
+          {openAccountabilityContractAddressesUser.length}
+        </h2>
+      </div>
+      <OpenAccountabilityContracts
+        accountabilityContractAddresses={
+          openAccountabilityContractAddressesUser
+        }
+        setLoading={setLoadingOpenAccountabilityContractsForUser}
+      />
+
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <h2>
+          Contracts you referee:
+          {openAccountabilityContractAddressesReferee.length}
+        </h2>
+      </div>
+      <OpenAccountabilityContracts
+        accountabilityContractAddresses={
+          openAccountabilityContractAddressesReferee
+        }
+        setLoading={setLoadingOpenAccountabilityContractsReferee}
+      />
+
+      <h2>The numbers</h2>
+      <StatisticCards
+        numberOfUsers={numberOfUsers}
+        numberOfAccountabilityContracts={numberOfAccountabilityContracts}
+        totalEthInContracts={totalEthInContracts}
+      />
+
+      <h2>New Users</h2>
+      <UsersList userAddresses={userAddresses} />
+
+      <h2>New Contracts</h2>
+      <ContractsList contracts={contracts} />
     </div>
   );
 };
