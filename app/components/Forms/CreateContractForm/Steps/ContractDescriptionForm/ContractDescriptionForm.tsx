@@ -1,68 +1,56 @@
 import React from 'react';
-import { Message } from '@mui/material';
-import { Form, Field, FormikProps, withFormik } from 'formik';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import FormNavigationButtons from '../../../../FormNavigationButtons/FormNavigationButtons';
+import { TextField } from '@mui/material';
 
-interface ContractDescriptionFormProps {
+interface AmountFormProps {
   description: string;
-  setDescription: (description: string) => void;
+  setAmount: (description: string) => void;
   handlePreviousStep: () => void;
   handleNextStep: () => void;
 }
 
-interface ContractDescriptionFormValues {
-  description: string;
-}
-
-const ContractDescriptionValidationSchema = Yup.object({
-  description: Yup.string().required('Description is required')
+const validationSchema = Yup.object({
+  description: Yup.string()
+    .required('description is required')
+    .typeError('description must be a number')
 });
 
-const ContractDescriptionForm = (
-  props: ContractDescriptionFormProps &
-    FormikProps<ContractDescriptionFormValues>
-) => {
-  const { handlePreviousStep, handleSubmit, errors } = props;
-  const descriptionError = errors.description;
+const ContractDescriptionForm = ({
+  description,
+  setAmount
+}: AmountFormProps) => {
+  const formik = useFormik({
+    initialValues: {
+      description: description
+    },
+    validationSchema,
+    onSubmit: ({ description }) => {
+      setAmount(description);
+    }
+  });
 
   return (
     <>
-      <h2>Contract description</h2>
-      <Form
-        onSubmit={handleSubmit}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            handleSubmit();
+      <h2> Description</h2>
+      <form onSubmit={formik.handleSubmit}>
+        <TextField
+          fullWidth
+          id="description"
+          name="description"
+          label="description"
+          value={formik.values.description}
+          onChange={formik.handleChange}
+          error={
+            formik.touched.description && Boolean(formik.errors.description)
           }
-        }}
-      >
-        <Field name="description" label="Description" />
-        <FormNavigationButtons handlePreviousStep={handlePreviousStep} />
-      </Form>
-      {descriptionError && (
-        <Message negative>
-          <Message.Header>Form error</Message.Header>
-          <p>{descriptionError}</p>
-        </Message>
-      )}
+          helperText={formik.touched.description && formik.errors.description}
+        />
+      </form>
     </>
   );
 };
 
-export default withFormik<
-  ContractDescriptionFormProps,
-  ContractDescriptionFormValues
->({
-  mapPropsToValues: ({ description }) => ({
-    description
-  }),
-  validationSchema: ContractDescriptionValidationSchema,
-  handleSubmit: async (
-    { description },
-    { props: { setDescription, handleNextStep } }
-  ) => {
-    setDescription(description);
-    handleNextStep();
-  }
-})(ContractDescriptionForm);
+export default ContractDescriptionForm;
+
+

@@ -1,8 +1,7 @@
 import React from 'react';
-import { Message } from '@mui/material';
-import { Form, Field, FormikProps, withFormik } from 'formik';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import FormNavigationButtons from '../../../../FormNavigationButtons/FormNavigationButtons';
+import { TextField } from '@mui/material';
 
 interface AmountFormProps {
   amount: string;
@@ -11,54 +10,42 @@ interface AmountFormProps {
   handleNextStep: () => void;
 }
 
-interface AmountFormValues {
-  amount: string;
-}
-
-const AmountFormValidationSchema = Yup.object({
+const validationSchema = Yup.object({
   amount: Yup.number()
     .required('Amount is required')
     .typeError('Amount must be a number')
 });
 
-const AmountForm = (props: AmountFormProps & FormikProps<AmountFormValues>) => {
-  const { handlePreviousStep, handleSubmit, errors } = props;
-  const amountError = errors.amount;
+const AmountForm = ({ amount, setAmount }: AmountFormProps) => {
+  const formik = useFormik({
+    initialValues: {
+      amount: amount
+    },
+    validationSchema,
+    onSubmit: ({ amount }) => {
+      setAmount(amount);
+    }
+  });
 
   return (
     <>
       <h2> Amount</h2>
-      <Form
-        onSubmit={handleSubmit}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            handleSubmit();
-          }
-        }}
-      >
-        <Field name="amount" label="Amount" />
-        <FormNavigationButtons handlePreviousStep={handlePreviousStep} />
-      </Form>
-      {amountError && (
-        <Message negative>
-          <Message.Header>Form error</Message.Header>
-          <p>{amountError}</p>
-        </Message>
-      )}
+      <form onSubmit={formik.handleSubmit}>
+        <TextField
+          fullWidth
+          id="amount"
+          name="amount"
+          label="Amount"
+          value={formik.values.amount}
+          onChange={formik.handleChange}
+          error={formik.touched.amount && Boolean(formik.errors.amount)}
+          helperText={formik.touched.amount && formik.errors.amount}
+        />
+      </form>
     </>
   );
 };
 
-export default withFormik<AmountFormProps, AmountFormValues>({
-  mapPropsToValues: ({ amount }) => ({
-    amount
-  }),
-  validationSchema: AmountFormValidationSchema,
-  handleSubmit: async (
-    { amount },
-    { props: { setAmount, handleNextStep } }
-  ) => {
-    setAmount(amount);
-    handleNextStep();
-  }
-})(AmountForm);
+export default AmountForm;
+
+

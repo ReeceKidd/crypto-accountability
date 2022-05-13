@@ -1,74 +1,51 @@
 import React from 'react';
-import { Button, Message } from '@mui/material';
-import { Form, Field, FormikProps, withFormik } from 'formik';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { TextField } from '@mui/material';
 
 interface RefereeFormProps {
-  web3Account: string;
   referee: string;
   setReferee: (referee: string) => void;
+  handlePreviousStep: () => void;
   handleNextStep: () => void;
 }
 
-interface RefereeFormValues {
-  referee: string;
-}
-
-const RefereeFormValidationSchema = Yup.object({
+const validationSchema = Yup.object({
   referee: Yup.string()
-    .required('Referee is required')
-    .matches(/^0x[a-fA-F0-9]{40}$/, 'Referee is not a valid ethereum address')
+    .required('referee is required')
+    .typeError('referee must be a number')
 });
 
-const RefereeForm = (
-  props: RefereeFormProps & FormikProps<RefereeFormValues>
-) => {
-  const { web3Account, handleSubmit, errors, setReferee } = props;
-  const refereeError = errors.referee;
+const RefereeForm = ({ referee, setReferee }: RefereeFormProps) => {
+  const formik = useFormik({
+    initialValues: {
+      referee: referee
+    },
+    validationSchema,
+    onSubmit: ({ referee }) => {
+      setReferee(referee);
+    }
+  });
 
   return (
     <>
       <h2>Referee</h2>
-      <Form
-        onSubmit={handleSubmit}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            handleSubmit();
-          }
-        }}
-      >
-        <div style={{ flexDirection: 'row' }}>
-          <Field name="referee" label="Referee" style={{ width: '70%' }} />
-          <button
-            onClick={() => setReferee(web3Account)}
-            style={{ width: '20%' }}
-          >
-            Use my address
-          </button>
-        </div>
-        <Button type="submit" color="blue" content="Next" />
-      </Form>
-      {refereeError && (
-        <Message negative>
-          <Message.Header>Form error</Message.Header>
-          <p>{refereeError}</p>
-        </Message>
-      )}
+      <form onSubmit={formik.handleSubmit}>
+        <TextField
+          fullWidth
+          id="referee"
+          name="referee"
+          label="referee"
+          value={formik.values.referee}
+          onChange={formik.handleChange}
+          error={formik.touched.referee && Boolean(formik.errors.referee)}
+          helperText={formik.touched.referee && formik.errors.referee}
+        />
+      </form>
     </>
   );
 };
 
-export default withFormik<RefereeFormProps, RefereeFormValues>({
-  mapPropsToValues: ({ referee }) => ({
-    referee
-  }),
-  enableReinitialize: true,
-  validationSchema: RefereeFormValidationSchema,
-  handleSubmit: async (
-    { referee },
-    { props: { setReferee, handleNextStep } }
-  ) => {
-    setReferee(referee);
-    handleNextStep();
-  }
-})(RefereeForm);
+export default RefereeForm;
+
+
