@@ -19,7 +19,9 @@ const FormNavigationButtons = ({
         loading={onSubmitLoading}
         type="submit"
         style={{ width: '10%' }}
-      ></LoadingButton>
+      >
+        Right
+      </LoadingButton>
     </div>
   );
 };

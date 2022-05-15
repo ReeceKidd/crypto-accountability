@@ -1,14 +1,12 @@
+import { LinearProgress } from '@mui/material';
 import Router from 'next/router';
 import { FC, useEffect, useState } from 'react';
-import { Message, Progress } from '@mui/material';
 import factory from '../../../factory';
 import web3 from '../../../web3';
 import AmountForm from './Steps/AmountForm/AmountForm';
 import ContractDescriptionForm from './Steps/ContractDescriptionForm/ContractDescriptionForm';
 import ContractNameForm from './Steps/ContractNameForm/ContractNameForm';
-import FailureRecipientForm, {
-  FailureRecipientOptions
-} from './Steps/FailureRecipientForm/FailureRecipientForm';
+import FailureRecipientForm from './Steps/FailureRecipientForm/FailureRecipientForm';
 import RefereeForm from './Steps/RefereeForm/RefereeForm';
 
 interface CreateContractFormProps {
@@ -30,18 +28,11 @@ const CreateContractForm: FC<CreateContractFormProps> = ({ web3Account }) => {
   const [onSubmitLoading, setOnSubmitLoading] = useState(false);
   const [networkRequestMessage, setNetworkRequestMessage] = useState('');
   const [networkErrorMessage, setNetworkErrorMessage] = useState('');
-  const [failureRecipientOption, setFailureRecipientOption] =
-    useState<FailureRecipientOptions>(FailureRecipientOptions.friendOrEnemy);
+  const [failureRecipient, setFailureRecipient] = useState('');
 
   const onSubmit = async ({
-    referee,
-    name,
-    description,
     failureRecipient
   }: {
-    referee: string;
-    name: string;
-    description: string;
     failureRecipient: string;
   }) => {
     setNetworkErrorMessage('');
@@ -100,14 +91,11 @@ const CreateContractForm: FC<CreateContractFormProps> = ({ web3Account }) => {
     <FailureRecipientForm
       cryptoAccountabilityAddress={'0xeF3F4cFb69974b5D9AE3a4D6Da747Ec7d1aD6587'}
       key={4}
-      name={name}
-      description={description}
-      referee={referee}
-      failureRecipientOption={failureRecipientOption}
-      setFailureRecipientOption={setFailureRecipientOption}
       handlePreviousStep={handlePreviousStep}
       onSubmit={onSubmit}
-      onSumbitLoading={onSubmitLoading}
+      onSubmitLoading={onSubmitLoading}
+      failureRecipient={failureRecipient}
+      setFailureRecipient={setFailureRecipient}
     />
   ];
   const [percent, setPercent] = useState(0);
@@ -117,17 +105,10 @@ const CreateContractForm: FC<CreateContractFormProps> = ({ web3Account }) => {
 
   return (
     <>
-      <Progress percent={percent} indicating />
+      <LinearProgress value={percent} />
       {steps[activeStep]}
-      {networkRequestMessage && (
-        <Message
-          content={networkRequestMessage}
-          success={networkRequestMessage === 'Transaction success'}
-        />
-      )}
-      {networkErrorMessage && (
-        <Message negative content={networkErrorMessage} error />
-      )}
+      {networkRequestMessage && <p>{networkRequestMessage}</p>}
+      {networkErrorMessage && <p>{networkErrorMessage}</p>}
     </>
   );
 };

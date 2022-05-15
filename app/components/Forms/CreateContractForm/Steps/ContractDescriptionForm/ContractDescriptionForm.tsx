@@ -2,10 +2,11 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from '@mui/material';
+import FormNavigationButtons from '../../../../FormNavigationButtons/FormNavigationButtons';
 
-interface AmountFormProps {
+interface FormProps {
   description: string;
-  setAmount: (description: string) => void;
+  setDescription: (description: string) => void;
   handlePreviousStep: () => void;
   handleNextStep: () => void;
 }
@@ -18,15 +19,18 @@ const validationSchema = Yup.object({
 
 const ContractDescriptionForm = ({
   description,
-  setAmount
-}: AmountFormProps) => {
+  setDescription,
+  handlePreviousStep,
+  handleNextStep
+}: FormProps) => {
   const formik = useFormik({
     initialValues: {
       description: description
     },
     validationSchema,
     onSubmit: ({ description }) => {
-      setAmount(description);
+      setDescription(description);
+      handleNextStep();
     }
   });
 
@@ -46,11 +50,10 @@ const ContractDescriptionForm = ({
           }
           helperText={formik.touched.description && formik.errors.description}
         />
+        <FormNavigationButtons handlePreviousStep={handlePreviousStep} />
       </form>
     </>
   );
 };
 
 export default ContractDescriptionForm;
-
-

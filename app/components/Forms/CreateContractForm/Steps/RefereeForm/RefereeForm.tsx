@@ -1,12 +1,12 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { TextField } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 
 interface RefereeFormProps {
+  web3Account: string;
   referee: string;
   setReferee: (referee: string) => void;
-  handlePreviousStep: () => void;
   handleNextStep: () => void;
 }
 
@@ -16,7 +16,11 @@ const validationSchema = Yup.object({
     .typeError('referee must be a number')
 });
 
-const RefereeForm = ({ referee, setReferee }: RefereeFormProps) => {
+const RefereeForm = ({
+  referee,
+  setReferee,
+  handleNextStep
+}: RefereeFormProps) => {
   const formik = useFormik({
     initialValues: {
       referee: referee
@@ -24,6 +28,7 @@ const RefereeForm = ({ referee, setReferee }: RefereeFormProps) => {
     validationSchema,
     onSubmit: ({ referee }) => {
       setReferee(referee);
+      handleNextStep();
     }
   });
 
@@ -41,11 +46,10 @@ const RefereeForm = ({ referee, setReferee }: RefereeFormProps) => {
           error={formik.touched.referee && Boolean(formik.errors.referee)}
           helperText={formik.touched.referee && formik.errors.referee}
         />
+        <Button type="submit">Next</Button>
       </form>
     </>
   );
 };
 
 export default RefereeForm;
-
-

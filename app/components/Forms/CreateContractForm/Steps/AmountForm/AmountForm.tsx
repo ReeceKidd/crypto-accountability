@@ -2,6 +2,7 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from '@mui/material';
+import FormNavigationButtons from '../../../../FormNavigationButtons/FormNavigationButtons';
 
 interface AmountFormProps {
   amount: string;
@@ -16,7 +17,12 @@ const validationSchema = Yup.object({
     .typeError('Amount must be a number')
 });
 
-const AmountForm = ({ amount, setAmount }: AmountFormProps) => {
+const AmountForm = ({
+  amount,
+  setAmount,
+  handlePreviousStep,
+  handleNextStep
+}: AmountFormProps) => {
   const formik = useFormik({
     initialValues: {
       amount: amount
@@ -24,6 +30,7 @@ const AmountForm = ({ amount, setAmount }: AmountFormProps) => {
     validationSchema,
     onSubmit: ({ amount }) => {
       setAmount(amount);
+      handleNextStep();
     }
   });
 
@@ -41,11 +48,10 @@ const AmountForm = ({ amount, setAmount }: AmountFormProps) => {
           error={formik.touched.amount && Boolean(formik.errors.amount)}
           helperText={formik.touched.amount && formik.errors.amount}
         />
+        <FormNavigationButtons handlePreviousStep={handlePreviousStep} />
       </form>
     </>
   );
 };
 
 export default AmountForm;
-
-

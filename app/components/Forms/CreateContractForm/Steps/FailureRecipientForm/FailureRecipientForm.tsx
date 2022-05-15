@@ -2,6 +2,8 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from '@mui/material';
+import FailureRecipientSelector from '../../../../FailureRecipientSelector/FailureRecipientSelector';
+import FormNavigationButtons from '../../../../FormNavigationButtons/FormNavigationButtons';
 
 export enum FailureRecipientOptions {
   friendOrEnemy = 'friendOrEnemy',
@@ -9,10 +11,16 @@ export enum FailureRecipientOptions {
 }
 
 interface FailureRecipientFormProps {
+  cryptoAccountabilityAddress: string;
   failureRecipient: string;
   setFailureRecipient: (failureRecipient: string) => void;
   handlePreviousStep: () => void;
-  handleNextStep: () => void;
+  onSubmit: ({
+    failureRecipient
+  }: {
+    failureRecipient: string;
+  }) => Promise<void>;
+  onSubmitLoading: boolean;
 }
 
 const validationSchema = Yup.object({
@@ -23,21 +31,23 @@ const validationSchema = Yup.object({
 
 const FailureRecipientForm = ({
   failureRecipient,
-  setFailureRecipient
+  handlePreviousStep,
+  onSubmit
 }: FailureRecipientFormProps) => {
   const formik = useFormik({
     initialValues: {
-      failureRecipient: failureRecipient
+      failureRecipient
     },
     validationSchema,
     onSubmit: ({ failureRecipient }) => {
-      setFailureRecipient(failureRecipient);
+      onSubmit({ failureRecipient });
     }
   });
 
   return (
     <>
       <h2>Failure recipient</h2>
+      <FailureRecipientSelector />
       <form onSubmit={formik.handleSubmit}>
         <TextField
           fullWidth
@@ -54,11 +64,10 @@ const FailureRecipientForm = ({
             formik.touched.failureRecipient && formik.errors.failureRecipient
           }
         />
+        <FormNavigationButtons handlePreviousStep={handlePreviousStep} />
       </form>
     </>
   );
 };
 
 export default FailureRecipientForm;
-
-
