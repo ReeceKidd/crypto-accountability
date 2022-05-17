@@ -12,8 +12,6 @@ export enum FailureRecipientOptions {
 
 interface FailureRecipientFormProps {
   cryptoAccountabilityAddress: string;
-  failureRecipient: string;
-  setFailureRecipient: (failureRecipient: string) => void;
   handlePreviousStep: () => void;
   onSubmit: ({
     failureRecipient
@@ -30,14 +28,11 @@ const validationSchema = Yup.object({
 });
 
 const FailureRecipientForm = ({
-  failureRecipient,
   handlePreviousStep,
   onSubmit
 }: FailureRecipientFormProps) => {
   const formik = useFormik({
-    initialValues: {
-      failureRecipient
-    },
+    initialValues: { failureRecipient: '' },
     validationSchema,
     onSubmit: ({ failureRecipient }) => {
       onSubmit({ failureRecipient });
@@ -53,7 +48,6 @@ const FailureRecipientForm = ({
           fullWidth
           id="failureRecipient"
           name="failureRecipient"
-          label="failureRecipient"
           value={formik.values.failureRecipient}
           onChange={formik.handleChange}
           error={

@@ -3,7 +3,6 @@ import type { NextPage } from 'next';
 import { useCallback, useEffect, useState } from 'react';
 import ContractsList from '../components/ContractsList/ContractsList';
 import OpenAccountabilityContracts from '../components/AccountabilityContracts/AccountabilityContracts';
-import StatisticCards from '../components/StatisticCards/StatisticCards';
 import UsersList from '../components/UsersList/UsersList';
 import factory, { getAccountabilityContract } from '../factory';
 
@@ -66,7 +65,6 @@ const Home: NextPage = () => {
   const [numberOfUsers, setNumberOfUsers] = useState(0);
   const [numberOfAccountabilityContracts, setNumberOfAccountabilityContracts] =
     useState(0);
-  const [totalEthInContracts, setTotalEthInContracts] = useState('');
   const getNumberOfUsers = useCallback(
     async (setNumberOfUsers: (users: number) => void) => {
       const numberOfUsers = await factory.methods.numberOfUsers().call();
@@ -83,20 +81,10 @@ const Home: NextPage = () => {
     },
     []
   );
-  const getTotalEthInContracts = useCallback(
-    async (setTotalEthInContracts: (totalEth: string) => void) => {
-      const totalEthInContracts = await factory.methods
-        .totalEthInContracts()
-        .call();
-      setTotalEthInContracts(totalEthInContracts);
-    },
-    []
-  );
   useEffect(() => {
     getNumberOfUsers(setNumberOfUsers);
     getNumberOfContracts(setNumberOfAccountabilityContracts);
-    getTotalEthInContracts(setTotalEthInContracts);
-  }, [getNumberOfUsers, getNumberOfContracts, getTotalEthInContracts]);
+  }, [getNumberOfUsers, getNumberOfContracts]);
   const [userAddresses, setUserAddresses] = useState<string[]>([]);
   const getUserAddresses = useCallback(
     async (setUserAddresses: (addresses: string[]) => void) => {
@@ -169,13 +157,6 @@ const Home: NextPage = () => {
           openAccountabilityContractAddressesReferee
         }
         setLoading={setLoadingOpenAccountabilityContractsReferee}
-      />
-
-      <h2>The numbers</h2>
-      <StatisticCards
-        numberOfUsers={numberOfUsers}
-        numberOfAccountabilityContracts={numberOfAccountabilityContracts}
-        totalEthInContracts={totalEthInContracts}
       />
 
       <h2>New Users</h2>

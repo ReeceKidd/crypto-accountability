@@ -42,7 +42,6 @@ const AmountForm = ({
           fullWidth
           id="amount"
           name="amount"
-          label="Amount"
           value={formik.values.amount}
           onChange={formik.handleChange}
           error={formik.touched.amount && Boolean(formik.errors.amount)}

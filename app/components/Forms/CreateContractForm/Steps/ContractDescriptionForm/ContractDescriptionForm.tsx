@@ -42,7 +42,6 @@ const ContractDescriptionForm = ({
           fullWidth
           id="description"
           name="description"
-          label="description"
           value={formik.values.description}
           onChange={formik.handleChange}
           error={

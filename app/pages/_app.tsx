@@ -10,6 +10,7 @@ import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider, ExternalProvider } from '@ethersproject/providers';
 import Web3ReactManager from '../components/Web3ReactManager/Web3ReactManager';
 import Header from '../components/Header/Header';
+import { Container } from '@mui/material';
 
 function getLibrary(provider: ExternalProvider) {
   const library = new Web3Provider(provider);
@@ -37,7 +38,9 @@ export default function MyApp(props: MyAppProps) {
             <Header />
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
-            <Component {...pageProps} />
+            <Container>
+              <Component {...pageProps} />
+            </Container>
           </ThemeProvider>
         </Web3ReactManager>
       </Web3ReactProvider>

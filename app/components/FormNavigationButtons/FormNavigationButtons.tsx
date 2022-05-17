@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 interface FormNavigationButtonsProps {
@@ -11,7 +11,7 @@ const FormNavigationButtons = ({
   onSubmitLoading
 }: FormNavigationButtonsProps) => {
   return (
-    <div style={{ flexDirection: 'row' }}>
+    <Box mt={2} flexDirection="row">
       <Button onClick={() => handlePreviousStep()} style={{ width: '10%' }}>
         Left
       </Button>
@@ -22,7 +22,7 @@ const FormNavigationButtons = ({
       >
         Right
       </LoadingButton>
-    </div>
+    </Box>
   );
 };
 

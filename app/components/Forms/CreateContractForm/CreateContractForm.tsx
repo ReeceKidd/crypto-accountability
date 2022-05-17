@@ -1,4 +1,5 @@
-import { LinearProgress } from '@mui/material';
+import { LinearProgress, Typography } from '@mui/material';
+import { Box } from '@mui/system';
 import Router from 'next/router';
 import { FC, useEffect, useState } from 'react';
 import factory from '../../../factory';
@@ -28,7 +29,6 @@ const CreateContractForm: FC<CreateContractFormProps> = ({ web3Account }) => {
   const [onSubmitLoading, setOnSubmitLoading] = useState(false);
   const [networkRequestMessage, setNetworkRequestMessage] = useState('');
   const [networkErrorMessage, setNetworkErrorMessage] = useState('');
-  const [failureRecipient, setFailureRecipient] = useState('');
 
   const onSubmit = async ({
     failureRecipient
@@ -94,8 +94,6 @@ const CreateContractForm: FC<CreateContractFormProps> = ({ web3Account }) => {
       handlePreviousStep={handlePreviousStep}
       onSubmit={onSubmit}
       onSubmitLoading={onSubmitLoading}
-      failureRecipient={failureRecipient}
-      setFailureRecipient={setFailureRecipient}
     />
   ];
   const [percent, setPercent] = useState(0);
@@ -105,7 +103,16 @@ const CreateContractForm: FC<CreateContractFormProps> = ({ web3Account }) => {
 
   return (
     <>
-      <LinearProgress value={percent} />
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ width: '100%', mr: 1 }}>
+          <LinearProgress variant="determinate" value={percent} />
+        </Box>
+        <Box sx={{ minWidth: 35 }}>
+          <Typography variant="body2" color="text.secondary">{`${Math.round(
+            percent
+          )}%`}</Typography>
+        </Box>
+      </Box>
       {steps[activeStep]}
       {networkRequestMessage && <p>{networkRequestMessage}</p>}
       {networkErrorMessage && <p>{networkErrorMessage}</p>}

@@ -1,7 +1,8 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Button, TextField } from '@mui/material';
+import { Button, InputAdornment, TextField, Typography } from '@mui/material';
+import { Box } from '@mui/system';
 
 interface RefereeFormProps {
   web3Account: string;
@@ -17,6 +18,7 @@ const validationSchema = Yup.object({
 });
 
 const RefereeForm = ({
+  web3Account,
   referee,
   setReferee,
   handleNextStep
@@ -36,17 +38,40 @@ const RefereeForm = ({
     <>
       <h2>Referee</h2>
       <form onSubmit={formik.handleSubmit}>
+        <Box mb={2}>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            {`Wallet address of referee. A referee can approve or reject your
+            contract. If you don't want a referee use your own address.`}
+          </Typography>
+        </Box>
+
         <TextField
           fullWidth
           id="referee"
           name="referee"
-          label="referee"
           value={formik.values.referee}
           onChange={formik.handleChange}
           error={formik.touched.referee && Boolean(formik.errors.referee)}
           helperText={formik.touched.referee && formik.errors.referee}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  onClick={() => {
+                    formik.setFieldValue('referee', web3Account);
+                  }}
+                >
+                  Use my address
+                </Button>
+              </InputAdornment>
+            )
+          }}
         />
-        <Button type="submit">Next</Button>
+        <Box mt={2}>
+          <Button type="submit">Next</Button>
+        </Box>
       </form>
     </>
   );

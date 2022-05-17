@@ -3,8 +3,10 @@ import {
   FormControlLabel,
   FormLabel,
   Radio,
-  RadioGroup
+  RadioGroup,
+  Typography
 } from '@mui/material';
+import { Box } from '@mui/system';
 import { SyntheticEvent, useState } from 'react';
 import { FailureRecipientOptions } from '../Forms/CreateContractForm/Steps/FailureRecipientForm/FailureRecipientForm';
 
@@ -50,9 +52,11 @@ export const FailureRecipientSelector = () => {
           />
         ))}
       </RadioGroup>
-      <FormLabel>
-        {failureRecipients[failureRecipientOption].description}
-      </FormLabel>
+      <Box mt={2} mb={2}>
+        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+          {failureRecipients[failureRecipientOption].description}
+        </Typography>
+      </Box>
     </FormControl>
   );
 };
