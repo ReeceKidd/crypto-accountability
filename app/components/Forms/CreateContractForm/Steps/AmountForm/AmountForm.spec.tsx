@@ -16,14 +16,6 @@ describe('AmountForm', () => {
             setAmount={setAmount}
             handlePreviousStep={handlePreviousStep}
             handleNextStep={handleNextStep}
-            values={{ amount: mockAmount }}
-            errors={{ amount: 'invalid' }}
-            touched={{ amount: true }}
-            isSubmitting={false}
-            isValidating={false}
-            handleReset={jest.fn()}
-            submitCount={0}
-            {...([] as any)}
           />
         )
       ).not.toThrow();
@@ -36,13 +28,6 @@ describe('AmountForm', () => {
           setAmount={setAmount}
           handlePreviousStep={handlePreviousStep}
           handleNextStep={handleNextStep}
-          values={{ amount: mockAmount }}
-          errors={{ amount: 'invalid' }}
-          touched={{ amount: true }}
-          isSubmitting={false}
-          isValidating={false}
-          handleReset={jest.fn()}
-          {...([] as any)}
         />
       );
 

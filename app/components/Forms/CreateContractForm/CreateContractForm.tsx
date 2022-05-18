@@ -14,11 +14,18 @@ interface CreateContractFormProps {
   web3Account: string;
 }
 
+export enum FailureRecipientOptions {
+  friendOrEnemy = 'friendOrEnemy',
+  cryptoAccountability = 'cryptoAccountability'
+}
+
 const CreateContractForm: FC<CreateContractFormProps> = ({ web3Account }) => {
   const [referee, setReferee] = useState('');
   const [amount, setAmount] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [failureRecipientOption, setFailureRecipientOption] =
+    useState<FailureRecipientOptions>(FailureRecipientOptions.friendOrEnemy);
   const [activeStep, setActiveStep] = useState(0);
   const handleNextStep = () => {
     setActiveStep(activeStep + 1);
@@ -89,6 +96,8 @@ const CreateContractForm: FC<CreateContractFormProps> = ({ web3Account }) => {
       handleNextStep={handleNextStep}
     />,
     <FailureRecipientForm
+      failureRecipientOption={failureRecipientOption}
+      setFailureRecipientOption={setFailureRecipientOption}
       cryptoAccountabilityAddress={'0xeF3F4cFb69974b5D9AE3a4D6Da747Ec7d1aD6587'}
       key={4}
       handlePreviousStep={handlePreviousStep}

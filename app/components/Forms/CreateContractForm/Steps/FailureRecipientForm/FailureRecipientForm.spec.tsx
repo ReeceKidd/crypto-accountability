@@ -1,29 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { render } from '@testing-library/react';
+import { FailureRecipientOptions } from '../../CreateContractForm';
 import FailureRecipientForm from './FailureRecipientForm';
 
 describe('FailureRecipientForm', () => {
-  const mockFailureRecipient = '0.001';
-  const setFailureRecipient = jest.fn();
-  const handlePreviousStep = jest.fn();
-  const handleNextStep = jest.fn();
+  const mockFailureRecipientOption =
+    FailureRecipientOptions.cryptoAccountability;
+  const mockSetFailureRecipientOption = jest.fn();
+  const mockHandlePreviousStep = jest.fn();
+  const mockOnSubmit = jest.fn();
   describe('mounting', () => {
     it('should mount without error', () => {
       expect(() =>
         render(
           <FailureRecipientForm
-            amount={mockFailureRecipient}
-            setFailureRecipient={setFailureRecipient}
-            handlePreviousStep={handlePreviousStep}
-            handleNextStep={handleNextStep}
-            values={{ amount: mockFailureRecipient }}
-            errors={{ amount: 'invalid' }}
-            touched={{ amount: true }}
-            isSubmitting={false}
-            isValidating={false}
-            handleReset={jest.fn()}
-            submitCount={0}
-            {...([] as any)}
+            failureRecipientOption={mockFailureRecipientOption}
+            setFailureRecipientOption={mockSetFailureRecipientOption}
+            cryptoAccountabilityAddress={'1234'}
+            handlePreviousStep={mockHandlePreviousStep}
+            onSubmit={mockOnSubmit}
+            onSubmitLoading={false}
           />
         )
       ).not.toThrow();
@@ -32,17 +28,12 @@ describe('FailureRecipientForm', () => {
     it('should unmount without error', () => {
       const { unmount } = render(
         <FailureRecipientForm
-          amount={mockFailureRecipient}
-          setFailureRecipient={setFailureRecipient}
-          handlePreviousStep={handlePreviousStep}
-          handleNextStep={handleNextStep}
-          values={{ amount: mockFailureRecipient }}
-          errors={{ amount: 'invalid' }}
-          touched={{ amount: true }}
-          isSubmitting={false}
-          isValidating={false}
-          handleReset={jest.fn()}
-          {...([] as any)}
+          failureRecipientOption={mockFailureRecipientOption}
+          setFailureRecipientOption={mockSetFailureRecipientOption}
+          cryptoAccountabilityAddress={'1234'}
+          handlePreviousStep={mockHandlePreviousStep}
+          onSubmit={mockOnSubmit}
+          onSubmitLoading={false}
         />
       );
 

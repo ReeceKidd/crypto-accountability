@@ -4,13 +4,11 @@ import * as Yup from 'yup';
 import { TextField } from '@mui/material';
 import FailureRecipientSelector from '../../../../FailureRecipientSelector/FailureRecipientSelector';
 import FormNavigationButtons from '../../../../FormNavigationButtons/FormNavigationButtons';
-
-export enum FailureRecipientOptions {
-  friendOrEnemy = 'friendOrEnemy',
-  cryptoAccountability = 'cryptoAccountability'
-}
+import { FailureRecipientOptions } from '../../CreateContractForm';
 
 interface FailureRecipientFormProps {
+  failureRecipientOption: FailureRecipientOptions;
+  setFailureRecipientOption: (option: FailureRecipientOptions) => void;
   cryptoAccountabilityAddress: string;
   handlePreviousStep: () => void;
   onSubmit: ({
@@ -28,6 +26,9 @@ const validationSchema = Yup.object({
 });
 
 const FailureRecipientForm = ({
+  cryptoAccountabilityAddress,
+  failureRecipientOption,
+  setFailureRecipientOption,
   handlePreviousStep,
   onSubmit
 }: FailureRecipientFormProps) => {
@@ -42,10 +43,21 @@ const FailureRecipientForm = ({
   return (
     <>
       <h2>Failure recipient</h2>
-      <FailureRecipientSelector />
+      <FailureRecipientSelector
+        cryptoAccountabilityAddress={cryptoAccountabilityAddress}
+        setFailureRecipient={(failureRecipient: string) =>
+          formik.setFieldValue('failureRecipient', failureRecipient)
+        }
+        failureRecipientOption={failureRecipientOption}
+        setFailureRecipientOption={setFailureRecipientOption}
+      />
       <form onSubmit={formik.handleSubmit}>
         <TextField
           fullWidth
+          disabled={
+            failureRecipientOption ===
+            FailureRecipientOptions.cryptoAccountability
+          }
           id="failureRecipient"
           name="failureRecipient"
           value={formik.values.failureRecipient}

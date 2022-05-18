@@ -3,8 +3,8 @@ import { render } from '@testing-library/react';
 import ContractNameForm from './ContractNameForm';
 
 describe('ContractNameForm', () => {
-  const mockContractName = '0.001';
-  const setContractName = jest.fn();
+  const mockName = 'Drink water';
+  const setName = jest.fn();
   const handlePreviousStep = jest.fn();
   const handleNextStep = jest.fn();
   describe('mounting', () => {
@@ -12,18 +12,10 @@ describe('ContractNameForm', () => {
       expect(() =>
         render(
           <ContractNameForm
-            amount={mockContractName}
-            setContractName={setContractName}
+            name={mockName}
+            setName={setName}
             handlePreviousStep={handlePreviousStep}
             handleNextStep={handleNextStep}
-            values={{ amount: mockContractName }}
-            errors={{ amount: 'invalid' }}
-            touched={{ amount: true }}
-            isSubmitting={false}
-            isValidating={false}
-            handleReset={jest.fn()}
-            submitCount={0}
-            {...([] as any)}
           />
         )
       ).not.toThrow();
@@ -32,17 +24,10 @@ describe('ContractNameForm', () => {
     it('should unmount without error', () => {
       const { unmount } = render(
         <ContractNameForm
-          amount={mockContractName}
-          setContractName={setContractName}
+          name={mockName}
+          setName={setName}
           handlePreviousStep={handlePreviousStep}
           handleNextStep={handleNextStep}
-          values={{ amount: mockContractName }}
-          errors={{ amount: 'invalid' }}
-          touched={{ amount: true }}
-          isSubmitting={false}
-          isValidating={false}
-          handleReset={jest.fn()}
-          {...([] as any)}
         />
       );
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { TextField } from '@mui/material';
+import { InputAdornment, TextField } from '@mui/material';
 import FormNavigationButtons from '../../../../FormNavigationButtons/FormNavigationButtons';
 
 interface AmountFormProps {
@@ -39,13 +39,15 @@ const AmountForm = ({
       <h2> Amount</h2>
       <form onSubmit={formik.handleSubmit}>
         <TextField
-          fullWidth
           id="amount"
           name="amount"
           value={formik.values.amount}
           onChange={formik.handleChange}
           error={formik.touched.amount && Boolean(formik.errors.amount)}
           helperText={formik.touched.amount && formik.errors.amount}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">eth</InputAdornment>
+          }}
         />
         <FormNavigationButtons handlePreviousStep={handlePreviousStep} />
       </form>

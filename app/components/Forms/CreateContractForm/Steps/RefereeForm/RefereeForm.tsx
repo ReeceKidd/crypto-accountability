@@ -3,6 +3,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Button, InputAdornment, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
+import { LoadingButton } from '@mui/lab';
+import { ChevronRight } from '@mui/icons-material';
 
 interface RefereeFormProps {
   web3Account: string;
@@ -44,7 +46,6 @@ const RefereeForm = ({
             contract. If you don't want a referee use your own address.`}
           </Typography>
         </Box>
-
         <TextField
           fullWidth
           id="referee"
@@ -70,7 +71,9 @@ const RefereeForm = ({
           }}
         />
         <Box mt={2}>
-          <Button type="submit">Next</Button>
+          <LoadingButton variant="contained" type="submit">
+            <ChevronRight />
+          </LoadingButton>
         </Box>
       </form>
     </>

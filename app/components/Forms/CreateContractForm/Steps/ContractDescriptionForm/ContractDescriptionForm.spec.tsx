@@ -12,18 +12,10 @@ describe('ContractDescriptionForm', () => {
       expect(() =>
         render(
           <ContractDescriptionForm
-            amount={mockContractDescription}
-            setContractDescription={setContractDescription}
+            description={mockContractDescription}
+            setDescription={setContractDescription}
             handlePreviousStep={handlePreviousStep}
             handleNextStep={handleNextStep}
-            values={{ amount: mockContractDescription }}
-            errors={{ amount: 'invalid' }}
-            touched={{ amount: true }}
-            isSubmitting={false}
-            isValidating={false}
-            handleReset={jest.fn()}
-            submitCount={0}
-            {...([] as any)}
           />
         )
       ).not.toThrow();
@@ -32,17 +24,10 @@ describe('ContractDescriptionForm', () => {
     it('should unmount without error', () => {
       const { unmount } = render(
         <ContractDescriptionForm
-          amount={mockContractDescription}
-          setContractDescription={setContractDescription}
+          description={mockContractDescription}
+          setDescription={setContractDescription}
           handlePreviousStep={handlePreviousStep}
           handleNextStep={handleNextStep}
-          values={{ amount: mockContractDescription }}
-          errors={{ amount: 'invalid' }}
-          touched={{ amount: true }}
-          isSubmitting={false}
-          isValidating={false}
-          handleReset={jest.fn()}
-          {...([] as any)}
         />
       );
 

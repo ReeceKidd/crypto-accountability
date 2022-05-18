@@ -7,15 +7,27 @@ import {
   Typography
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { SyntheticEvent, useState } from 'react';
-import { FailureRecipientOptions } from '../Forms/CreateContractForm/Steps/FailureRecipientForm/FailureRecipientForm';
+import { SyntheticEvent } from 'react';
+import { FailureRecipientOptions } from '../Forms/CreateContractForm/CreateContractForm';
 
 export interface FailureRecipientOption {
   title: string;
   description: string;
 }
 
-export const FailureRecipientSelector = () => {
+export interface Props {
+  cryptoAccountabilityAddress: string;
+  setFailureRecipient: (failureRecipient: string) => void;
+  failureRecipientOption: FailureRecipientOptions;
+  setFailureRecipientOption: (option: FailureRecipientOptions) => void;
+}
+
+export const FailureRecipientSelector = ({
+  failureRecipientOption,
+  cryptoAccountabilityAddress,
+  setFailureRecipient,
+  setFailureRecipientOption
+}: Props) => {
   const failureRecipients: {
     [key: string]: FailureRecipientOption;
   } = {
@@ -29,12 +41,16 @@ export const FailureRecipientSelector = () => {
         'If you fail you will send the money to us. Thank you for the support'
     }
   };
-  const [failureRecipientOption, setFailureRecipientOption] = useState<string>(
-    FailureRecipientOptions.friendOrEnemy
-  );
   const handleChange = (event: SyntheticEvent) => {
-    setFailureRecipientOption((event.target as HTMLInputElement).value);
+    const failureRecipientOption = (event.target as HTMLInputElement)
+      .value as FailureRecipientOptions;
+    failureRecipientOption === FailureRecipientOptions.cryptoAccountability
+      ? setFailureRecipient(cryptoAccountabilityAddress)
+      : setFailureRecipient('');
+
+    setFailureRecipientOption(failureRecipientOption);
   };
+
   return (
     <FormControl>
       <FormLabel id="failure-recipient">Failure recipient</FormLabel>
