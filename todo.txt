@@ -1,5 +1,11 @@
-
--Add the eth description to the amount form
+-Fix status components
+-Readd button
+-Fix styling of header image
+-Fix amounts throughout app. 
+-Fix contract details page. 
+-Fix referee details page. 
+-Fix user details page. 
+-Hire a designer to come up with some material UI designs. 
 -Create a landing page similar to Uniswap. 
 -Fix screen for looking at other users. 
 -Add the ability to select charities
