@@ -148,7 +148,7 @@ const SpecificUser: NextPage = () => {
       </Head>
       <h1>{`User: ${address}`}</h1>
       <Link passHref href={`https://rinkeby.etherscan.io/address/${address}`}>
-        <Button>View on etherscan</Button>
+        <Button variant="contained">View on etherscan</Button>
       </Link>
 
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>

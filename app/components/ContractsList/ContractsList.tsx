@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { List, ListItem, ListItemText } from '@mui/material';
+import { List, ListItem } from '@mui/material';
 
 export interface ContractListItem {
   address: string;
@@ -15,7 +15,7 @@ const ContractsList = ({ contracts }: ContractsListProps) => {
       {contracts.map(({ address, title }, index) => (
         <ListItem key={index}>
           <Link href={`/contracts/${address}`} passHref={true}>
-            <ListItemText>{title}</ListItemText>
+            {title}
           </Link>
         </ListItem>
       ))}

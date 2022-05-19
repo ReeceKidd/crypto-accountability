@@ -6,6 +6,10 @@ import accountabilityContractFactoryInstance, {
 } from '../../factory';
 import { useWeb3React } from '@web3-react/core';
 import { getAccountabilityContractStatus } from '../../helpers/getAccountabilityContractStatus';
+import { Card, CardContent, Typography } from '@mui/material';
+import { Box } from '@mui/system';
+import web3 from '../../web3';
+import Link from 'next/link';
 
 interface SpecificContractProps {
   creator: string;
@@ -71,7 +75,63 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
     router.reload();
   };
   console.log(failContract);
-  return <div />;
+  return (
+    <Box mt={5}>
+      <Typography variant="h2" gutterBottom>
+        {name}
+      </Typography>
+      <Typography variant="h3" gutterBottom>
+        {description}
+      </Typography>
+      <Link href={`/users/${creator}`} passHref>
+        <Card sx={{ minWidth: 275 }}>
+          <CardContent>
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              Creator
+            </Typography>
+            <Typography variant="h5" component="div">
+              {creator}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Link>
+
+      <Card sx={{ minWidth: 275 }}>
+        <CardContent>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            Referee
+          </Typography>
+          <Typography variant="h5" component="div">
+            {referee}
+          </Typography>
+        </CardContent>
+      </Card>
+      <Card sx={{ minWidth: 275 }}>
+        <CardContent>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            Failure recipient
+          </Typography>
+          <Typography variant="h5" component="div">
+            {failureRecipient}
+          </Typography>
+        </CardContent>
+      </Card>
+      <Card sx={{ minWidth: 275 }}>
+        <CardContent>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            Amount (eth)
+          </Typography>
+          <Typography variant="h5" component="div">
+            {web3.utils.fromWei(amount, 'ether')}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Box>
+  );
 };
 
 SpecificContract.getInitialProps = async (ctx) => {
