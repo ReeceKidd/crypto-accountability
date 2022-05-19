@@ -6,4 +6,3 @@ npx eslint . --fix
 yarn test
 cd app
 yarn test
-npm test
