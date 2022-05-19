@@ -9,7 +9,6 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import Link from 'next/link';
 import { Box, Paper } from '@mui/material';
 import Blockies from 'react-blockies';
@@ -22,7 +21,7 @@ const pages = [
 ];
 const settings = ['Profile', 'Account', 'Dashboard'];
 
-const ResponsiveAppBar = () => {
+const Header = () => {
   const { account } = useWeb3React();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -106,7 +105,6 @@ const ResponsiveAppBar = () => {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -183,4 +181,4 @@ const ResponsiveAppBar = () => {
     </AppBar>
   );
 };
-export default ResponsiveAppBar;
+export default Header;

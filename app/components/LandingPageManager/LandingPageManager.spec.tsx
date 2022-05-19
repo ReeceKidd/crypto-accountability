@@ -1,14 +1,14 @@
 import { render } from '@testing-library/react';
-import Web3ReactManager from './Web3ReactManager';
+import LandingPageManager from './LandingPageManager';
 
-describe('Web3ReactManager', () => {
+describe('LandingPageManager', () => {
   describe('mounting', () => {
     it('should mount without error', () => {
-      expect(() => render(<Web3ReactManager />)).not.toThrow();
+      expect(() => render(<LandingPageManager />)).not.toThrow();
     });
 
     it('should unmount without error', () => {
-      const { unmount } = render(<Web3ReactManager />);
+      const { unmount } = render(<LandingPageManager />);
 
       expect(() => unmount()).not.toThrow();
     });
