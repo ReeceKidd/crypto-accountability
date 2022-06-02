@@ -19,6 +19,7 @@ const AccountabilityContracts = ({
       setAccountabilityContracts: (
         accountabilityContracts: {
           address: string;
+          creator: string;
           name: string;
           status: string;
           amount: string;
@@ -28,8 +29,9 @@ const AccountabilityContracts = ({
       const openAccountabilityContracts = await Promise.all(
         accountabilityContractAddresses.map(async (address) => {
           const accountabilityContract = getAccountabilityContract(address);
-          const [name, status, amount] = await Promise.all([
+          const [name, creator, status, amount] = await Promise.all([
             accountabilityContract.methods.name().call(),
+            accountabilityContract.methods.creator().call(),
             accountabilityContract.methods.status().call(),
             accountabilityContract.methods.amount().call()
           ]);
@@ -37,6 +39,7 @@ const AccountabilityContracts = ({
           return {
             address,
             name,
+            creator,
             status: getAccountabilityContractStatus(status),
             amount
           };
@@ -50,7 +53,13 @@ const AccountabilityContracts = ({
     openAccountabilityContractsForUser,
     setOpenAcccountabilityContractsForUser
   ] = useState<
-    { address: string; name: string; status: string; amount: string }[]
+    {
+      address: string;
+      name: string;
+      creator: string;
+      status: string;
+      amount: string;
+    }[]
   >([]);
   useEffect(() => {
     setLoading(true);
@@ -67,6 +76,7 @@ const AccountabilityContracts = ({
   return (
     <>
       <ContractsTable contracts={openAccountabilityContractsForUser} />
+      <br />
       <Link href={'/contracts'}>View all contracts</Link>
     </>
   );

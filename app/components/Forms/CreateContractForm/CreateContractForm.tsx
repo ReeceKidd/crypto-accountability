@@ -11,7 +11,7 @@ import FailureRecipientForm from './Steps/FailureRecipientForm/FailureRecipientF
 import RefereeForm from './Steps/RefereeForm/RefereeForm';
 
 interface CreateContractFormProps {
-  web3Account: string;
+  web3Account?: string;
 }
 
 export enum FailureRecipientOptions {

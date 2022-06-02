@@ -30,6 +30,7 @@ const Referee: NextPage = () => {
   const [approvalRequestAddresses, setApprovalRequestAddresses] = useState<
     string[]
   >([]);
+  console.log('Get approval request addresses', approvalRequestAddresses);
   useEffect(() => {
     getApprovalRequestAddresses(setApprovalRequestAddresses);
   }, [getApprovalRequestAddresses]);
@@ -95,13 +96,15 @@ const Referee: NextPage = () => {
       <Head>
         <title>Contracts you referee</title>
       </Head>
-
-      <h2>{`Approval requests: ${approvalRequestAddresses.length}`}</h2>
-      <ApprovalRequests
-        setLoading={setLoadingGetApprovalRequests}
-        approvalRequestAddresses={approvalRequestAddresses}
-      />
-
+      {approvalRequestAddresses.length > 0 && (
+        <>
+          <h2>{`Approval requests: ${approvalRequestAddresses.length}`}</h2>
+          <ApprovalRequests
+            setLoading={setLoadingGetApprovalRequests}
+            approvalRequestAddresses={approvalRequestAddresses}
+          />
+        </>
+      )}
       <h2>
         {`Open contracts you referee:
             ${openAccountabilityContractAddresses.length}`}

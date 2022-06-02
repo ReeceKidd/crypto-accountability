@@ -17,7 +17,7 @@ import { useWeb3React } from '@web3-react/core';
 const pages = [
   { label: 'Contracts', link: '/contracts' },
   { label: 'Referee', link: '/referee' },
-  { label: 'New', link: '/contracts/new' }
+  { label: 'New', link: '/new' }
 ];
 const settings = ['Profile', 'Account', 'Dashboard'];
 
@@ -64,7 +64,7 @@ const Header = () => {
               textDecoration: 'none'
             }}
           >
-            Crypto accountability
+            Cryptcommit
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>

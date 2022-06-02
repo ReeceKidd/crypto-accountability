@@ -1,4 +1,4 @@
-import { Card, Typography } from '@mui/material';
+import { Alert, Typography } from '@mui/material';
 import { ContractStatus } from '../../helpers/getAccountabilityContractStatus';
 
 interface ContractStatusMessageProps {
@@ -8,38 +8,38 @@ interface ContractStatusMessageProps {
 const ContractStatusMessage = ({ status }: ContractStatusMessageProps) => {
   if (status === ContractStatus.SUCCESS) {
     return (
-      <Card variant="outlined">
+      <Alert severity="success">
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           This contract has been completed
         </Typography>
-      </Card>
+      </Alert>
     );
   }
 
   if (status === ContractStatus.AWAITING_APPROVAL) {
     return (
-      <Card variant="outlined">
+      <Alert severity="info">
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           Contact the referee to get their approval
         </Typography>
-      </Card>
+      </Alert>
     );
   }
   if (status === ContractStatus.FAILURE) {
     return (
-      <Card variant="outlined">
+      <Alert severity="error">
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           This contract has failed
         </Typography>
-      </Card>
+      </Alert>
     );
   }
   return (
-    <Card variant="outlined">
+    <Alert severity="info">
       <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
         This contract is open
       </Typography>
-    </Card>
+    </Alert>
   );
 };
 

@@ -7,7 +7,8 @@ describe('ContractsTable', () => {
       address: '1234',
       name: 'Drink water',
       status: 'Open',
-      amount: '1.00'
+      amount: '100000',
+      creator: '0x63613F346EAcDa7f0600608d988fDca2C9b45088'
     }
   ];
   describe('mounting', () => {

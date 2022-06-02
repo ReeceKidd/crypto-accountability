@@ -57,11 +57,7 @@ const ApprovalRequests = ({
   useEffect(() => {
     getApprovalRequests(approvalRequestAddresses, setApprovalRequests);
   }, [getApprovalRequests, approvalRequestAddresses, setApprovalRequests]);
-  return (
-    <>
-      <ApprovalRequestsTable approvalRequests={approvalRequests} />
-    </>
-  );
+  return <ApprovalRequestsTable approvalRequests={approvalRequests} />;
 };
 
 export default ApprovalRequests;

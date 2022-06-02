@@ -5,11 +5,16 @@ import accountabilityContractFactoryInstance, {
   getAccountabilityContract
 } from '../../factory';
 import { useWeb3React } from '@web3-react/core';
-import { getAccountabilityContractStatus } from '../../helpers/getAccountabilityContractStatus';
-import { Card, CardContent, Typography } from '@mui/material';
+import {
+  ContractStatus,
+  getAccountabilityContractStatus
+} from '../../helpers/getAccountabilityContractStatus';
+import { Card, CardContent, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import web3 from '../../web3';
 import Link from 'next/link';
+import { LoadingButton } from '@mui/lab';
+import ContractStatusMessage from '../../components/ContractStatusMessage/ContractStatusMessage';
 
 interface SpecificContractProps {
   creator: string;
@@ -42,9 +47,7 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
   const router = useRouter();
   const address = router.query.address as string;
   const [completeContractLoading, setCompleteContractLoading] = useState(false);
-  console.log(completeContractLoading);
   const [failContractLoading, setFailContractLoading] = useState(false);
-  console.log(failContractLoading);
   const { account } = useWeb3React();
   const completeContract = async () => {
     setCompleteContractLoading(true);
@@ -54,7 +57,6 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
     setCompleteContractLoading(false);
     router.reload();
   };
-  console.log(completeContract);
   const requestApproval = async (address: string) => {
     setCompleteContractLoading(true);
     await accountabilityContractFactoryInstance.methods
@@ -65,7 +67,6 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
     setCompleteContractLoading(false);
     router.reload();
   };
-  console.log(requestApproval);
   const failContract = async () => {
     setFailContractLoading(true);
     await accountabilityContractFactoryInstance.methods
@@ -74,17 +75,17 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
     setFailContractLoading(false);
     router.reload();
   };
-  console.log(failContract);
   return (
     <Box mt={5}>
       <Typography variant="h2" gutterBottom>
         {name}
       </Typography>
-      <Typography variant="h3" gutterBottom>
+      <Typography variant="h4" gutterBottom>
         {description}
       </Typography>
+      <ContractStatusMessage status={status as ContractStatus} />
       <Link href={`/users/${creator}`} passHref>
-        <Card sx={{ minWidth: 275 }}>
+        <Card sx={{ minWidth: 275, mb: 1 }}>
           <CardContent>
             <Typography
               sx={{ fontSize: 14 }}
@@ -100,7 +101,7 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
         </Card>
       </Link>
 
-      <Card sx={{ minWidth: 275 }}>
+      <Card sx={{ minWidth: 275, mb: 1 }}>
         <CardContent>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             Referee
@@ -110,7 +111,7 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
           </Typography>
         </CardContent>
       </Card>
-      <Card sx={{ minWidth: 275 }}>
+      <Card sx={{ minWidth: 275, mb: 1 }}>
         <CardContent>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             Failure recipient
@@ -120,7 +121,7 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
           </Typography>
         </CardContent>
       </Card>
-      <Card sx={{ minWidth: 275 }}>
+      <Card sx={{ minWidth: 275, mb: 1 }}>
         <CardContent>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             Amount (eth)
@@ -130,6 +131,56 @@ const SpecificContract: NextPage<SpecificContractProps> = ({
           </Typography>
         </CardContent>
       </Card>
+      {account === referee && status === ContractStatus.OPEN && (
+        <Grid container mt={2}>
+          <Grid item xs={2}>
+            <LoadingButton
+              variant="contained"
+              color="success"
+              loading={completeContractLoading}
+              onClick={() => completeContract()}
+            >
+              Complete
+            </LoadingButton>
+          </Grid>
+          <Grid item xs={2}>
+            <LoadingButton
+              variant="contained"
+              color="error"
+              loading={failContractLoading}
+              onClick={() => failContract()}
+            >
+              Fail
+            </LoadingButton>
+          </Grid>
+        </Grid>
+      )}
+      {account === creator &&
+        account !== referee &&
+        status === ContractStatus.OPEN && (
+          <Grid container mt={2}>
+            <Grid item xs={2}>
+              <LoadingButton
+                variant="contained"
+                color="success"
+                loading={completeContractLoading}
+                onClick={() => requestApproval(address)}
+              >
+                Request approval
+              </LoadingButton>
+            </Grid>
+            <Grid item xs={2}>
+              <LoadingButton
+                variant="contained"
+                color="error"
+                loading={failContractLoading}
+                onClick={() => failContract()}
+              >
+                Fail
+              </LoadingButton>
+            </Grid>
+          </Grid>
+        )}
     </Box>
   );
 };

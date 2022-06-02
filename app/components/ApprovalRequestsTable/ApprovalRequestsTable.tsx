@@ -6,7 +6,6 @@ import {
   TableContainer,
   TableBody,
   TableRow,
-  TableHead,
   TableCell,
   Paper,
   Table
@@ -65,6 +64,8 @@ const ApprovalRequestsTable = ({ approvalRequests }: Props) => {
         </TableCell>
         <TableCell>
           <LoadingButton
+            variant="contained"
+            color="success"
             loading={approveRequestLoading}
             onClick={() => approveRequest(address)}
           >
@@ -73,6 +74,8 @@ const ApprovalRequestsTable = ({ approvalRequests }: Props) => {
         </TableCell>
         <TableCell>
           <LoadingButton
+            variant="contained"
+            color="error"
             loading={rejectRequestLoading}
             onClick={() => rejectRequest(address)}
           >
@@ -86,13 +89,6 @@ const ApprovalRequestsTable = ({ approvalRequests }: Props) => {
   return (
     <TableContainer component={Paper}>
       <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Approve</TableCell>
-            <TableCell>Reject</TableCell>
-          </TableRow>
-        </TableHead>
         <TableBody>{tableCells}</TableBody>
       </Table>
     </TableContainer>

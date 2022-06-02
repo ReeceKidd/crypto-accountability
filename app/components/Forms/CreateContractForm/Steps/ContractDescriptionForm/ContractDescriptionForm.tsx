@@ -40,8 +40,6 @@ const ContractDescriptionForm = ({
       <form onSubmit={formik.handleSubmit}>
         <TextField
           fullWidth
-          multiline
-          rows={3}
           id="description"
           name="description"
           value={formik.values.description}

@@ -7,7 +7,7 @@ import { LoadingButton } from '@mui/lab';
 import { ChevronRight } from '@mui/icons-material';
 
 interface RefereeFormProps {
-  web3Account: string;
+  web3Account?: string;
   referee: string;
   setReferee: (referee: string) => void;
   handleNextStep: () => void;

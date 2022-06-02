@@ -36,7 +36,7 @@ export const FailureRecipientSelector = ({
       description: 'If you fail we will send this person the money'
     },
     [FailureRecipientOptions.cryptoAccountability]: {
-      title: 'Crypto accountability',
+      title: 'Cryptcommit',
       description:
         'If you fail you will send the money to us. Thank you for the support'
     }

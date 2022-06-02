@@ -34,7 +34,7 @@ const LandingPage = () => {
                 textDecoration: 'none'
               }}
             >
-              Crypto accountability
+              Cryptcommit
             </Typography>
             <Box
               sx={{
@@ -45,12 +45,8 @@ const LandingPage = () => {
               style={{ marginLeft: 'auto' }}
             >
               <Button
-                size="large"
-                aria-label="use app"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                color="inherit"
                 variant="contained"
+                color="secondary"
                 onClick={() => activate(injectedConnector)}
               >
                 Use app
@@ -72,7 +68,7 @@ const LandingPage = () => {
                 textDecoration: 'none'
               }}
             >
-              Crypto accountability
+              Cryptcommit
             </Typography>
             <Box
               sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
@@ -80,11 +76,7 @@ const LandingPage = () => {
             >
               <Button
                 onClick={() => activate(injectedConnector)}
-                size="large"
-                aria-label="use app"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                color="inherit"
+                color="secondary"
                 variant="contained"
               >
                 Use app

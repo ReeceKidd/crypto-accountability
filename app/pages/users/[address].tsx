@@ -22,7 +22,7 @@ const SpecificUser: NextPage = () => {
     setLoadingOpenAccountabilityContractsForUser
   ] = useState(false);
   console.log(loadingOpenAccountabilityContractsForUser);
-  const getOpenAccountabillityContractAddressesForUser = useCallback(
+  const getOpenAccountabilityContractAddressesForUser = useCallback(
     async (
       setAccountabilityContractAddresses: (addresses: string[]) => void
     ) => {
@@ -35,7 +35,7 @@ const SpecificUser: NextPage = () => {
     },
     [address]
   );
-  const getOpenAccountabillityContracts = useCallback(
+  const getOpenAccountabilityContracts = useCallback(
     async (
       openAccountabilityContractAddresses: string[],
       setAccountabilityContracts: (
@@ -44,6 +44,7 @@ const SpecificUser: NextPage = () => {
           name: string;
           status: string;
           amount: string;
+          creator: string;
         }[]
       ) => void,
       setLoadingOpenAccountabilityContracts: Dispatch<SetStateAction<boolean>>
@@ -55,14 +56,16 @@ const SpecificUser: NextPage = () => {
           const [name, status, amount] = await Promise.all([
             accountabilityContract.methods.name().call(),
             accountabilityContract.methods.status().call(),
-            accountabilityContract.methods.amount().call()
+            accountabilityContract.methods.amount().call(),
+            accountabilityContract.methods.creator().call()
           ]);
 
           return {
             address,
             name,
             status: getAccountabilityContractStatus(status),
-            amount
+            amount,
+            creator
           };
         })
       );
@@ -77,28 +80,28 @@ const SpecificUser: NextPage = () => {
   ] = useState<string[]>([]);
   const [
     openAccountabilityContractsForUser,
-    setOpenAcccountabilityContractsForUser
+    setOpenAccountabilityContractsForUser
   ] = useState<
     { address: string; name: string; status: string; amount: string }[]
   >([]);
   useEffect(() => {
-    getOpenAccountabillityContractAddressesForUser(
+    getOpenAccountabilityContractAddressesForUser(
       setOpenAccountabilityContractAddresses
     );
-  }, [getOpenAccountabillityContractAddressesForUser]);
+  }, [getOpenAccountabilityContractAddressesForUser]);
   useEffect(() => {
-    getOpenAccountabillityContracts(
+    getOpenAccountabilityContracts(
       openAccountabilityContractAddresses,
-      setOpenAcccountabilityContractsForUser,
+      setOpenAccountabilityContractsForUser,
       setLoadingOpenAccountabilityContractsForUser
     );
-  }, [getOpenAccountabillityContracts, openAccountabilityContractAddresses]);
+  }, [getOpenAccountabilityContracts, openAccountabilityContractAddresses]);
   const [
     loadingOpenAccountabilityContractsForReferee,
     setLoadingOpenAccountabilityContractsForReferee
   ] = useState(false);
   console.log(loadingOpenAccountabilityContractsForReferee);
-  const getOpenAccountabillityContractAddressesForReferee = useCallback(
+  const getOpenAccountabilityContractAddressesForReferee = useCallback(
     async (
       setAccountabilityContractAddressesForReferee: (
         addresses: string[]
@@ -126,19 +129,19 @@ const SpecificUser: NextPage = () => {
     { address: string; name: string; status: string; amount: string }[]
   >([]);
   useEffect(() => {
-    getOpenAccountabillityContractAddressesForReferee(
+    getOpenAccountabilityContractAddressesForReferee(
       setOpenAccountabilityContractAddressesForReferee
     );
-  }, [getOpenAccountabillityContractAddressesForReferee]);
+  }, [getOpenAccountabilityContractAddressesForReferee]);
   useEffect(() => {
-    getOpenAccountabillityContracts(
+    getOpenAccountabilityContracts(
       openAccountabilityContractAddressesForReferee,
       setOpenAcccountabilityContractsForReferee,
       setLoadingOpenAccountabilityContractsForReferee
     );
   }, [
-    getOpenAccountabillityContracts,
-    getOpenAccountabillityContractAddressesForReferee,
+    getOpenAccountabilityContracts,
+    getOpenAccountabilityContractAddressesForReferee,
     openAccountabilityContractAddressesForReferee
   ]);
   return (
@@ -146,7 +149,7 @@ const SpecificUser: NextPage = () => {
       <Head>
         <title>{address}</title>
       </Head>
-      <h1>{`User: ${address}`}</h1>
+      <h1>{address}</h1>
       <Link passHref href={`https://rinkeby.etherscan.io/address/${address}`}>
         <Button variant="contained">View on etherscan</Button>
       </Link>
