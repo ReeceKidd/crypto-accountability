@@ -11,12 +11,11 @@ const Contracts: NextPage = () => {
     loadingGetOpenAccountabilityContractAddresses,
     setLoadingGetOpenAccountabilityContractAddresses
   ] = useState(false);
-  console.log(loadingGetOpenAccountabilityContractAddresses);
   const [
     openAccountabilityContractAddresses,
     setOpenAccountabilityContractAddresses
   ] = useState<string[]>([]);
-  const getOpenAccountabillityContractAddresses = useCallback(
+  const getOpenAccountabilityContractAddresses = useCallback(
     async (
       setAccountabilityContractAddresses: (addresses: string[]) => void
     ) => {
@@ -32,16 +31,15 @@ const Contracts: NextPage = () => {
     [account]
   );
   useEffect(() => {
-    getOpenAccountabillityContractAddresses(
+    getOpenAccountabilityContractAddresses(
       setOpenAccountabilityContractAddresses
     );
-  }, [getOpenAccountabillityContractAddresses]);
+  }, [getOpenAccountabilityContractAddresses]);
   const [
     loadingGetClosedAccountabilityContractAddresses,
     setLoadingGetClosedAccountabilityContractAddresses
   ] = useState(false);
-  console.log(loadingGetClosedAccountabilityContractAddresses);
-  const getClosedAccountabillityContractAddresses = useCallback(
+  const getClosedAccountabilityContractAddresses = useCallback(
     async (
       setClosedAccountabilityContractAddresses: (addresses: string[]) => void
     ) => {
@@ -61,10 +59,10 @@ const Contracts: NextPage = () => {
     setClosedAccountabilityContractAddresses
   ] = useState<string[]>([]);
   useEffect(() => {
-    getClosedAccountabillityContractAddresses(
+    getClosedAccountabilityContractAddresses(
       setClosedAccountabilityContractAddresses
     );
-  }, [getClosedAccountabillityContractAddresses]);
+  }, [getClosedAccountabilityContractAddresses]);
 
   return (
     <div>
@@ -72,16 +70,19 @@ const Contracts: NextPage = () => {
         <title>Contracts</title>
       </Head>
 
-      <h2>Open contracts: {openAccountabilityContractAddresses.length}</h2>
       <AccountabilityContracts
+        headerText={`Your open contracts: ${openAccountabilityContractAddresses.length}`}
+        loading={loadingGetOpenAccountabilityContractAddresses}
         setLoading={setLoadingGetOpenAccountabilityContractAddresses}
         accountabilityContractAddresses={openAccountabilityContractAddresses}
+        isReferee={false}
       />
-
-      <h2>Closed contracts: {closedAccountabilityContractAddresses.length}</h2>
       <AccountabilityContracts
+        headerText={`Your closed contracts: ${closedAccountabilityContractAddresses.length}`}
+        loading={loadingGetClosedAccountabilityContractAddresses}
         setLoading={setLoadingGetClosedAccountabilityContractAddresses}
         accountabilityContractAddresses={closedAccountabilityContractAddresses}
+        isReferee={false}
       />
     </div>
   );

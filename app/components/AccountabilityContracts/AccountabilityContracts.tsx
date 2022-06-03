@@ -1,19 +1,27 @@
+import { Add } from '@mui/icons-material';
+import { Button, CircularProgress } from '@mui/material';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { getAccountabilityContract } from '../../factory';
 import { getAccountabilityContractStatus } from '../../helpers/getAccountabilityContractStatus';
 import ContractsTable from '../ContractsTable/ContractsTable';
 
-interface AccountabilityContractsProps {
+interface Props {
+  headerText: string;
   accountabilityContractAddresses: string[];
+  loading: boolean;
+  isReferee: boolean;
   setLoading: (loading: boolean) => void;
 }
 
 const AccountabilityContracts = ({
+  headerText,
   accountabilityContractAddresses,
+  loading,
+  isReferee,
   setLoading
-}: AccountabilityContractsProps) => {
-  const getOpenAccountabillityContracts = useCallback(
+}: Props) => {
+  const getOpenAccountabilityContracts = useCallback(
     async (
       accountabilityContractAddresses: string[],
       setAccountabilityContracts: (
@@ -51,7 +59,7 @@ const AccountabilityContracts = ({
   );
   const [
     openAccountabilityContractsForUser,
-    setOpenAcccountabilityContractsForUser
+    setOpenAccountabilityContractsForUser
   ] = useState<
     {
       address: string;
@@ -63,19 +71,32 @@ const AccountabilityContracts = ({
   >([]);
   useEffect(() => {
     setLoading(true);
-    getOpenAccountabillityContracts(
+    getOpenAccountabilityContracts(
       accountabilityContractAddresses,
-      setOpenAcccountabilityContractsForUser
+      setOpenAccountabilityContractsForUser
     );
     setLoading(false);
   }, [
     accountabilityContractAddresses,
-    getOpenAccountabillityContracts,
+    getOpenAccountabilityContracts,
     setLoading
   ]);
-  return (
+  return loading ? (
+    <CircularProgress />
+  ) : (
     <>
-      <ContractsTable contracts={openAccountabilityContractsForUser} />
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <h2>{headerText}</h2>
+        {accountabilityContractAddresses.length === 0 && (
+          <Button href="/new" variant="contained" style={{ marginLeft: 5 }}>
+            <Add />
+          </Button>
+        )}
+      </div>
+      <ContractsTable
+        contracts={openAccountabilityContractsForUser}
+        isReferee={isReferee}
+      />
       <br />
       <Link href={'/contracts'}>View all contracts</Link>
     </>

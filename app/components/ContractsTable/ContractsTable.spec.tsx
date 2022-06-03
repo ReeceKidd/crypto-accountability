@@ -14,13 +14,21 @@ describe('ContractsTable', () => {
   describe('mounting', () => {
     it('should mount without error', () => {
       expect(() =>
-        render(<ContractsTable contracts={mockAccountabilityContracts} />)
+        render(
+          <ContractsTable
+            contracts={mockAccountabilityContracts}
+            isReferee={true}
+          />
+        )
       ).not.toThrow();
     });
 
     it('should unmount without error', () => {
       const { unmount } = render(
-        <ContractsTable contracts={mockAccountabilityContracts} />
+        <ContractsTable
+          contracts={mockAccountabilityContracts}
+          isReferee={true}
+        />
       );
 
       expect(() => unmount()).not.toThrow();

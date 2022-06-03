@@ -9,8 +9,7 @@ import factory from '../factory';
 const Referee: NextPage = () => {
   const { account } = useWeb3React();
   const [loadingGetApprovalRequests, setLoadingGetApprovalRequests] =
-    useState(false);
-  console.log(loadingGetApprovalRequests);
+    useState(true);
   const getApprovalRequestAddresses = useCallback(
     async (
       setCompleteAccountabilityContractRequestAddresses: (
@@ -30,11 +29,10 @@ const Referee: NextPage = () => {
   const [approvalRequestAddresses, setApprovalRequestAddresses] = useState<
     string[]
   >([]);
-  console.log('Get approval request addresses', approvalRequestAddresses);
   useEffect(() => {
     getApprovalRequestAddresses(setApprovalRequestAddresses);
   }, [getApprovalRequestAddresses]);
-  const getOpenAccountabillityContractAddresses = useCallback(
+  const getOpenAccountabilityContractAddresses = useCallback(
     async (
       setAccountabilityContractAddresses: (addresses: string[]) => void
     ) => {
@@ -50,18 +48,17 @@ const Referee: NextPage = () => {
   const [
     loadingGetOpenAccountabilityContractForReferees,
     setLoadingGetOpenAccountabilityContractsForReferee
-  ] = useState(false);
-  console.log(loadingGetOpenAccountabilityContractForReferees);
+  ] = useState(true);
   const [
     openAccountabilityContractAddresses,
     setOpenAccountabilityContractAddresses
   ] = useState<string[]>([]);
   useEffect(() => {
-    getOpenAccountabillityContractAddresses(
+    getOpenAccountabilityContractAddresses(
       setOpenAccountabilityContractAddresses
     );
-  }, [getOpenAccountabillityContractAddresses]);
-  const getClosedAccountabillityContractAddresses = useCallback(
+  }, [getOpenAccountabilityContractAddresses]);
+  const getClosedAccountabilityContractAddresses = useCallback(
     async (
       setClosedAccountabilityContractAddresses: (addresses: string[]) => void
     ) => {
@@ -80,16 +77,15 @@ const Referee: NextPage = () => {
     loadingGetClosedAccountabilityContractForReferees,
     setLoadingGetClosedAccountabilityContractsForReferee
   ] = useState(false);
-  console.log(loadingGetClosedAccountabilityContractForReferees);
   const [
     closedAccountabilityContractAddresses,
     setClosedAccountabilityContractAddresses
   ] = useState<string[]>([]);
   useEffect(() => {
-    getClosedAccountabillityContractAddresses(
+    getClosedAccountabilityContractAddresses(
       setClosedAccountabilityContractAddresses
     );
-  }, [getClosedAccountabillityContractAddresses]);
+  }, [getClosedAccountabilityContractAddresses]);
 
   return (
     <div>
@@ -100,26 +96,26 @@ const Referee: NextPage = () => {
         <>
           <h2>{`Approval requests: ${approvalRequestAddresses.length}`}</h2>
           <ApprovalRequests
+            loading={loadingGetApprovalRequests}
             setLoading={setLoadingGetApprovalRequests}
             approvalRequestAddresses={approvalRequestAddresses}
           />
         </>
       )}
-      <h2>
-        {`Open contracts you referee:
-            ${openAccountabilityContractAddresses.length}`}
-      </h2>
       <AccountabilityContracts
+        headerText={`Open contracts you referee:
+      ${openAccountabilityContractAddresses.length}`}
+        loading={loadingGetOpenAccountabilityContractForReferees}
         setLoading={setLoadingGetOpenAccountabilityContractsForReferee}
         accountabilityContractAddresses={openAccountabilityContractAddresses}
+        isReferee={true}
       />
-
-      <h2>
-        {`Past contracts you refereed: ${closedAccountabilityContractAddresses.length}`}
-      </h2>
       <AccountabilityContracts
+        headerText={`Past contracts you refereed: ${closedAccountabilityContractAddresses.length}`}
+        loading={loadingGetClosedAccountabilityContractForReferees}
         setLoading={setLoadingGetClosedAccountabilityContractsForReferee}
         accountabilityContractAddresses={closedAccountabilityContractAddresses}
+        isReferee={true}
       />
     </div>
   );

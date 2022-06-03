@@ -53,7 +53,7 @@ const SpecificUser: NextPage = () => {
       const openAccountabilityContracts = await Promise.all(
         openAccountabilityContractAddresses.map(async (address) => {
           const accountabilityContract = getAccountabilityContract(address);
-          const [name, status, amount] = await Promise.all([
+          const [name, creator, status, amount] = await Promise.all([
             accountabilityContract.methods.name().call(),
             accountabilityContract.methods.status().call(),
             accountabilityContract.methods.amount().call(),
@@ -82,7 +82,13 @@ const SpecificUser: NextPage = () => {
     openAccountabilityContractsForUser,
     setOpenAccountabilityContractsForUser
   ] = useState<
-    { address: string; name: string; status: string; amount: string }[]
+    {
+      address: string;
+      name: string;
+      creator: string;
+      status: string;
+      amount: string;
+    }[]
   >([]);
   useEffect(() => {
     getOpenAccountabilityContractAddressesForUser(
@@ -124,9 +130,15 @@ const SpecificUser: NextPage = () => {
   ] = useState<string[]>([]);
   const [
     openAccountabilityContractsForReferee,
-    setOpenAcccountabilityContractsForReferee
+    setOpenAccountabilityContractsForReferee
   ] = useState<
-    { address: string; name: string; status: string; amount: string }[]
+    {
+      address: string;
+      name: string;
+      creator: string;
+      status: string;
+      amount: string;
+    }[]
   >([]);
   useEffect(() => {
     getOpenAccountabilityContractAddressesForReferee(
@@ -136,7 +148,7 @@ const SpecificUser: NextPage = () => {
   useEffect(() => {
     getOpenAccountabilityContracts(
       openAccountabilityContractAddressesForReferee,
-      setOpenAcccountabilityContractsForReferee,
+      setOpenAccountabilityContractsForReferee,
       setLoadingOpenAccountabilityContractsForReferee
     );
   }, [

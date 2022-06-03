@@ -1,3 +1,4 @@
+import { CircularProgress } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { getAccountabilityContract, getApprovalRequest } from '../../factory';
 import ApprovalRequestsTable, {
@@ -6,11 +7,13 @@ import ApprovalRequestsTable, {
 
 interface ApprovalRequestsProps {
   approvalRequestAddresses: string[];
+  loading: boolean;
   setLoading: (loading: boolean) => void;
 }
 
 const ApprovalRequests = ({
   approvalRequestAddresses,
+  loading,
   setLoading
 }: ApprovalRequestsProps) => {
   const getApprovalRequests = useCallback(
@@ -57,7 +60,11 @@ const ApprovalRequests = ({
   useEffect(() => {
     getApprovalRequests(approvalRequestAddresses, setApprovalRequests);
   }, [getApprovalRequests, approvalRequestAddresses, setApprovalRequests]);
-  return <ApprovalRequestsTable approvalRequests={approvalRequests} />;
+  return loading ? (
+    <CircularProgress />
+  ) : (
+    <ApprovalRequestsTable approvalRequests={approvalRequests} />
+  );
 };
 
 export default ApprovalRequests;

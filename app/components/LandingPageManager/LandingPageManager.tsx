@@ -4,7 +4,6 @@ import LandingPage from '../LandingPage/LandingPage';
 
 const LandingPageManager: FC = ({ children }) => {
   const { account } = useWeb3React();
-  console.log('Account', account);
   return <> {account ? children : <LandingPage />}</>;
 };
 

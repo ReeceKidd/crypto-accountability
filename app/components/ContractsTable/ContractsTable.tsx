@@ -22,9 +22,10 @@ export interface AccountabilityContract {
 
 interface RequestsTableProps {
   contracts: AccountabilityContract[];
+  isReferee: boolean;
 }
 
-const ContractsTable = ({ contracts }: RequestsTableProps) => {
+const ContractsTable = ({ contracts, isReferee }: RequestsTableProps) => {
   const tableCells = contracts.map(
     ({ address, name, creator, status, amount }, index) => (
       <Link key={index} href={`/contracts/${address}`} passHref>
@@ -33,7 +34,7 @@ const ContractsTable = ({ contracts }: RequestsTableProps) => {
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
           <TableCell>{name}</TableCell>
-          <TableCell>{creator}</TableCell>
+          {isReferee && <TableCell>{creator}</TableCell>}
           <TableCell>{web3.utils.fromWei(amount, 'ether')}</TableCell>
           <ContractStatusCell status={status as ContractStatus} />
         </TableRow>
@@ -49,7 +50,7 @@ const ContractsTable = ({ contracts }: RequestsTableProps) => {
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
-                <TableCell>Creator</TableCell>
+                {isReferee && <TableCell>Creator</TableCell>}
                 <TableCell>Amount (ETH)</TableCell>
                 <TableCell>Status</TableCell>
               </TableRow>
