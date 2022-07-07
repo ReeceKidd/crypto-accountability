@@ -21,7 +21,7 @@
     "@types/fs-extra": "^9.0.13",
     "@types/web3": "^1.2.2",
     "fs-extra": "^10.0.0",
-    "solc": "^0.8.12",
+    "solc": "^0.8.15",
     "web3": "^1.7.1"
   },
   "devDependencies": {
