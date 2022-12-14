@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@babel/preset-typescript": "^7.16.7",
-    "@truffle/hdwallet-provider": "^2.0.3",
+    "@truffle/hdwallet-provider": "^2.1.1",
     "@types/fs-extra": "^9.0.13",
     "@types/web3": "^1.2.2",
     "fs-extra": "^10.0.0",
