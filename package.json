@@ -22,7 +22,7 @@
     "@types/web3": "^1.2.2",
     "fs-extra": "^10.0.0",
     "solc": "^0.8.12",
-    "web3": "^1.7.1"
+    "web3": "^1.10.2"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
