@@ -16,7 +16,7 @@
     "url": "git+https://github.com/ReeceKidd/crypto-accountability.git"
   },
   "dependencies": {
-    "@babel/preset-typescript": "^7.16.7",
+    "@babel/preset-typescript": "^7.24.6",
     "@truffle/hdwallet-provider": "^2.0.3",
     "@types/fs-extra": "^9.0.13",
     "@types/web3": "^1.2.2",
